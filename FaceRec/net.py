@@ -53,3 +53,7 @@ def VGGNet():
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
+    return model
+
+
+
