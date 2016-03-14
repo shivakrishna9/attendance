@@ -10,13 +10,19 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.models import Sequential
 from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
-from keras.layers import batch_normalisation
+from keras.layers import normalization
 import h5py
+from test import *
 
 
-def VGGNet():
-	# Sequential Model
-	model = Sequential()
+def VGGNet(res):
+
+
+    first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
+    first_layer.input = res
+
+    # Sequential Model
+    model = Sequential()
     model.add(first_layer)
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
     model.add(ZeroPadding2D((1, 1)))
@@ -60,14 +66,13 @@ def VGGNet():
 
 def adam(model):
 
-	adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+    adam = keras.optimizers.Adam(
+        lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
-	model.compile(loss='mean_squared_error', optimizer=adam)
+    model.compile(loss='mean_squared_error', optimizer=adam)
 
-	return model
+    return model
 
 # def batch_normalisation():
-# 	keras.layers.normalization.BatchNormalization(epsilon=1e-06, mode=0, axis=-1, momentum=0.9,
-# 			weights=None, beta_init='zero', gamma_init='one')
-
-
+#   keras.layers.normalization.BatchNormalization(epsilon=1e-06, mode=0, axis=-1, momentum=0.9,
+#           weights=None, beta_init='zero', gamma_init='one')
