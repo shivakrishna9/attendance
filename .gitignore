@@ -1,3 +1,7 @@
 *.pyc
-vgg_*
+vgg*
+cutils*
+*.DS*
+lazylinker*
 result*
+extras

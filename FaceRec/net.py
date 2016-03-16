@@ -7,12 +7,13 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD
+from keras.optimizers import SGD, Adam
 from keras.models import Sequential
 from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
 from keras.layers import normalization
 import h5py
 from test import *
+from FaceRec.pretrained_cnn import *
 
 
 def VGGNet(res):
@@ -60,6 +61,12 @@ def VGGNet(res):
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
+
+    model = import_weights(model,layer_dict)
+
+    adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+
+    model.compile(loss='mean_squared_error', optimizer=adam)
 
     return model
 
