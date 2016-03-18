@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+# import tensorflow
 import theano
 # import theano.tensor as T
 # from theano.tensor.signal import conv
@@ -14,9 +15,11 @@ from keras.layers import normalization
 import h5py
 from test import *
 from FaceRec.pretrained_cnn import *
+from keras import backend as K
 
 
-def VGGNet(res):
+
+def VGGNet(X_train,y_train):
 
 
     first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
@@ -59,27 +62,42 @@ def VGGNet(res):
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dense(output_dim=4096, input_dim=(7,7,512), init="glorot_uniform"))
+    model.add(Activation("relu"))
+    model.add(Dense(output_dim=4096, input_dim=(4096),init="glorot_uniform"))
+    model.add(Activation("relu"))
+    model.add(Dense(output_dim=10, input_dim=(4096),init="glorot_uniform"))
+    model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
-    model = import_weights(model,layer_dict)
+    cnn = pretrained_cnn()
+
+    for k in cnn[cnn.keys()[0]]:
+        for i in k:
+            a = i[0][0][1][0]
+            if 'conv' in a:
+                weight1 = np.rollaxis(i[0][0][2][0][0],3,start=0)
+                weight1 = np.rollaxis(weight1,3,start=1)
+                weight2 = np.rollaxis(i[0][0][2][0][1],1,start=0)[0]
+                weights = [weight1,weight2]
+                layer_dict[a].set_weights(weights)
+                print "Weights added to",a
+
+    # layer = 'conv5_3'
+
+    # layer_output = layer_dict[layer].get_output()
+    
+    # loss = K.mean(layer_output[:, filter_index, :, :])
+    
+    # grads = K.gradients(loss, res)[0]
+    # grads /= (K.sqrt(K.mean(K.square(grads))) + 1e-5)
+    
+    # iterate = K.function([res], [loss, grads])
 
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
     model.compile(loss='mean_squared_error', optimizer=adam)
-
-    return model
-
-
-def adam(model):
-
-    adam = keras.optimizers.Adam(
-        lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-
-    model.compile(loss='mean_squared_error', optimizer=adam)
-
-    return model
-
-# def batch_normalisation():
-#   keras.layers.normalization.BatchNormalization(epsilon=1e-06, mode=0, axis=-1, momentum=0.9,
-#           weights=None, beta_init='zero', gamma_init='one')
+    model.fit(X_train, y_train, nb_epoch=3, batch_size=16, verbose=1)
+    
+    # print model
