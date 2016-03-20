@@ -1,6 +1,6 @@
 import numpy as np
-# import cv2
-# import theano
+import cv2
+import theano
 import scipy.io
 import json
 

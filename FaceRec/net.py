@@ -17,7 +17,6 @@ from test import *
 
 def VGGNet(res):
 
-
     first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
     first_layer.input = res
 
