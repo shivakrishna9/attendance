@@ -18,8 +18,7 @@ from FaceRec.pretrained_cnn import *
 from keras import backend as K
 
 
-
-def VGGNet(X_train,y_train):
+def VGGNet(X_train, y_train):
 
     first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
     # Sequential Model
@@ -59,11 +58,10 @@ def VGGNet(X_train,y_train):
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(Dense(output_dim=4096, input_dim=(7,7,512), init="uniform"))
-    model.add(Activation("relu"))
-    model.add(Dense(output_dim=4096, input_dim=(4096),init="uniform"))
-    model.add(Activation("relu"))
-    model.add(Dense(output_dim=10, input_dim=(4096),init="uniform"))
+    model.add(Flatten())
+    model.add(Dense(output_dim=4096, activation='relu', init="orthogonal"))
+    model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
+    model.add(Dense(output_dim=10, init="uniform"))
     model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
@@ -85,5 +83,5 @@ def VGGNet(X_train,y_train):
 
     model.compile(loss='mean_squared_error', optimizer=adam)
     model.fit(X_train, y_train, nb_epoch=3, batch_size=16, verbose=1)
-    
+
     # print model
