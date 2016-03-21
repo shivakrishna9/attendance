@@ -27,15 +27,29 @@ def from_file(fname='train.txt'):
         image = data[1]
         image_class = data[2]
         image = glob.glob("newtest/*/"+image+".jpg")[0]
+        # if image_class not in image_classes:
+        image_classes.append(image_class)
+        image = input_image(image)
+        images.append(image)
+
+    print "No. of images:", len(images), "No. of classes:", len(image_classes)
+    return images, image_classes
+
+def test_file(fname='test.txt'):
+    read = pd.read_csv(fname,names=['filename','name'])
+
+    images=[]
+    image_classes=[]
+    for data in read.itertuples():
+        image = data[1]
+        image_class = data[2]
+        image = glob.glob("newtest/*/"+image+".jpg")[0]
+        # if image_class not in image_classes:
         image_classes.append(image_class)
         image = input_image(image)
         images.append(image)
 
     return images, image_classes
-
-def test_file(fname='test.txt'):
-    read = pd.read_csv(fname,sep='\t',names=['filename','name'])
-    return read
 
 def input_image(image):
 

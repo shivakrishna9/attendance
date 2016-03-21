@@ -14,13 +14,10 @@ from FaceRec.pretrained_cnn import *
 from keras import backend as K
 
 
-def VGGNet(X_train, y_train):
+def VGGNet(X_train, y_train, X_test, Y_test):
 
-    first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
-    # Sequential Model
     model = Sequential()
-    model.add(first_layer)
-    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
+    model.add(Convolution2D(64, 3, 3,input_shape=(3, 227, 227), activation='relu', name='conv1_1', border_mode='same'))
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
@@ -77,7 +74,11 @@ def VGGNet(X_train, y_train):
 
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
-    model.compile(loss='categorical_crossentropy', optimizer=adam)
+    model.compile(loss='mse', optimizer=adam)
     model.fit(X_train, y_train, nb_epoch=3, batch_size=16, verbose=1)
+
+    preds = model.predict(X_test, batch_size=1)
+
+    print preds, Y_test
 
     # print model
