@@ -22,8 +22,6 @@ from keras import backend as K
 def VGGNet(X_train,y_train):
 
     first_layer = ZeroPadding2D((1, 1), input_shape=(3, 227, 227))
-    first_layer.input = res
-
     # Sequential Model
     model = Sequential()
     model.add(first_layer)
@@ -61,38 +59,27 @@ def VGGNet(X_train,y_train):
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(Dense(output_dim=4096, input_dim=(7,7,512), init="glorot_uniform"))
+    model.add(Dense(output_dim=4096, input_dim=(7,7,512), init="uniform"))
     model.add(Activation("relu"))
-    model.add(Dense(output_dim=4096, input_dim=(4096),init="glorot_uniform"))
+    model.add(Dense(output_dim=4096, input_dim=(4096),init="uniform"))
     model.add(Activation("relu"))
-    model.add(Dense(output_dim=10, input_dim=(4096),init="glorot_uniform"))
+    model.add(Dense(output_dim=10, input_dim=(4096),init="uniform"))
     model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
-    cnn = pretrained_cnn()
+    # cnn = pretrained_cnn()
 
-    for k in cnn[cnn.keys()[0]]:
-        for i in k:
-            a = i[0][0][1][0]
-            if 'conv' in a:
-                weight1 = np.rollaxis(i[0][0][2][0][0],3,start=0)
-                weight1 = np.rollaxis(weight1,3,start=1)
-                weight2 = np.rollaxis(i[0][0][2][0][1],1,start=0)[0]
-                weights = [weight1,weight2]
-                layer_dict[a].set_weights(weights)
-                print "Weights added to",a
-
-    # layer = 'conv5_3'
-
-    # layer_output = layer_dict[layer].get_output()
-    
-    # loss = K.mean(layer_output[:, filter_index, :, :])
-    
-    # grads = K.gradients(loss, res)[0]
-    # grads /= (K.sqrt(K.mean(K.square(grads))) + 1e-5)
-    
-    # iterate = K.function([res], [loss, grads])
+    # for k in cnn[cnn.keys()[0]]:
+    #     for i in k:
+    #         a = i[0][0][1][0]
+    #         if 'conv' in a:
+    #             weight1 = np.rollaxis(i[0][0][2][0][0],3,start=0)
+    #             weight1 = np.rollaxis(weight1,3,start=1)
+    #             weight2 = np.rollaxis(i[0][0][2][0][1],1,start=0)[0]
+    #             weights = [weight1,weight2]
+    #             layer_dict[a].set_weights(weights)
+    #             print "Weights added to",a
 
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 

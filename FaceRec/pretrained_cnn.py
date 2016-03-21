@@ -6,7 +6,7 @@ import json
 import time
 import numpy as np
 import h5py 
-import tables
+# import tables
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
