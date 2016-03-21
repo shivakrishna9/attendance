@@ -1,5 +1,6 @@
 import cv2
 import pandas as pd
+import numpy as np
 import glob
 
 def detect(image):
@@ -25,6 +26,7 @@ def from_file(fname='train.txt'):
     image_classes=[]
     for data in read.itertuples():
         image = data[1]
+        print "Extracting", image
         image_class = data[2]
         image = glob.glob("newtest/*/"+image+".jpg")[0]
         # if image_class not in image_classes:
@@ -32,8 +34,8 @@ def from_file(fname='train.txt'):
         image = input_image(image)
         images.append(image)
 
-    print "No. of images:", len(images), "No. of classes:", len(image_classes)
-    return images, image_classes
+    print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
+    return [images], image_classes
 
 def test_file(fname='test.txt'):
     read = pd.read_csv(fname,names=['filename','name'])
@@ -49,7 +51,8 @@ def test_file(fname='test.txt'):
         image = input_image(image)
         images.append(image)
 
-    return images, image_classes
+    return [images], image_classes
+
 
 def input_image(image):
 

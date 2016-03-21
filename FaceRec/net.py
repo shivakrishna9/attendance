@@ -12,10 +12,13 @@ import h5py
 from test import *
 from FaceRec.pretrained_cnn import *
 from keras import backend as K
+import time
 
 
 def VGGNet(X_train, y_train, X_test, Y_test):
 
+    print "Initialising model..."
+    start = time.time()
     model = Sequential()
     model.add(Convolution2D(64, 3, 3,input_shape=(3, 227, 227), activation='relu', name='conv1_1', border_mode='same'))
     model.add(ZeroPadding2D((1, 1)))
@@ -58,7 +61,10 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
+    print "model init in ..", time.time()-start
 
+    print "Extracting pretrained data"
+    start = time.time()
     cnn = pretrained_cnn()
 
     for k in cnn[cnn.keys()[0]]:
@@ -72,13 +78,24 @@ def VGGNet(X_train, y_train, X_test, Y_test):
                 layer_dict[a].set_weights(weights)
                 print "Weights added to",a
 
+    print "model extracted in ..",time.time()-start
+
+
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
+    print "Compiling model..."
+    start = time.time()
     model.compile(loss='mse', optimizer=adam)
-    model.fit(X_train, y_train, nb_epoch=3, batch_size=16, verbose=1)
+    print "Model compiled in ..",time.time()-start
 
-    preds = model.predict(X_test, batch_size=1)
+    model.fit(X_train, y_train, nb_epoch=20, batch_size=1, verbose=1, show_accuracy=True)
 
-    print preds, Y_test
+    objective_score = model.evaluate(X_test, Y_test, batch_size=32)
+
+    print "Precicting for test images..."
+    classes = model.predict_classes(X_test, batch_size=1)
+
+    print objective_score
+    print classes, Y_test
 
     # print model
