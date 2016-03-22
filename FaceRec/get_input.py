@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import glob
 import time
-from keras.preprocessing.text import one_hot
+# from keras.preprocessing.text import one_hot
 
 def detect(image):
 
@@ -45,7 +45,7 @@ def from_file(fname='classtrain.txt'):
 
     print "All images collected in ..",time.time() - start
     print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
-    return np.array(images), one_hot(','.join(image_classes), len(image_classes),split=',')
+    return np.array(images), image_classes
 
 def test_file(fname='classtest.txt'):
     read = pd.read_csv(fname,names=['filename','name'])
@@ -62,7 +62,7 @@ def test_file(fname='classtest.txt'):
         image = np.rollaxis(image,2,start=0)
         images.append(image)
 
-    return np.array(images), one_hot(','.join(image_classes), len(image_classes),split=',')
+    return np.array(images), image_classes
 
 
 def input_image(image):
