@@ -88,11 +88,16 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.compile(loss='mse', optimizer=adam)
     print "Model compiled in ..",time.time()-start
 
-    # model.fit(X_train, y_train, nb_epoch=20, batch_size=1, verbose=1, show_accuracy=True, shuffle=True)
-    model.train_on_batch(X_train, y_train, accuracy=True)
+    
+    print "Training on batch..."
+    start = time.time()
+    model.fit(X_train, y_train, nb_epoch=20, batch_size=16, verbose=1, show_accuracy=True, shuffle=True)
+    # model.train_on_batch(X_train, y_train, accuracy=True)
+    print "Trained batch in ..", time.time()-start,"Saving weights..."
     model.save_weights("cnn_weights.h5",overwrite=True)
+    print "Batch trained and saved weights !"
 
-    objective_score = model.evaluate(X_test, Y_test, batch_size=16)
+    objective_score = model.evaluate(X_test, Y_test, batch_size=16, show_accuracy=True)
 
     print "Predicting for test images..."
     start = time.time()
