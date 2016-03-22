@@ -8,4 +8,4 @@ As a fun fact, I have no idea where to start, though I do know that I need to fi
 
 
 Error right now:
-Exception: TypeError while preparing batch. If using HDF5 input data, pass shuffle="batch".
+Exception: TypeError while preparing batch. If using HDF5 input data, pass shuffle="batch". 

@@ -57,7 +57,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu', init="orthogonal"))
     model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
-    model.add(Dense(output_dim=10, init="uniform"))
+    model.add(Dense(output_dim=6, init="uniform"))
     model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
@@ -88,14 +88,16 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.compile(loss='mse', optimizer=adam)
     print "Model compiled in ..",time.time()-start
 
-    model.fit(X_train, y_train, nb_epoch=20, batch_size=1, verbose=1, show_accuracy=True)
+    # model.fit(X_train, y_train, nb_epoch=20, batch_size=1, verbose=1, show_accuracy=True, shuffle=True)
+    model.train_on_batch(X_train, y_train, accuracy=True)
+    model.save_weights("cnn_weights.h5",overwrite=True)
 
-    objective_score = model.evaluate(X_test, Y_test, batch_size=32)
+    objective_score = model.evaluate(X_test, Y_test, batch_size=16)
 
-    print "Precicting for test images..."
-    classes = model.predict_classes(X_test, batch_size=1)
+    print "Predicting for test images..."
+    start = time.time()
+    classes = model.predict_classes(X_test, batch_size=16)
 
     print objective_score
     print classes, Y_test
-
-    # print model
+    print "Predicted in ..",time.time()-start

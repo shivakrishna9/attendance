@@ -79,6 +79,14 @@ def main():
     # f.close()
     # print('Model loaded.')
 
+def preprocess():
+    
+    with open("class.txt",'w') as f:
+        for image in glob.glob("newtest/*/*.jpg"):
+            print image.split('/')[2]+","+image.split('/')[1]
+            f.write(image.split('/')[2]+","+image.split('/')[1]+'\n')
+
+
 
 def image():
     # Load an color image in grayscale
@@ -123,6 +131,7 @@ def video():
 
     video_capture = cv2.VideoCapture(0)
 
+    i = 120
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
@@ -138,14 +147,24 @@ def video():
         )
 
         # Draw a rectangle around the faces
-        i = 0
+        start = time.time()
+        
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             img = frame[y:y + h, x:x + w]
-            # img
-            cv2.imwrite('newtest/%s.jpg' % i , img)
-            i+=1
 
+        # if time.time()-start >= 20:  
+        print "Taken image", i
+        cv2.imwrite('newtest/%s.jpg' % i , img)
+        
+        if i%20==0 and i!=0:
+            # i=0
+            # i+=1
+            time.sleep(10)
+            start = time.time()
+            # break
+        i+=1
+        # time.sleep(20)
         # Display the resulting frame
         cv2.imshow('Video', frame)
 
@@ -158,4 +177,5 @@ def video():
 
 
 if __name__ == '__main__':
-    video()
+    # video()
+    preprocess()
