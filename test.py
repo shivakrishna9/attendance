@@ -12,7 +12,7 @@ from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
 import h5py
 import time
 import glob
-
+from keras.preprocessing.text import one_hot
 
 def main():
     # Load an color image in grayscale
@@ -79,12 +79,21 @@ def main():
     # f.close()
     # print('Model loaded.')
 
+def one_hot_names():
+    lst = []
+    with open("lfwpeople.txt",'r') as f:
+        for line in f:
+            lst += [line.split(',')[1]]
+    print one_hot(",".join(lst), 5749, split=",")[:10]
+    print lst[:10]
+
+
 def preprocess():
     
-    with open("class.txt",'w') as f:
-        for image in glob.glob("newtest/*/*.jpg"):
-            print image.split('/')[2]+","+image.split('/')[1]
-            f.write(image.split('/')[2]+","+image.split('/')[1]+'\n')
+    with open("lfwpeople.txt",'w') as f:
+        for image in glob.glob("extras/lfw/*/*.jpg"):
+            print image.split('/')[3].split('.')[0]+","+image.split('/')[2]
+            f.write(image.split('/')[3].split('.')[0]+","+image.split('/')[2]+'\n')
 
 
 
@@ -178,4 +187,5 @@ def video():
 
 if __name__ == '__main__':
     # video()
-    preprocess()
+    # preprocess()
+    one_hot_names()

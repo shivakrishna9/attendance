@@ -10,12 +10,13 @@ from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
 from keras.layers import normalization
 import h5py
 from test import *
-from FaceRec.pretrained_cnn import *
 from keras import backend as K
 import time
 
 
 def VGGNet(X_train, y_train, X_test, Y_test):
+
+    PRETRAINED = "cnn_weights.h5"
 
     print "Initialising model..."
     start = time.time()
@@ -62,23 +63,18 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
     print "model init in ..", time.time()-start
-
-    print "Extracting pretrained data"
-    start = time.time()
-    cnn = pretrained_cnn()
-
-    for k in cnn[cnn.keys()[0]]:
-        for i in k:
-            a = i[0][0][1][0]
-            if 'conv' in a:
-                weight1 = np.rollaxis(i[0][0][2][0][0],3,start=0)
-                weight1 = np.rollaxis(weight1,3,start=1)
-                weight2 = np.rollaxis(i[0][0][2][0][1],1,start=0)[0]
-                weights = [weight1,weight2]
-                layer_dict[a].set_weights(weights)
-                print "Weights added to",a
-
-    print "model extracted in ..",time.time()-start
+    
+    print 'Loading weights ...'
+    f = h5py.File(PRETRAINED)
+    for k in range(f.attrs['nb_layers']):
+        if k >= len(model.layers):
+            # we don't look at the last (fully-connected) layers in the savefile
+            break
+        g = f['layer_{}'.format(k)]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        model.layers[k].set_weights(weights)
+    f.close()
+    print('Model loaded.')
 
 
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
@@ -91,7 +87,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     
     print "Training on batch..."
     start = time.time()
-    model.fit(X_train, y_train, nb_epoch=5, batch_size=32, verbose=1, show_accuracy=True, shuffle=True)
+    model.fit(X_train, y_train, nb_epoch=10, batch_size=32, verbose=1, show_accuracy=True, shuffle=True)
     # model.train_on_batch(X_train, y_train, accuracy=True)
     print "Trained batch in ..", time.time()-start,"Saving weights..."
     model.save_weights("cnn_weights.h5",overwrite=True)

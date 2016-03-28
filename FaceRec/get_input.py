@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import glob
 import time
-# from keras.preprocessing.text import one_hot
+# 
 
 def detect(image):
 
