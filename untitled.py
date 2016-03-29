@@ -16,6 +16,29 @@ from FaceRec.pretrained_cnn import *
 import FaceRec
 from FaceRec.net import *
 from FaceRec.get_input import *
+from scipy.misc import imsave
+
+# util function to convert a tensor into a valid image
+def visualise():
+    def deprocess_image(x):
+        # normalize tensor: center on 0., ensure std is 0.1
+        x -= x.mean()
+        x /= (x.std() + 1e-5)
+        x *= 0.1
+
+        # clip to [0, 1]
+        x += 0.5
+        x = np.clip(x, 0, 1)
+
+        # convert to RGB array
+        x *= 255
+        x = x.transpose((1, 2, 0))
+        x = np.clip(x, 0, 255).astype('uint8')
+        return x
+
+    img = input_img_data[0]
+    img = deprocess_image(img)
+    imsave('%s_filter_%d.png' % (layer_name, filter_index), img)
 
 x,y = from_file()
 x_test, y_test = test_file()
@@ -55,6 +78,8 @@ model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
 model.add(ZeroPadding2D((1, 1)))
 model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
 model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
 cnn = pretrained_cnn()
 
