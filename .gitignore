@@ -5,3 +5,5 @@ cutils*
 lazylinker*
 result*
 extras
+newtest
+cnn_weights.h5

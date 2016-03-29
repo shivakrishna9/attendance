@@ -1,22 +1,28 @@
 import numpy as np
 import cv2
-import scipy.io
 import json
 import time
 import numpy as np
-import h5py 
-# import tables
+import h5py
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-PRETRAINED = "extras/models/vgg-face.mat"
+PRETRAINED = "cnn_weights.h5"
 # relu = []
 # PRETRAINED = "vgg-face.mat"
 
 def pretrained_cnn():
-    cnn = scipy.io.loadmat(PRETRAINED)
-    return cnn
+    f = h5py.File(PRETRAINED)
+    for k in range(f.attrs['nb_layers']):
+        # if k >= len(model.layers):
+        #     # we don't look at the last (fully-connected) layers in the savefile
+        #     break
+        g = f['layer_{}'.format(k)]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        model.layers[k].set_weights(weights)
+    f.close()
+    print('Model loaded.')
 
 def import_weights(model,layer_dict):
     cnn = pretrained_cnn()
