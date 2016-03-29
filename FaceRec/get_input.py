@@ -44,7 +44,9 @@ def from_file(fname='classtrain.txt'):
         # if image_class not in image_classes:
         image_classes.append(categorize(image_class,7))
         image = cv2.imread(image)
+        # print image.shape
         image = input_image(image)
+        # print image.shape
         image = np.rollaxis(image,2,start=0)
         # print image.shape
         images.append(image)
