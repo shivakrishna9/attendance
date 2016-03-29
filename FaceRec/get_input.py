@@ -22,6 +22,12 @@ def detect(image):
     
     return roi_color
 
+def categorize(x,n):
+    array = np.zeros(n)
+    array[x]=1
+    # print array
+    return array
+
 
 def from_file(fname='classtrain.txt'):
     print 'Collecting images...'
@@ -36,7 +42,7 @@ def from_file(fname='classtrain.txt'):
         image_class = data[2]
         image = glob.glob("newtest/*/"+image)[0]
         # if image_class not in image_classes:
-        image_classes.append(image_class)
+        image_classes.append(categorize(image_class,7))
         image = cv2.imread(image)
         image = input_image(image)
         image = np.rollaxis(image,2,start=0)
@@ -56,7 +62,7 @@ def test_file(fname='classtest.txt'):
         image = data[1]
         image_class = data[2]
         image = glob.glob("newtest/*/"+image)[0]
-        image_classes.append(image_class)
+        image_classes.append(categorize(image_class,7))
         image = cv2.imread(image)
         image = input_image(image)
         image = np.rollaxis(image,2,start=0)

@@ -55,16 +55,16 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-    model.add(Flatten())
-    model.add(Dense(output_dim=4096, activation='relu', init="orthogonal"))
-    model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
-    model.add(Dense(output_dim=6, init="uniform"))
-    model.add(Activation("softmax"))
+    
 
-    layer_dict = dict([(layer.name, layer) for layer in model.layers])
+    # layer_dict = dict([(layer.name, layer) for layer in model.layers])
     print "model init in ..", time.time()-start
+
+    # print model.layers
+    # print len(model.layers)
     
     print 'Loading weights ...'
+    start=time.time()
     f = h5py.File(PRETRAINED)
     for k in range(f.attrs['nb_layers']):
         if k >= len(model.layers):
@@ -74,7 +74,16 @@ def VGGNet(X_train, y_train, X_test, Y_test):
         weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
         model.layers[k].set_weights(weights)
     f.close()
-    print('Model loaded.')
+    print 'Model loaded in ..',time.time()-start
+
+    print "Adding fully connected layers ..."
+    start = time.time()
+    model.add(Flatten())
+    model.add(Dense(output_dim=4096, activation='relu', init="orthogonal"))
+    model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
+    model.add(Dense(output_dim=7, init="uniform", activation='softmax'))
+    # model.add(Activation("softmax"))
+    print 'FC layers added ! Time taken :',time.time()-start
 
 
     adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
@@ -87,17 +96,17 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     
     print "Training on batch..."
     start = time.time()
-    model.fit(X_train, y_train, nb_epoch=10, batch_size=32, verbose=1, show_accuracy=True, shuffle=True)
+    model.fit(X_train, y_train, nb_epoch=10, batch_size=16, verbose=1, show_accuracy=True, shuffle=True)
     # model.train_on_batch(X_train, y_train, accuracy=True)
-    print "Trained batch in ..", time.time()-start,"Saving weights..."
+    print "Total training time ..", time.time()-start,"Saving weights..."
     model.save_weights("cnn_weights.h5",overwrite=True)
-    print "Batch trained and saved weights !"
+    print "Batch trained and weights saved !"
 
-    objective_score = model.evaluate(X_test, Y_test, batch_size=32, show_accuracy=True)
+    objective_score = model.evaluate(X_test, Y_test, batch_size=16, show_accuracy=True)
 
     print "Predicting for test images..."
     start = time.time()
-    classes = model.predict_classes(X_test, batch_size=32)
+    classes = model.predict(X_test, batch_size=16)
 
     print objective_score
     print classes, Y_test
