@@ -90,7 +90,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     model.fit(X_train, y_train, nb_epoch=20, batch_size=1, verbose=1, show_accuracy=True)
 
-    objective_score = model.evaluate(X_test, Y_test, batch_size=32)
+    objective_score = model.evaluate(X_test, Y_test, batch_size=1)
 
     print "Precicting for test images..."
     classes = model.predict_classes(X_test, batch_size=1)
