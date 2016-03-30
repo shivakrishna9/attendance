@@ -17,6 +17,14 @@ import FaceRec
 from FaceRec.net import *
 from FaceRec.get_input import *
 from scipy.misc import imsave
+import numpy as np
+
+# we start from a gray image with some noise
+input_img_data = np.random.random((1, 3, img_width, img_height)) * 20 + 128.
+# run gradient ascent for 20 steps
+for i in range(20):
+    loss_value, grads_value = iterate([input_img_data])
+    input_img_data += grads_value * step
 
 # util function to convert a tensor into a valid image
 def visualise():
