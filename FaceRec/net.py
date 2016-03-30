@@ -58,7 +58,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu', init="orthogonal"))
     model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
-    model.add(Dense(output_dim=6, init="uniform"))
+    model.add(Dense(output_dim=7, init="uniform"))
     model.add(Activation("softmax"))
 
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
