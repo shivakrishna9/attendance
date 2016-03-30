@@ -13,6 +13,8 @@ from test import *
 from keras import backend as K
 import time
 from FaceRec.pretrained_cnn import *
+from keras.utils import np_utils
+
 
 
 def VGGNet(X_train, y_train, X_test, Y_test):
@@ -103,6 +105,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu', init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(output_dim=7, init="uniform", activation='softmax'))
     # model.add(Activation("softmax"))
     print 'FC layers added ! Time taken :',time.time()-start
@@ -116,12 +119,20 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.compile(loss='categorical_crossentropy', optimizer=sgd)
     print "Model compiled in ..",time.time()-start
 
+    print 'Normalizing data...'
+    X_train = X_train.astype('float32')
+    X_test = X_test.astype('float32')
+    X_train /= 255
+    X_test /= 255
+    y_train = np_utils.to_categorical(y_train, 7)
+    Y_test = np_utils.to_categorical(y_test, 7)
 
     print "Training on batch..."
     start = time.time()
     # model.fit(X_train, y_train, nb_epoch=10, batch_size=4, verbose=1, show_accuracy=True, shuffle=True,validation_split=0.2)
     for i in xrange(10):
-        model.train_on_batch(X_train[i*16:(i+1)*16], y_train[(i)*16:(i+1)*16], accuracy=True)
+        model.fit(X_train, y_train, nb_epoch=1, batch_size=64, verbose=1, show_accuracy=True, shuffle=True,validation_split=0.2)
+        # model.train_on_batch(X_train[i*16:(i+1)*16], y_train[(i)*16:(i+1)*16], accuracy=True)
         print model.evaluate(X_test, Y_test, batch_size=4, show_accuracy=True)
         print model.predict(X_test, batch_size=4)
         # model.test_on_batch(X_test)

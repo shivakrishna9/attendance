@@ -42,7 +42,7 @@ def from_file(fname='classtrain.txt'):
         image_class = data[2]
         image = glob.glob("newtest/*/"+image)[0]
         # if image_class not in image_classes:
-        image_classes.append(categorize(image_class,7))
+        image_classes.append(image_class)
         image = cv2.imread(image)
         # print image.shape
         image = input_image(image)
