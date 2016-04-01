@@ -41,10 +41,11 @@ def from_file(fname='train.txt'):
     for data in read.itertuples():
         image = data[1]
         image_class = data[2]
-        print "extrzcting", image, image_class
-        image = glob.glob("newtest/*/"+image)[0]
+        print "extracting", image, image_class
+        image = glob.glob("newtest/*/"+image)
+        print image
         image_classes.append(image_class)
-        image = cv2.imread(image)
+        image = cv2.imread(image[0])
         image = input_image(image)
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
