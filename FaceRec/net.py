@@ -65,39 +65,26 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     # print model.layers
     # print len(model.layers)
 
-    print "Extracting pretrained data"
-    start = time.time()
-    cnn = pretrained_cnn()
+    # print "Extracting pretrained data"
+    # start = time.time()
+    # cnn = pretrained_cnn()
 
-    for k in cnn[cnn.keys()[0]]:
-        for i in k:
-            a = i[0][0][1][0]
-            if 'conv' in a:
-                weight1 = np.rollaxis(i[0][0][2][0][0], 3, start=0)
-                weight1 = np.rollaxis(weight1, 3, start=1)
-                weight2 = np.rollaxis(i[0][0][2][0][1], 1, start=0)[0]
-                weights = [weight1, weight2]
-                layer_dict[a].set_weights(weights)
-                print "Weights added to", a
+    # for k in cnn[cnn.keys()[0]]:
+    #     for i in k:
+    #         a = i[0][0][1][0]
+    #         if 'conv' in a:
+    #             weight1 = np.rollaxis(i[0][0][2][0][0], 3, start=0)
+    #             weight1 = np.rollaxis(weight1, 3, start=1)
+    #             weight2 = np.rollaxis(i[0][0][2][0][1], 1, start=0)[0]
+    #             weights = [weight1, weight2]
+    #             layer_dict[a].set_weights(weights)
+    #             print "Weights added to", a
 
-    print "model extracted in ..", time.time() - start
+    # print "model extracted in ..", time.time() - start
 
-    print "Saving weights..."
-    model.save_weights("cnn_weights.h5", overwrite=True)
-    print "Batch trained and weights saved !"
-
-    # print 'Loading weights ...'
-    # start=time.time()
-    # f = h5py.File(PRETRAINED)
-    # for k in range(f.attrs['nb_layers']):
-    #     if k >= len(model.layers):
-    #         # we don't look at the last (fully-connected) layers in the savefile
-    #         break
-    #     g = f['layer_{}'.format(k)]
-    #     weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
-    #     model.layers[k].set_weights(weights)
-    # f.close()
-    # print 'Model loaded in ..',time.time()-start
+    # print "Saving weights..."
+    # model.save_weights("cnn_weights.h5", overwrite=True)
+    # print "Batch trained and weights saved !"
 
     print "Adding fully connected layers ..."
     start = time.time()
@@ -109,7 +96,19 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     # model.add(Activation("softmax"))
     print 'FC layers added ! Time taken :', time.time() - start
 
-    # adam = Adam(lr=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+    print 'Loading weights ...'
+    start=time.time()
+    f = h5py.File(PRETRAINED)
+    for k in range(f.attrs['nb_layers']):
+        if k >= len(model.layers):
+            # we don't look at the last (fully-connected) layers in the savefile
+            break
+        g = f['layer_{}'.format(k)]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        model.layers[k].set_weights(weights)
+    f.close()
+    print 'Model loaded in ..',time.time()-start
+
     sgd = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
