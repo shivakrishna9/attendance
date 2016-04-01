@@ -105,7 +105,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Dense(output_dim=4096, activation='relu', init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(output_dim=7, init="uniform", activation='softmax'))
+    model.add(Dense(output_dim=21, init="uniform", activation='softmax'))
     # model.add(Activation("softmax"))
     print 'FC layers added ! Time taken :', time.time() - start
 
