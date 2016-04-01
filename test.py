@@ -26,12 +26,28 @@ def one_hot_names():
 
 def preprocess():
     
-    with open("lfwpeople.txt",'w') as f:
-        for image in glob.glob("extras/lfw/*/*.jpg"):
-            print image.split('/')[3].split('.')[0]+","+image.split('/')[2]
-            f.write(image.split('/')[3].split('.')[0]+","+image.split('/')[2]+'\n')
+    with open("classtrain.txt",'w') as f:
+        for image in glob.glob("newtest/*/*.jpg"):
+            print image.split('/')[2].split('.')[0]+","+image.split('/')[1]
+            f.write(image.split('/')[2].split('.')[0]+","+image.split('/')[1]+'\n')
 
 
+def encode():
+    lst = []
+    l1 = []
+    with open("classtrain.txt",'r') as f:
+        for i in f:
+            if i.split(',')[1].split('\n')[0] not in l1:
+                l1.append(i.split(',')[1].split('\n')[0])
+            lst.append([i.split(',')[1].split('\n')[0], i.split(',')[0]])
+
+    print l1
+
+    with open("train.txt",'w') as f:
+        for i in lst:
+            print str(i[1])+","+str(l1.index(i[0]))
+            f.write(i[1]+","+str(l1.index(i[0]))+'\n')
+            
 
 def image():
     # Load an color image in grayscale
@@ -76,10 +92,12 @@ def video():
 
     video_capture = cv2.VideoCapture(0)
 
-    i = 120
+    i = 481
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
+
+        image = frame
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -95,8 +113,8 @@ def video():
         start = time.time()
         
         for (x, y, w, h) in faces:
-            # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            img = frame[y:y + h, x:x + w]
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            img = image[y:y + h, x:x + w]
 
         # if time.time()-start >= 20:  
         print "Taken image", i
@@ -124,4 +142,5 @@ def video():
 if __name__ == '__main__':
     # video()
     # preprocess()
-    one_hot_names()
+    # one_hot_names()
+    encode()

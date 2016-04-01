@@ -107,7 +107,12 @@ model.add(Dense(output_dim=4096, activation='relu', init="uniform"))
 model.add(Dense(output_dim=4096, init="uniform", activation='relu'))
 model.add(Dense(output_dim=7, init="uniform", activation='softmax'))
 
-
+x = x.astype('float32')
+x_test = x_test.astype('float32')
+x /= 255
+x_test /= 255
+y = np_utils.to_categorical(y, 7)
+y_test = np_utils.to_categorical(y_test, 7)
 
 sgd = SGD(lr=0.1, decay=1e-4, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd)
