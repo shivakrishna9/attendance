@@ -92,7 +92,7 @@ def video():
 
     video_capture = cv2.VideoCapture(0)
 
-    i = 481
+    i = 601
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
