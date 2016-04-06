@@ -117,16 +117,16 @@ def video():
             img = image[y:y + h, x:x + w]
 
         # if time.time()-start >= 20:  
-        print "Taken image", i
-        cv2.imwrite('newtest/%s.jpg' % i , img)
+        # print "Taken image", i
+        # cv2.imwrite('newtest/%s.jpg' % i , img)
         
-        if i%20==0 and i!=0:
-            # i=0
-            # i+=1
-            time.sleep(10)
-            start = time.time()
-            # break
-        i+=1
+        # if i%20==0 and i!=0:
+        #     # i=0
+        #     # i+=1
+        #     time.sleep(10)
+        #     start = time.time()
+        #     # break
+        # i+=1
         # time.sleep(20)
         # Display the resulting frame
         cv2.imshow('Video', frame)
@@ -140,7 +140,7 @@ def video():
 
 
 if __name__ == '__main__':
-    # video()
+    video()
     # preprocess()
     # one_hot_names()
-    encode()
+    # encode()

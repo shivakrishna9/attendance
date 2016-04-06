@@ -59,7 +59,8 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-    layer_dict = dict([(layer.name, layer) for layer in model.layers])
+    node_dict = [(node) for node in graph.nodes]
+    print node_dict
     print "model init in ..", time.time() - start
 
     # print model.layers
