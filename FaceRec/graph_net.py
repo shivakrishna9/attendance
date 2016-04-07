@@ -12,10 +12,11 @@ from keras import backend as K
 import time
 from FaceRec.pretrained_cnn import *
 from keras.utils import np_utils
+from keras import backend as K
 
 
-def graphnet():
-	
+def graphnet(X_train, y_train, X_test, Y_test):
+
 	model = Sequential()
     model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
                             activation='relu', name='conv1_1', border_mode='same'))
@@ -57,6 +58,7 @@ def graphnet():
 	graph = Graph()
 	graph.add_input(name='input1', input_shape=(3, 227, 227))
 	graph.add_node(model, name='cnn', input='input1')
+    # graph.add_model()
     graph.add_node(Flatten(), input='cnn', name='flatten1')
     graph.add_node(Dense(output_dim=4096, activation='relu'), name='dense1', input='flatten1')
     graph.add_node(Dense(output_dim=4096, activation='relu'), name='dense2', input='dense1')
@@ -64,29 +66,11 @@ def graphnet():
     graph.add_node(Dense(output_dim=21, activation='softmax'), name='denseOut', input='dropout1')
     graph.add_output(name='output', input='denseOut')
 
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv1_1', input='input1')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv1_2', input='conv1_1')
-	# graph.add_node(MaxPooling2D((2, 2), strides=(2, 2)), name='pool1', input='conv1_2')
+    # # with a Sequential model
+    # get_3rd_layer_output = K.function([graph.input], [graph.nodes['cnn'].layers[31].get_output(train=False)])
+    # layer_output = get_3rd_layer_output([X])[0]
 
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv2_1', input='pool1')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv2_2', input='conv2_1')
-	# graph.add_node(MaxPooling2D((2, 2), strides=(2, 2)), name='pool2', input='conv2_2')
-
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv3_1', input='pool2')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv3_2', input='conv3_1')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv3_3', input='conv3_2')
-	# graph.add_node(MaxPooling2D((2, 2), strides=(2, 2)), name='pool3', input='conv3_3')
-
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv4_1', input='pool3')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv4_2', input='conv4_1')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv4_3', input='conv4_2')
-	# graph.add_node(MaxPooling2D((2, 2), strides=(2, 2)), name='pool4', input='conv4_3')
-
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv5_1', input='pool4')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv5_2', input='conv5_1')
-	# graph.add_node(Convolution2D(64, 3, 3, activation='relu', border_mode='same'), name='conv5_3', input='conv5_2')
-	# graph.add_node(MaxPooling2D((2, 2), strides=(2, 2)), name='pool5', input='conv5_3')
-
+    
 	layer_dict = dict([(layer.name, layer) for layer in graph.nodes['cnn'].layers])
 	# print layer_dict
 
@@ -109,8 +93,19 @@ def graphnet():
     X_test = X_test.astype('float32')
     X_train /= 255
     X_test /= 255
+    X_train -= np.average(X_train)
+    X_test -= np.average(X_test)
     y_train = np_utils.to_categorical(y_train, 7)
     Y_test = np_utils.to_categorical(y_test, 7)
+
+    sgd = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
+    graph.compile(optimizer=sgd, loss={'output':'categorical_crossentropy'})
+
+    # with a Graph model
+    get_conv_layer_output = K.function([graph.inputs[i].input for i in graph.input_order],[graph.nodes['cnn'].layer[31].get_output(train=False)])
+    conv_output = get_conv_layer_output([X_train[i] for i in graph.input_order])[0]
+    print conv_output
+
 
 	# history = graph.fit({'input1':X_train,  'output':y_train}, nb_epoch=10)
 	# predictions = graph.predict({'input1':X_test, 'input2':X2_test})

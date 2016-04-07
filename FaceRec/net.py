@@ -110,7 +110,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     f.close()
     print 'Model loaded in ..',time.time()-start
 
-    sgd = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
+    sgd = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
     start = time.time()
