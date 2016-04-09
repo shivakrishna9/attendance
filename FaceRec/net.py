@@ -130,7 +130,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     # model.fit(X_train, y_train, nb_epoch=10, batch_size=4, verbose=1, show_accuracy=True, shuffle=True,validation_split=0.2)
     for i in xrange(10):
         model.fit(X_train, y_train, nb_epoch=1, batch_size=64, verbose=1,
-                  show_accuracy=True, shuffle=True, validation_split=0.2)
+                  show_accuracy=True, shuffle=True)
         # model.train_on_batch(X_train[i*16:(i+1)*16], y_train[(i)*16:(i+1)*16], accuracy=True)
         print model.evaluate(X_test, Y_test, batch_size=4, show_accuracy=True)
         print model.predict(X_test, batch_size=4)
