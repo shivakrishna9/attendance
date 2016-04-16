@@ -53,10 +53,16 @@ def graphnet():
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
+    # rpn_graph = Graph()
+    # rpn_graph.add_input(name='RPNinput', input_shape=(3, 227, 227))
+    # for i in xrange(9):
+    #     graph.add_node(Convolution2D(512, 3, 3, activation='relu'), name='rpn'+i, input='input1')    
+
 
 	graph = Graph()
 	graph.add_input(name='input1', input_shape=(3, 227, 227))
 	graph.add_node(model, name='cnn', input='input1')
+    #RPN Model to be added
     graph.add_node(Flatten(), input='cnn', name='flatten1')
     graph.add_node(Dense(output_dim=4096, activation='relu'), name='dense1', input='flatten1')
     graph.add_node(Dense(output_dim=4096, activation='relu'), name='dense2', input='dense1')
@@ -90,7 +96,7 @@ def graphnet():
 	layer_dict = dict([(layer.name, layer) for layer in graph.nodes['cnn'].layers])
 	# print layer_dict
 
-	# PRETRAINED = "cnn_weights.h5"
+	PRETRAINED = "cnn_weights.h5"
     print 'Loading weights ...'
     start=time.time()
     f = h5py.File(PRETRAINED)
@@ -109,8 +115,7 @@ def graphnet():
     X_test = X_test.astype('float32')
     X_train /= 255
     X_test /= 255
-    y_train = np_utils.to_categorical(y_train, 7)
-    Y_test = np_utils.to_categorical(y_test, 7)
-
-	# history = graph.fit({'input1':X_train,  'output':y_train}, nb_epoch=10)
-	# predictions = graph.predict({'input1':X_test, 'input2':X2_test})
+    X_train = X_train - np.average(X_train)
+    X_test = X_test - np.average(X_test)
+    y_train = np_utils.to_categorical(y_train, 21)
+    Y_test = np_utils.to_categorical(y_test, 21)
