@@ -32,7 +32,7 @@ def categorize(x, n):
 
 
 def from_file(fname='train.txt'):
-    print 'Collecting images...'
+    print 'Collecting training images...'
     start = time.time()
     read = pd.read_csv(fname, names=['filename', 'name'])
 
@@ -41,21 +41,23 @@ def from_file(fname='train.txt'):
     for data in read.itertuples():
         image = data[1]
         image_class = data[2]
-        print "extracting", image, image_class
+        # print "extracting", image, image_class
         image = glob.glob("newtest/*/"+image)
-        print image
+        # print image
         image_classes.append(image_class)
         image = cv2.imread(image[0])
         image = input_image(image)
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
 
-    print "All images collected in ..", time.time() - start
-    print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
-    return np.array(images), image_classes
+    print "Training images collected in ..", time.time() - start
+    # print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
+    return np.array(images).astype('float32'), image_classes
 
 
 def test_file(fname='classtest.txt'):
+    print 'Collecting testing images...'
+    start = time.time()
     read = pd.read_csv(fname, names=['filename', 'name'])
 
     images = []
@@ -70,7 +72,8 @@ def test_file(fname='classtest.txt'):
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
 
-    return np.array(images), image_classes
+    print "Testing images collected in ..", time.time() - start
+    return np.array(images).astype('float32'), image_classes
 
 
 def input_image(image):

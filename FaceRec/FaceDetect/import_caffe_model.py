@@ -8,7 +8,11 @@ caffe.set_mode_cpu()
 
 home = "/home/walle/"
 
-MODEL_FILE = 'deploy.prototxt'
-PRETRAINED = home + 'models/coco_vgg16_faster_rcnn_final.caffemodel'
+MODEL_FILE = home + 'Attendance/extras/models/ResNet-101-deploy.prototxt'
+PRETRAINED = home + 'Attendance/extras/models/ResNet-101-model.caffemodel'
 
 net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TRAIN)
+
+print net.params
+
+
