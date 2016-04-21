@@ -21,206 +21,228 @@ WEIGHT_DECAY = 0.  # L2 regularization factor
 USE_BN = True  # whether to use batch normalization
 
 
-def pretrained():
+class ResNet():
 
-    home = "/home/walle/"
+    def __init__(self, X_train, y_train, X_test, Y_test):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_test = X_test
+        self.Y_test = Y_test
 
-    MODEL_FILE = home + 'Attendance/extras/models/ResNet-101-deploy.prototxt'
-    PRETRAINED = home + 'Attendance/extras/models/ResNet-101-model.caffemodel'
+    def get_pt(self):
 
-    net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TRAIN)
+        home = "/home/walle/"
 
-    print net.params['conv1']
+        self.MODEL_FILE = home + 'Attendance/extras/models/ResNet-101-deploy.prototxt'
+        self.PRETRAINED = home + 'Attendance/extras/models/ResNet-101-model.caffemodel'
 
-    return net.params
+        self.net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TRAIN)
 
+    def conv2D_bn_relu(self, x, nb_filter, nb_row, nb_col,
+                       border_mode='valid', subsample=(1, 1),
+                       activation='relu', batch_norm=USE_BN,
+                       padding=(0, 0), weight_decay=WEIGHT_DECAY,
+                       dim_ordering=DIM_ORDERING):
+        '''Utility function to apply to a tensor a module conv + BN + ReLU
+        with optional weight decay (L2 weight regularization).
+        '''
+        if weight_decay:
+            W_regularizer = regularizers.l2(weight_decay)
+            b_regularizer = regularizers.l2(weight_decay)
+        else:
+            W_regularizer = None
+            b_regularizer = None
 
-def conv2D_bn_relu(x, nb_filter, nb_row, nb_col,
-                   border_mode='valid', subsample=(1, 1),
-                   activation='relu', batch_norm=USE_BN,
-                   padding=(0, 0), weight_decay=WEIGHT_DECAY,
-                   dim_ordering=DIM_ORDERING):
-    '''Utility function to apply to a tensor a module conv + BN + ReLU
-    with optional weight decay (L2 weight regularization).
-    '''
-    if weight_decay:
-        W_regularizer = regularizers.l2(weight_decay)
-        b_regularizer = regularizers.l2(weight_decay)
-    else:
-        W_regularizer = None
-        b_regularizer = None
+        if padding != (0, 0):
+            x = ZeroPadding2D(padding)(x)
+        x = Convolution2D(nb_filter, nb_row, nb_col,
+                          subsample=subsample,
+                          border_mode=border_mode,
+                          W_regularizer=W_regularizer,
+                          b_regularizer=b_regularizer,
+                          dim_ordering=DIM_ORDERING)(x)
+        if batch_norm:
+            x = BatchNormalization()(x)
+        if activation == 'relu':
+            x = Activation('relu')(x)
+        return x
 
-    if padding != (0, 0):
-        x = ZeroPadding2D(padding)(x)
-    x = Convolution2D(nb_filter, nb_row, nb_col,
-                      subsample=subsample,
-                      border_mode=border_mode,
-                      W_regularizer=W_regularizer,
-                      b_regularizer=b_regularizer,
-                      dim_ordering=DIM_ORDERING)(x)
-    if batch_norm:
-        x = BatchNormalization()(x)
-    if activation == 'relu':
-        x = Activation('relu')(x)
-    return x
+    def resnet101(self):
 
+        # ResNet-101 using functional API from keras
+        print 'Initialising ResNet-101 !'
+        start = time.time()
+        if DIM_ORDERING == 'th':
+            input1 = Input(shape=(3, 227, 227))
+            CONCAT_AXIS = 1
+        elif DIM_ORDERING == 'tf':
+            input1 = Input(shape=(227, 227, 3))
+            CONCAT_AXIS = 3
+        else:
+            raise Exception('Invalid dim ordering: ' + str(DIM_ORDERING))
 
-# def resnet101(X_train, y_train, X_test, Y_test):
-def resnet101():
+        conv1 = self.conv2D_bn_relu(
+            input1, 64, 7, 7, padding=(3, 3), subsample=(2, 2))
 
-    # input1 = Input(shape=(3, 299, 299))
+        pool1 = MaxPooling2D((2, 2), strides=(2, 2))(conv1)
 
-    # rpn_graph = Graph()
-    # rpn_graph.add_input(name='RPNinput', input_shape=(3, 227, 227))
-    # for i in xrange(9):
-    # graph.add_node(Convolution2D(512, 3, 3, activation='relu'),
-    # name='rpn'+i, 'input1')
+        res2a_branch1 = self.conv2D_bn_relu(pool1, 256, 1, 1)
+        res2a_branch2a = self.conv2D_bn_relu(pool1, 64, 1, 1)
+        res2a_branch2b = self.conv2D_bn_relu(
+            res2a_branch2a, 64, 3, 3, padding=(1, 1))
+        res2a_branch2c = self.conv2D_bn_relu(res2a_branch2b, 256, 1, 1)
 
-    # ResNet-101 using functional API from keras
-    print 'Initialising ResNet-101 !'
-    start = time.time()
-    if DIM_ORDERING == 'th':
-        input1 = Input(shape=(3, 227, 227))
-        CONCAT_AXIS = 1
-    elif DIM_ORDERING == 'tf':
-        input1 = Input(shape=(227, 227, 3))
-        CONCAT_AXIS = 3
-    else:
-        raise Exception('Invalid dim ordering: ' + str(DIM_ORDERING))
+        x = merge([res2a_branch2c, res2a_branch1], mode='sum')
 
-    conv1 = conv2D_bn_relu(input1, 64, 7, 7, padding=(3, 3), subsample=(2, 2))
+        res2a_relu = Activation('relu')(x)
 
-    pool1 = MaxPooling2D((2, 2), strides=(2, 2))(conv1)
+        res2b_branch2a = self.conv2D_bn_relu(res2a_relu, 64, 1, 1)
+        res2b_branch2b = self.conv2D_bn_relu(
+            res2b_branch2a, 64, 3, 3, padding=(1, 1))
+        res2b_branch2c = self.conv2D_bn_relu(res2b_branch2b, 256, 1, 1)
 
-    res2a_branch1 = conv2D_bn_relu(pool1, 256, 1, 1)
-    res2a_branch2a = conv2D_bn_relu(pool1, 64, 1, 1)
-    res2a_branch2b = conv2D_bn_relu(res2a_branch2a, 64, 3, 3, padding=(1, 1))
-    res2a_branch2c = conv2D_bn_relu(res2a_branch2b, 256, 1, 1)
+        x = merge([res2a_relu, res2b_branch2c], mode='sum')
 
-    x = merge([res2a_branch2c, res2a_branch1], mode='sum')
+        res2b_relu = Activation('relu')(x)
 
-    res2a_relu = Activation('relu')(x)
+        res2c_branch2a = self.conv2D_bn_relu(res2b_relu, 64, 1, 1)
+        res2c_branch2b = self.conv2D_bn_relu(
+            res2c_branch2a, 64, 3, 3, padding=(1, 1))
+        res2c_branch2c = self.conv2D_bn_relu(res2c_branch2b, 256, 1, 1)
 
-    res2b_branch2a = conv2D_bn_relu(res2a_relu, 64, 1, 1)
-    res2b_branch2b = conv2D_bn_relu(res2b_branch2a, 64, 3, 3, padding=(1, 1))
-    res2b_branch2c = conv2D_bn_relu(res2b_branch2b, 256, 1, 1)
+        x = merge([res2b_relu, res2c_branch2c], mode='sum')
 
-    x = merge([res2a_relu, res2b_branch2c], mode='sum')
+        res2c_relu = Activation('relu')(x)
 
-    res2b_relu = Activation('relu')(x)
-
-    res2c_branch2a = conv2D_bn_relu(res2b_relu, 64, 1, 1)
-    res2c_branch2b = conv2D_bn_relu(res2c_branch2a, 64, 3, 3, padding=(1, 1))
-    res2c_branch2c = conv2D_bn_relu(res2c_branch2b, 256, 1, 1)
-
-    x = merge([res2b_relu, res2c_branch2c], mode='sum')
-
-    res2c_relu = Activation('relu')(x)
-
-    res3a_branch1 = conv2D_bn_relu(res2c_relu, 512, 2, 2, subsample=(2, 2))
-    res3a_branch2a = conv2D_bn_relu(res2c_relu, 128, 2, 2, subsample=(2, 2))
-    res3a_branch2b = conv2D_bn_relu(res3a_branch2a, 128, 3, 3, padding=(1, 1))
-    res3a_branch2c = conv2D_bn_relu(res3a_branch2b, 512, 1, 1)
-
-    x = merge([res3a_branch2c, res3a_branch1], mode='sum')
-
-    for i in xrange(3):
-        res3b_relu = Activation('relu')(x)
-        res3b_branch2a = conv2D_bn_relu(res3b_relu, 128, 1, 1)
-        res3b_branch2b = conv2D_bn_relu(
+        res3a_branch1 = self.conv2D_bn_relu(res2c_relu, 512, 2, 2, subsample=(2, 2))
+        res3a_branch2a = self.conv2D_bn_relu(
+            res2c_relu, 128, 2, 2, subsample=(2, 2))
+        res3a_branch2b = self.conv2D_bn_relu(
             res3a_branch2a, 128, 3, 3, padding=(1, 1))
-        res3b_branch2c = conv2D_bn_relu(res3a_branch2b, 512, 1, 1)
+        res3a_branch2c = self.conv2D_bn_relu(res3a_branch2b, 512, 1, 1)
 
-        x = merge([res3b_branch2c, res3b_relu], mode='sum')
+        x = merge([res3a_branch2c, res3a_branch1], mode='sum')
 
-    res3b3_relu = Activation('relu')(x)
+        for i in xrange(3):
+            res3b_relu = Activation('relu')(x)
+            res3b_branch2a = self.conv2D_bn_relu(res3b_relu, 128, 1, 1)
+            res3b_branch2b = self.conv2D_bn_relu(
+                res3a_branch2a, 128, 3, 3, padding=(1, 1))
+            res3b_branch2c = self.conv2D_bn_relu(res3a_branch2b, 512, 1, 1)
 
-    res4a_branch1 = conv2D_bn_relu(res3b3_relu, 1024, 2, 2, subsample=(2, 2))
-    res4a_branch2a = conv2D_bn_relu(res3b3_relu, 256, 2, 2, subsample=(2, 2))
-    res4a_branch2b = conv2D_bn_relu(res4a_branch2a, 256, 3, 3, padding=(1, 1))
-    res4a_branch2c = conv2D_bn_relu(res4a_branch2b, 1024, 1, 1)
+            x = merge([res3b_branch2c, res3b_relu], mode='sum')
 
-    x = merge([res4a_branch2c, res4a_branch1], mode='sum')
+        res3b3_relu = Activation('relu')(x)
 
-    for i in xrange(22):
-        res4b_relu = Activation('relu')(x)
+        res4a_branch1 = self.conv2D_bn_relu(
+            res3b3_relu, 1024, 2, 2, subsample=(2, 2))
+        res4a_branch2a = self.conv2D_bn_relu(
+            res3b3_relu, 256, 2, 2, subsample=(2, 2))
+        res4a_branch2b = self.conv2D_bn_relu(
+            res4a_branch2a, 256, 3, 3, padding=(1, 1))
+        res4a_branch2c = self.conv2D_bn_relu(res4a_branch2b, 1024, 1, 1)
 
-        res4b_branch2a = conv2D_bn_relu(res4b_relu, 256, 1, 1)
-        res4b_branch2b = conv2D_bn_relu(
-            res4b_branch2a, 256, 3, 3, padding=(1, 1))
-        res4b_branch2c = conv2D_bn_relu(res4b_branch2b, 1024, 1, 1)
+        x = merge([res4a_branch2c, res4a_branch1], mode='sum')
 
-        x = merge([res4b_branch2c, res4b_relu], mode='sum')
+        for i in xrange(22):
+            res4b_relu = Activation('relu')(x)
 
-    res4b22_relu = Activation('relu')(x)
+            res4b_branch2a = self.conv2D_bn_relu(res4b_relu, 256, 1, 1)
+            res4b_branch2b = self.conv2D_bn_relu(
+                res4b_branch2a, 256, 3, 3, padding=(1, 1))
+            res4b_branch2c = self.conv2D_bn_relu(res4b_branch2b, 1024, 1, 1)
 
-    res5a_branch1 = conv2D_bn_relu(res4b22_relu, 2048, 2, 2, subsample=(2, 2))
-    res5a_branch2a = conv2D_bn_relu(res4b22_relu, 512, 2, 2, subsample=(2, 2))
-    res5a_branch2b = conv2D_bn_relu(res5a_branch2a, 512, 3, 3, padding=(1, 1))
-    res5a_branch2c = conv2D_bn_relu(res5a_branch2b, 2048, 1, 1)
+            x = merge([res4b_branch2c, res4b_relu], mode='sum')
 
-    x = merge([res5a_branch2c, res5a_branch1], mode='sum')
+        res4b22_relu = Activation('relu')(x)
 
-    res5a_relu = Activation('relu')(x)
+        res5a_branch1 = self.conv2D_bn_relu(
+            res4b22_relu, 2048, 2, 2, subsample=(2, 2))
+        res5a_branch2a = self.conv2D_bn_relu(
+            res4b22_relu, 512, 2, 2, subsample=(2, 2))
+        res5a_branch2b = self.conv2D_bn_relu(
+            res5a_branch2a, 512, 3, 3, padding=(1, 1))
+        res5a_branch2c = self.conv2D_bn_relu(res5a_branch2b, 2048, 1, 1)
 
-    res5b_branch2a = conv2D_bn_relu(res5a_relu, 512, 1, 1)
-    res5b_branch2b = conv2D_bn_relu(res5b_branch2a, 512, 3, 3, padding=(1, 1))
-    res5b_branch2c = conv2D_bn_relu(res5b_branch2b, 2048, 1, 1)
+        x = merge([res5a_branch2c, res5a_branch1], mode='sum')
 
-    x = merge([res5a_relu, res5b_branch2c], mode='sum')
+        res5a_relu = Activation('relu')(x)
 
-    res5b_relu = Activation('relu')(x)
+        res5b_branch2a = self.conv2D_bn_relu(res5a_relu, 512, 1, 1)
+        res5b_branch2b = self.conv2D_bn_relu(
+            res5b_branch2a, 512, 3, 3, padding=(1, 1))
+        res5b_branch2c = self.conv2D_bn_relu(res5b_branch2b, 2048, 1, 1)
 
-    res5c_branch2a = conv2D_bn_relu(res5b_relu, 512, 1, 1)
-    res5c_branch2b = conv2D_bn_relu(res5c_branch2a, 512, 3, 3, padding=(1, 1))
-    res5c_branch2c = conv2D_bn_relu(res5c_branch2b, 2048, 1, 1)
+        x = merge([res5a_relu, res5b_branch2c], mode='sum')
 
-    x = merge([res5b_relu, res5c_branch2c], mode='sum')
+        res5b_relu = Activation('relu')(x)
 
-    res5c_relu = Activation('relu')(x)
+        res5c_branch2a = self.conv2D_bn_relu(res5b_relu, 512, 1, 1)
+        res5c_branch2b = self.conv2D_bn_relu(
+            res5c_branch2a, 512, 3, 3, padding=(1, 1))
+        res5c_branch2c = self.conv2D_bn_relu(res5c_branch2b, 2048, 1, 1)
 
-    # Region Proposal Network here
-    pool5 = AveragePooling2D(pool_size=(7, 7), strides=(1, 1))(res5c_relu)
+        x = merge([res5b_relu, res5c_branch2c], mode='sum')
 
-    x = Dropout(0.5)(pool5)
-    x = Flatten()(x)
-    preds = Dense(NB_CLASS, activation='softmax')(x)
+        res5c_relu = Activation('relu')(x)
 
-    print 'Model defined in ..', time.time() - start
+        # Region Proposal Network here
+        pool5 = AveragePooling2D(pool_size=(7, 7), strides=(1, 1))(res5c_relu)
 
-    # print 'Normalizing data...'
-    # X_train = X_train.astype('float32')
-    # X_test = X_test.astype('float32')
-    # X_train /= 255
-    # X_test /= 255
-    # X_train = X_train - np.average(X_train)
-    # X_test = X_test - np.average(X_test)
-    # y_train = np_utils.to_categorical(y_train, NB_CLASS)
-    # Y_test = np_utils.to_categorical(Y_test, NB_CLASS)
+        x = Dropout(0.5)(pool5)
+        x = Flatten()(x)
+        final = Dense(NB_CLASS, activation='softmax')(x)
+        self.model = Model(input1, output=[preds])
 
-    print 'Adding weights ..'
-    start = time.time()
-    # sgd = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
-    model = Model(input1, output=[preds])
+        print 'Model defined in ..', time.time() - start
 
-    net = pretrained()
-    for i, j in enumerate(net):
-        print i, j.params
+    def compile_net(self, optimizer='sgd'):
 
-    # print model
-    # model.compile(optimizer=sgd, loss='categorical_crossentropy')
-    # print 'Compiled in ..', time.time() - start
+        optimizer = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
+        
+        print "Compiling model with nesterov momentum .."
 
-    # print 'Training for 20 epochs..'
-    # start = time.time()
-    # model.fit(X_train, y_train, nb_epoch=20, batch_size=16, verbose=1,
-    #           show_accuracy=True, shuffle=True)
-    # print 'Total training time ..', time.time()-start
+        self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
+        
+        print 'Compiled in ..', time.time() - start
 
-    # print 'Evaluating, predicting and saving weights ..'
-    # print model.evaluate(X_test, Y_test, batch_size=4, show_accuracy=True)
-    # print model.predict(X_test, batch_size=4)
+    def normalise_data(self):
+        print 'Normalizing data...'
+        self.X_train = self.X_train.astype('float32')
+        self.X_test = self.X_test.astype('float32')
+        self.X_train /= 255
+        self.X_test /= 255
+        self.X_train = self.X_train - np.average(self.X_train)
+        self.X_test = self.X_test - np.average(self.X_test)
+        self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
+        self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)
 
-    model.save_weights("resnet_weights.h5", overwrite=True)
+    def train_net(self, nb_epoch=2):
+        print "Training on batch..."
+        start = time.time()
 
-    print 'Done !!'
+        for i in xrange(10):
+            self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=16,
+                           verbose=1, show_accuracy=True, shuffle=True)
+            self.epsw()
+
+        print "Total training time ..", time.time() - start
+
+    def add_weights(self):
+        print 'Adding weights ..'
+        start = time.time()
+
+        net = self.get_pt()
+        for i, j in enumerate(net):
+            print i, j.params
+
+        print 'Added weights in ..', time.time() - start
+
+    def epsw(self):
+        print 'Evaluating, predicting and saving weights ..'
+        
+        print self.model.evaluate(self.X_test, self.Y_test, batch_size=4, show_accuracy=True)
+        print self.model.predict(self.X_test, batch_size=4)
+        self.model.save_weights("extras/resnet_weights.h5", overwrite=True)
+
+        print 'Evaluated, predicted and saved weights !'
