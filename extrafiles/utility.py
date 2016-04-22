@@ -38,7 +38,7 @@ def encode():
             f.write(i[1]+","+str(l1.index(i[0]))+'\n')
             
 
-def image():
+def image_load():
     # Load an color image in grayscale
 
     # cv2.namedWindow('image', cv2.WINDOW_NORMAL)
@@ -66,70 +66,20 @@ def image():
         for (x, y, w, h) in rects:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = img[y:y + h, x:x + w]
-            cv2.imshow('image', roi_color)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imshow('image', img)
+            if cv2.waitKey(0) & 0xFF == ord('y'):
+                cv2.destroyAllWindows()
+                with open("../traintest/detrain.txt",'a') as f:        
+                    print image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)
+                    f.write(image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)+'\n')
 
-        cv2.imshow('image', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+            elif cv2.waitKey(0) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
+                break
 
-
-def video():
-    FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
-    faceCascade = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-
-    video_capture = cv2.VideoCapture(0)
-
-    i = 601
-    while True:
-        # Capture frame-by-frame
-        ret, frame = video_capture.read()
-
-        image = frame
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        faces = faceCascade.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=1,
-            minSize=(30, 30),
-            flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-        )
-
-        # Draw a rectangle around the faces
-        start = time.time()
-        
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            img = image[y:y + h, x:x + w]
-
-        # if time.time()-start >= 20:  
-        # print "Taken image", i
-        # cv2.imwrite('newtest/%s.jpg' % i , img)
-        
-        # if i%20==0 and i!=0:
-        #     # i=0
-        #     # i+=1
-        #     time.sleep(10)
-        #     start = time.time()
-        #     # break
-        # i+=1
-        # time.sleep(20)
-        # Display the resulting frame
-        cv2.imshow('Video', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    # When everything is done, release the capture
-    video_capture.release()
-    cv2.destroyAllWindows()
+            elif cv2.waitKey(0) & 0xFF == ord('n'):
+                cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
-    video()
-    # preprocess()
-    # one_hot_names()
-    # encode()
+    image_load()
