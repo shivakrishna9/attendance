@@ -38,7 +38,7 @@ def encode():
             f.write(i[1]+","+str(l1.index(i[0]))+'\n')
             
 
-def image():
+def image_load():
     # Load an color image in grayscale
 
     # cv2.namedWindow('image', cv2.WINDOW_NORMAL)
@@ -67,16 +67,19 @@ def image():
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = img[y:y + h, x:x + w]
             cv2.imshow('image', img)
-            if cv2.waitKey(1) & 0xFF == ord('y'):
+            if cv2.waitKey(0) & 0xFF == ord('y'):
                 cv2.destroyAllWindows()
-                with open("../traintest/detrain.txt",'w') as f:        
-                    print image.split('/')[5]+","+image.split('/')[4]+','+x+','+y+','+w+','+h
-                    f.write(image.split('/')[5]+","+image.split('/')[4]+','+x+','+y+','+w+','+h+'\n')
+                with open("../traintest/detrain.txt",'a') as f:        
+                    print image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)
+                    f.write(image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)+'\n')
 
+            elif cv2.waitKey(0) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
+                break
 
-            elif cv2.waitKey(1) & 0xFF == ord('n'):
+            elif cv2.waitKey(0) & 0xFF == ord('n'):
                 cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
-    image()
+    image_load()
