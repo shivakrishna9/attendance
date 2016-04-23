@@ -13,8 +13,10 @@ debug = 1
 class RTSPClient(Protocol):
 
     def __init__(self):
-        self.config = {'login': 'admin', 'pass': 'admin12345',
-                       'ip': '192.168.1.64', 'request': ':554'}
+        self.config = {'request': '/jpeg',
+          'login': 'admin',
+          'password': 'admin12345',
+          'ip': '192.168.1.64'}
         self.wait_description = False
 
     def connectionMade(self):
@@ -33,7 +35,7 @@ OPTIONS rtsp://""" + self.config['ip'] + self.config['request'] + """ RTSP/1.0\r
 User-Agent: Python MJPEG Client\r
 \r
 """
-        # self.transport.write(to_send)
+        self.transport.write(to_send)
         if debug:
             print 'We say:\n', to_send
 
@@ -151,7 +153,7 @@ User-Agent: Python MJPEG Client\r
                 pass
 
             if to_send:
-                # self.transport.write(to_send)
+                self.transport.write(to_send)
                 if debug:
                     print 'We say:\n', to_send
 
@@ -170,9 +172,3 @@ class RTSPFactory(ClientFactory):
     def clientConnectionLost(self, connector, reason):
         print 'Reconnecting'
         connector.connect()
-
-
-if __name__ == '__main__':
-    obj = RTSPClient()
-    obj.connectionMade()
-    obj.dataReceived()
