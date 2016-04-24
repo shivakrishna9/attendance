@@ -1,21 +1,18 @@
 import pandas as pd
 
-filereader = pd.read_csv('lfwpeople.txt',iterator='True',chunksize=10,names=['name','class'])
+# reader1 = pd.read_csv('../traintest/dev_urls.txt', comment='#', sep='\t')
+# reader2 = pd.read_csv('../traintest/eval_urls.txt', comment='#', sep='\t')
+reader3 = pd.read_csv('../traintest/faceindex.txt', comment='#', sep='\t')
 
-columns = ['name','class']
+# print reader1
 
-for row in filereader:
-    row[:2].to_csv('1.csv',header=False,index=0,mode='a')
-    row[2:4].to_csv('2.csv',header=False,index=0,mode='a')
-    row[4:6].to_csv('3.csv',header=False,index=0,mode='a')
-    row[6:8].to_csv('4.csv',header=False,index=0,mode='a')
-    row[8:].to_csv('5.csv',header=False,index=0,mode='a')
-#     break
+# # reader1['face_id'] = reader1[['person', 'imagenum']].apply(lambda x: '_'.join(x), axis=1)
+# reader1["face_id"] = '_'.join(reader1["person"]) +'_'+ reader1["imagenum"].map(str)
 
-# for row in filereader:
-#     row[:2].to_csv('1.csv',header=False,index=0,mode='a')
-#     row[2:4].to_csv('2.csv',header=False,index=0,mode='a')
-#     row[4:6].to_csv('3.csv',header=False,index=0,mode='a')
-#     row[6:8].to_csv('4.csv',header=False,index=0,mode='a')
-#     row[8:].to_csv('5.csv',header=False,index=0,mode='a')
-    
+# print reader1
+
+# # pd.concat([reader1, reader2, reader3], axis=0, join='outer')
+with open('../traintest/downloads.txt', 'a') as f:
+	for i in reader3.itertuples():
+		print str(i[1])+','+i[2]
+		f.write(str(i[1])+','+i[2]+'\n')
