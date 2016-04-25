@@ -22,4 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'^panels/', include('panels.urls')),
     url(r'^$', views.index, name='index'),
+    url(r'^dashboard[/]$', views.dashboard, name='dashboard'),
+    url(r'^forms[/]$', views.forms, name='forms'),
+    url(r'^tables[/]$', views.tables, name='tables'),
 ]
