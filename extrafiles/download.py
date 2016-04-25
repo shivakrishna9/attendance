@@ -13,6 +13,12 @@ if not exists(RESULT_ROOT):
     os.mkdir(RESULT_ROOT)
 
 
+# def remove(names, urls, fnames):
+
+#     for image in glob(RESULT_ROOT+'*/*.jpg'):
+        
+
+
 def download((names, urls, fnames)):
     """
         download from urls into folder names using wget
@@ -73,6 +79,9 @@ if __name__ == '__main__':
                 names.append(name)
                 urls.append(url)
         # every name gets a task
+
+        # names, urls, fnames = remove(names, urls, fnames)
+
         last_name = names[0]
         task_names = []
         task_urls = []
