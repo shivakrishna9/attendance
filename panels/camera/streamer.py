@@ -6,6 +6,34 @@ import cv2
 import time
 
 
+
+def printrec(recst):
+    recs=recst.split('\r\n')
+    for rec in recs:
+        print rec
+
+
+def video_cap():
+
+    dest="DESCRIBE rtsp://admin:12345@192.168.1.74 RTSP/1.0\r\nCSeq: 2\r\nUser-Agent: python\r\nAccept: application/sdp\r\n\r\n"
+
+    setu="SETUP rtsp://admin:12345@192.168.1.74/trackID=1 RTSP/1.0\r\nCSeq: 3\r\nUser-Agent: python\r\nTransport: RTP/AVP;unicast;client_port=60784-60785\r\n\r\n"
+
+    play="PLAY rtsp://admin:12345@192.168.1.74/ RTSP/1.0\r\nCSeq: 5\r\nUser-Agent: python\r\nSession: SESID\r\nRange: npt=0.000-\r\n\r\n"
+
+    # .. here SESID will be substituted with the session id that SETUP returns us ..
+
+    ip="192.168.1.74"
+    s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((ip,554))
+
+    s.send(dest)
+    recst=s.recv(4096)
+    printrec(recst)
+
+
+
+
 class IpCamera(object):
     def __init__(self, url, user=None, password=None):
         self.url = url
@@ -32,12 +60,12 @@ class Camera(object):
         return frame 
 
 def video():
-    cam = IpCamera('rtsp://192.168.1.64:554/Output.h264', user='admin', password='admin12345')
+    cam = cv2.VideoCapture('rtsp://admin:admin12345@192.168.1.64:554/Output.h264')
 
     # i = 601
     while True:
         # Capture frame-by-frame
-        frame = cam.get_frame()
+        ret, frame = cam.read()
 
         cv2.imshow('Video', frame)
 
