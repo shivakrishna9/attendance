@@ -79,7 +79,7 @@ def video():
     FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
 
-    video_capture = cv2.VideoCapture(0)
+    video_capture = cv2.VideoCapture('rtsp://admin:admin12345@192.168.1.64:554/Output.h264')
 
     i = 601
     while True:

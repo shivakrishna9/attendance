@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^dashboard[/]?$', views.dashboard, name='dashboard'),
     url(r'^forms[/]?$', views.forms, name='forms'),
     url(r'^tables[/]?$', views.tables, name='tables'),
+    url(r'^surveillance[/]?$', views.surveillance, name='surveillance'),
 ]
