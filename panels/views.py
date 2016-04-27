@@ -13,3 +13,6 @@ def forms(request):
 
 def tables(request):
     return render(request, 'tables.html')
+
+def forgot_password(request):
+    return render(request, 'forgot_password.html')

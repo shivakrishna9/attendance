@@ -27,16 +27,16 @@ def processImage(img):
 
 def main():
     print 'Python M-JPEG Over RSTP Client 0.1'
-    config = {'request': '/jpeg',
+    config = {'request': '/Output.h264',
           'login': 'admin',
-          'password': 'admin12345',
+          'pass': 'admin12345',
           'ip': '192.168.1.64',
           'port': 554,
           'udp_port': 41760,
           'callback': processImage}
     # Prepare RTP MJPEG client (technically it's a server)
-    reactor.listenUDP(config['udp_port'], rtp_mjpeg_client.RTP_MJPEG_Client(config))
-    reactor.listenUDP(config['udp_port'] + 1, rtcp_client.RTCP_Client()) # RTCP
+    # reactor.listenUDP(config['udp_port'], rtp_mjpeg_client.RTP_MJPEG_Client(config))
+    # reactor.listenUDP(config['udp_port'] + 1, rtcp_client.RTCP_Client()) # RTCP
     # And RSTP client
     reactor.connectTCP(config['ip'], config['port'], rtsp_client.RTSPFactory(config))
     # Run both of them

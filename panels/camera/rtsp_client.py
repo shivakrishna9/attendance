@@ -14,9 +14,10 @@ class RTSPClient(Protocol):
 
     def __init__(self):
         self.config = {'request': '/jpeg',
-          'login': 'admin',
-          'password': 'admin12345',
-          'ip': '192.168.1.64'}
+                       'login': 'admin',
+                       'password': 'admin12345',
+                       'ip': '192.168.1.64',
+                       'port': 554}
         self.wait_description = False
 
     def connectionMade(self):
@@ -43,6 +44,7 @@ User-Agent: Python MJPEG Client\r
         if debug:
             print 'Server said:\n', data
         # Unify input data
+        print 'RTSPClient'
         data_ln = data.lower().strip().split('\r\n', 5)
         # Next behaviour is relevant to CSeq
         # which defines current conversation state
@@ -56,7 +58,7 @@ User-Agent: Python MJPEG Client\r
             if 'cseq: 1' in data_ln:
                 # CSeq 1 -> DESCRIBE
                 to_send = """\
-DESCRIBE rtsp://""" + self.config['ip'] + self.config['request'] + """ RTSP/1.0\r
+DESCRIBE rtsp://""" + self.config['ip'] + """:""" + str(self.config['port']) + self.config['request'] + """ RTSP/1.0\r
 CSeq: 2\r
 Accept: application/sdp\r
 User-Agent: Python MJPEG Client\r
