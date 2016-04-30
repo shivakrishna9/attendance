@@ -36,7 +36,7 @@ def get_pt_mat():
 
 def VGGNet(X_train, y_train, X_test, Y_test):
 
-    PRETRAINED = "cnn_weights.h5"
+    PRETRAINED = "extras/cnn_weights.h5"
 
     print "Initialising model..."
     start = time.time()
@@ -77,7 +77,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-    node_dict = [(node) for node in graph.nodes]
+    node_dict = [(node) for node in model.layers]
     print "model init in ..", time.time() - start
 
     print "Adding fully connected layers ..."
@@ -91,18 +91,20 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     print 'Loading weights ...'
     start = time.time()
-    f = h5py.File(PRETRAINED)
-    for k in range(f.attrs['nb_layers']):
-        if k >= len(model.layers):
-            break
-        g = f['layer_{}'.format(k)]
-        weights = [g['param_{}'.format(p)]
-                   for p in range(g.attrs['nb_params'])]
-        model.layers[k].set_weights(weights)
-    f.close()
+    model.load_weights(PRETRAINED)
+
+    # f = h5py.File(PRETRAINED)
+    # for k in range(f.attrs['nb_layers']):
+    #     if k >= len(model.layers):
+    #         break
+    #     g = f['layer_{}'.format(k)]
+    #     weights = [g['param_{}'.format(p)]
+    #                for p in range(g.attrs['nb_params'])]
+    #     model.layers[k].set_weights(weights)
+    # f.close()
     print 'Model loaded in ..', time.time() - start
 
-    sgd = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
+    sgd = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
     start = time.time()
