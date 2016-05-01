@@ -1,10 +1,19 @@
 from recognise.resnet import *
 from recognise.get_input import *
 
-# x, y = from_file()
+# x, y, dets = imdb()
 # x_test, y_test = test_file()
+x, y = 1, 1
+# resnet = ResNet()
+# resnet.resnet101()
+# resnet.compile()
+# resnet.normalise_
+# resnet.epsw()
 
-resnet = ResNet()
-# resnet.get_pt()
-resnet.resnet101()
-resnet.epsw()
+while x and y:
+    resnet = ResNet()
+    resnet.resnet101()
+
+    # x, y, dets = resnet.get_data()
+    # print x, y, dets
+    # print 'We are here once again'
