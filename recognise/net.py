@@ -7,30 +7,32 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
+import scipy.io
 
 NB_CLASS = 21
 
 
-def get_pt_mat():
+def get_pt_mat(model, layer_dict):
     print "Extracting pretrained data"
     start = time.time()
-    cnn = pretrained_cnn()
+    cnn = scipy.io.loadmat('extras/vgg-face.mat')
 
     for k in cnn[cnn.keys()[0]]:
         for i in k:
             a = i[0][0][1][0]
+            # print a
             if 'conv' in a:
                 weight1 = np.rollaxis(i[0][0][2][0][0], 3, start=0)
                 weight1 = np.rollaxis(weight1, 3, start=1)
                 weight2 = np.rollaxis(i[0][0][2][0][1], 1, start=0)[0]
-                weights = [weight1, weight2]
+                weights = [np.array(weight1).astype('float32'), np.array(weight2).astype('float32')]
                 layer_dict[a].set_weights(weights)
                 print "Weights added to", a
 
     print "model extracted in ..", time.time() - start
 
     print "Saving weights..."
-    model.save_weights("cnn_weights.h5", overwrite=True)
+    model.save_weights("extras/cnn_weights.h5", overwrite=True)
     print "Batch trained and weights saved !"
 
 
@@ -77,7 +79,7 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-    node_dict = [(node) for node in model.layers]
+    layer_dict = dict([(layer.name, layer) for layer in model.layers])
     print "model init in ..", time.time() - start
 
     print "Adding fully connected layers ..."
@@ -91,6 +93,8 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     print 'Loading weights ...'
     start = time.time()
+    get_pt_mat(model, layer_dict)
+
     model.load_weights(PRETRAINED)
 
     # f = h5py.File(PRETRAINED)
@@ -108,12 +112,12 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     print "Compiling model..."
     start = time.time()
-    model.compile(loss='categorical_crossentropy', optimizer=sgd)
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
     print 'Normalizing data...'
-    X_train = X_train.astype('float32')
-    X_test = X_test.astype('float32')
+    # X_train = X_train.astype('float32')
+    # X_test = X_test.astype('float32')
     X_train /= 255
     X_test /= 255
     X_train = X_train - np.average(X_train)
@@ -124,13 +128,13 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     print "Training on batch..."
     start = time.time()
     for i in xrange(10):
-        model.fit(X_train, y_train, nb_epoch=2, batch_size=16,
-                  verbose=1, show_accuracy=True, shuffle=True)
-        print model.evaluate(X_test, Y_test, batch_size=4, show_accuracy=True)
+        model.fit(X_train, y_train, nb_epoch=3, batch_size=4,
+                  verbose=1, shuffle=True)
+        print model.evaluate(X_test, Y_test, batch_size=4)
         print model.predict(X_test, batch_size=4)
     print "Total training time ..", time.time() - start, "Saving weights..."
     
-    # model.save_weights("cnn_weights.h5",overwrite=True)
+    model.save_weights(PRETRAINED,overwrite=True)
     # print "Batch trained and weights saved !"
 
     objective_score = model.evaluate(
@@ -142,5 +146,6 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     print objective_score
     print classes
-    print Y_test
+    print np.argmax(classes, axis=1)
+    print np.argmax(Y_test, axis=1)
     print "Predicted in ..", time.time() - start

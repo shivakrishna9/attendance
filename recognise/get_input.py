@@ -6,20 +6,17 @@ import time
 #
 
 
-def detect(image):
+def detect(image, dets):
 
     img = cv2.imread(image)
-    FACE_DETECTOR_PATH = "extras/haarcascade_frontalface_default.xml"
+    # FACE_DETECTOR_PATH = "extras/haarcascade_frontalface_default.xml"
 
-    detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-    rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
-                                      minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+    # detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
+    # rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
+    #                                   minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
 
-    for (x, y, w, h) in rects:
-        roi_color = img[y:y + h, x:x + w]
-        # cv2.imshow('image', roi_color)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+    x, y, w, h = dets
+    roi_color = img[y:y + h, x:x + w]
 
     return roi_color
 
@@ -51,7 +48,7 @@ def from_file(fname='traintest/train.txt'):
         images.append(image)
 
     print "Training images collected in ..", time.time() - start
-    # print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
+    print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
     return np.array(images).astype('float32'), image_classes
 
 
@@ -73,6 +70,7 @@ def test_file(fname='traintest/classtest.txt'):
         images.append(image)
 
     print "Testing images collected in ..", time.time() - start
+    print "No. of images:", len([images][0]), "No. of classes:", len(image_classes)
     return np.array(images).astype('float32'), image_classes
 
 

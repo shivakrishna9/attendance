@@ -8,12 +8,11 @@ from keras.models import Model
 from keras import regularizers
 from keras.optimizers import SGD, Adam
 import h5py
-# from test import *    
 import time
 from keras.utils import np_utils
-from utils.timer import Timer
-# import caffe
-# caffe.set_mode_cpu()
+from recognise.get_input import *
+import tensorflow as tf
+# from rpn.anchor_target_layer import AnchorTargetLayer
 
 NB_CLASS = 21  # number of classes
 # 'th' (channels, width, height) or 'tf' (width, height, channels)
@@ -21,7 +20,9 @@ DIM_ORDERING = 'th'
 WEIGHT_DECAY = 0.  # L2 regularization factor
 USE_BN = True  # whether to use batch normalization
 
+# import memory_profiler
 
+# @profile
 class ResNet():
 
     def get_data(self, X_train, y_train, X_test, Y_test):
@@ -70,10 +71,10 @@ class ResNet():
                           dim_ordering=DIM_ORDERING,
                           name=name)(x)
         if batch_norm:
-            if name=='conv1':
-                bn_name = 'bn_'+name
+            if name == 'conv1':
+                bn_name = 'bn_' + name
             else:
-                bn_name = 'scale'+name.replace('res','')
+                bn_name = 'scale' + name.replace('res', '')
             x = BatchNormalization(name=bn_name)(x)
         if activation == 'relu':
             x = Activation('relu')(x)
@@ -82,6 +83,7 @@ class ResNet():
     def resnet101(self):
 
         # ResNet-101 using functional API from keras
+        # with tf.device('/cpu:0'):    
         print 'Initialising ResNet-101 !'
         start = time.time()
         if DIM_ORDERING == 'th':
@@ -225,7 +227,8 @@ class ResNet():
         final = Dense(NB_CLASS, activation='softmax')(x)
         self.model = Model(input1, output=[final])
 
-        print 'Model defined in ..', time.time() - start
+        print 'Initialised fast_rcnn in ..', time.time() - start
+        # return preds, auxpreds, input1
 
     def init_weights(self):
         print 'Initialising weights from pretrained model ...'
@@ -238,8 +241,8 @@ class ResNet():
 
     def compile_net(self, optimizer='sgd'):
 
-        self.model.load_weights("extras/resnet_weights.h5")
-        optimizer = SGD(lr=1, decay=1e-1, momentum=0.9, nesterov=True)
+        self.model.load_weights('extras/resnet_weights.h5')
+        optimizer = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
         print "Compiling model with nesterov momentum .."
         start = time.time()
@@ -248,35 +251,38 @@ class ResNet():
 
         print 'Compiled in ..', time.time() - start
 
-    def normalise_data(self):
-        print 'Normalizing data...'
-        self.X_train = self.X_train.astype('float32')
-        self.X_test = self.X_test.astype('float32')
-        self.X_train /= 255
-        self.X_test /= 255
-        self.X_train = self.X_train - np.average(self.X_train)
-        self.X_test = self.X_test - np.average(self.X_test)
-        self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
-        self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)
-
     def train_net(self, nb_epoch=2, batch=16):
         print "Training on batch..."
         start = time.time()
 
-        for i in xrange(10):
-            self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch, verbose=1, shuffle=True)
-            self.epsw()
+        for i in xrange(200):
+            self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch,
+                           verbose=1, shuffle=True)
+            if i%10==0:
+                self.epsw(batch=4)
 
         print "Total training time ..", time.time() - start
 
     def epsw(self, batch=16):
         print 'Evaluating, predicting and saving weights ..'
-        # Timer.tic()
-        start = time.time()
 
         print self.model.evaluate(self.X_test, self.Y_test, batch_size=batch)
-        print self.model.predict(self.X_test, batch_size=batch)
+        preds = self.model.predict(self.X_test, batch_size=batch)
         self.model.save_weights("extras/resnet_weights.h5", overwrite=True)
 
-        # Timer.toc()
-        print 'Evaluated, predicted and saved weights ! All done in ..', time.time() - start
+        print preds
+        print np.argmax(preds, axis=1)
+        print np.argmax(self.Y_test, axis=1)
+
+        print 'Evaluated, predicted and saved weights !'
+
+    def normalise_data(self):
+        print 'Normalizing data...'
+        # self.X_train = self.X_train.astype('float32')
+        # self.X_test = self.X_test.astype('float32')
+        self.X_train /= 255
+        self.X_test /= 255
+        self.X_train = self.X_train - np.average(self.X_train)
+        self.X_test = self.X_test - np.average(self.X_test)
+        self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
+        self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)        

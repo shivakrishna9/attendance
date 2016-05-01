@@ -7,7 +7,7 @@ import hashlib
 import cv2
 
 
-files = ['../traintest/downloads.txt']
+files = ['../traintest/actors.txt', '../traintest/actresses.txt']
 RESULT_ROOT = '../extras/download'
 if not exists(RESULT_ROOT):
     os.mkdir(RESULT_ROOT)
@@ -70,11 +70,11 @@ if __name__ == '__main__':
             for line in fd.readlines():
                 components = line.split('\t')
                 # print components
-                assert(len(components) == 2)
-                name = '_'.join(components[0].split('_')[:2])
+                # assert(len(components) == )
+                name = '_'.join(components[0].split(' '))
                 # print name
-                url = components[1]
-                fname = components[0]
+                url = components[3]
+                fname = name+'_'+components[1]
                 fnames.append(fname)
                 names.append(name)
                 urls.append(url)
