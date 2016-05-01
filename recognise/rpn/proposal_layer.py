@@ -5,6 +5,20 @@
 # Written by Ross Girshick and Sean Bell
 # --------------------------------------------------------
 
+<<<<<<< HEAD
+# import caffe
+from keras.engine import Layer
+import numpy as np
+import yaml
+from recognise.fast_rcnn.config import cfg
+from generate_anchors import generate_anchors
+from recognise.fast_rcnn.bbox_transform import bbox_transform_inv, clip_boxes
+from recognise.fast_rcnn.nms_wrapper import nms
+
+DEBUG = False
+
+class ProposalLayer(Layer):
+=======
 import caffe
 import numpy as np
 import yaml
@@ -16,6 +30,7 @@ from fast_rcnn.nms_wrapper import nms
 DEBUG = False
 
 class ProposalLayer(caffe.Layer):
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
     """
     Outputs object detection proposals by applying estimated bounding-box
     transformations to a set of regular boxes (called "anchors").

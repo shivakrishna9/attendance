@@ -6,6 +6,22 @@ import time
 from keras.utils import np_utils
 im_size = 227
 
+<<<<<<< HEAD
+def detect(image):
+
+    img = cv2.imread(image)
+    FACE_DETECTOR_PATH = "extras/haarcascade_frontalface_default.xml"
+
+    detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
+    rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
+                                      minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+
+    for (x, y, w, h) in rects:
+        roi_color = img[y:y + h, x:x + w]
+        # cv2.imshow('image', roi_color)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+=======
 def detect(image,dets):
 
     # img = cv2.imread(image)
@@ -27,7 +43,11 @@ def detect(image,dets):
         roi_color = image[y:y + h, x:x + w]
     else:
         roi_color = image
+<<<<<<< HEAD
     # print 'ROI', roi_color
+=======
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
+>>>>>>> e98e5dc5f43820bcc4a52b81730818afe0a773d6
 
     return roi_color
 
@@ -96,16 +116,32 @@ def input_image(image):
     return res
 
 
+<<<<<<< HEAD
+def preprocess(images, classes, dets):
+
+    NB_CLASS = 442
+=======
 def preprocess(images, classes):
 
+<<<<<<< HEAD
     NB_CLASS = 696
+=======
+    NB_CLASS = 700
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
+>>>>>>> e98e5dc5f43820bcc4a52b81730818afe0a773d6
     images = images.astype('float32')
     images /= 255
     images = images - np.average(images)
     classes = np_utils.to_categorical(classes, NB_CLASS)
+<<<<<<< HEAD
+    dets = dets.astype('float32')
+
+    return images, classes, dets
+=======
     # dets = dets.astype('float32')
 
     return images, classes
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
 
 
 def imdb_read(chunk):
@@ -119,8 +155,33 @@ def imdb_read(chunk):
         image_det = data[4]
         person = data[1]
         image_class = data[2]
+<<<<<<< HEAD
 
         if cv2.imread(image)!=None:
+=======
+        try:
+<<<<<<< HEAD
+            image = glob.glob("newtest/*/" + image)[0]
+            image_classes.append(image_class)
+            image_dets.append(image_det)
+            image = cv2.imread(image)
+            image = input_image(image)
+            image = np.rollaxis(image, 2, start=0)
+            images.append(image)
+        except:
+            print 'image not found !'
+
+    return preprocess(np.array(images), np.array(image_classes), np.array(image_dets))
+
+
+def imdb(fname='traintest/dtrain.txt'):
+    read = pd.read_csv(
+        fname, names=['filename', 'xywh', 'name'], iterator=True, chunksize=1024, sep='\s')
+=======
+            image = glob.glob("extras/downloads/*/" + image)[0]
+            image_classes.append(image_class)
+            # image_dets.append(image_det)
+>>>>>>> e98e5dc5f43820bcc4a52b81730818afe0a773d6
             image = cv2.imread(image)
             image = input_image(detect(image,image_det))
             
@@ -139,7 +200,12 @@ def imdb_read(chunk):
 
 def imdb(fname='traintest/training.txt'):
     read = pd.read_csv(
+<<<<<<< HEAD
         fname, names=['person','image', 'bbox'], iterator=True, chunksize=256, sep='\s')
+=======
+        fname, names=['person','image', 'bbox'], iterator=True, chunksize=1024, sep='\s')
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
+>>>>>>> e98e5dc5f43820bcc4a52b81730818afe0a773d6
 
     for data in read:
         yield (imdb_read(data))

@@ -5,6 +5,20 @@
 # Written by Ross Girshick and Sean Bell
 # --------------------------------------------------------
 
+<<<<<<< HEAD
+# import caffe
+from keras.engine import Layer 
+import yaml
+import numpy as np
+import numpy.random as npr
+from recognise.fast_rcnn.config import cfg
+from recognise.fast_rcnn.bbox_transform import bbox_transform
+from recognise.utils.cython_bbox import bbox_overlaps
+
+DEBUG = False
+
+class ProposalTargetLayer(Layer):
+=======
 import caffe
 import yaml
 import numpy as np
@@ -16,6 +30,7 @@ from utils.cython_bbox import bbox_overlaps
 DEBUG = False
 
 class ProposalTargetLayer(caffe.Layer):
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
     """
     Assign object detection proposals to ground-truth targets. Produces proposal
     classification labels and bounding-box regression targets.

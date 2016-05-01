@@ -5,9 +5,15 @@
 # Written by Ross Girshick
 # --------------------------------------------------------
 
+<<<<<<< HEAD
+from recognise.fast_rcnn.config import cfg
+from recognise.nms.gpu_nms import gpu_nms
+from recognise.nms.cpu_nms import cpu_nms
+=======
 from fast_rcnn.config import cfg
 from nms.gpu_nms import gpu_nms
 from nms.cpu_nms import cpu_nms
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
 
 def nms(dets, thresh, force_cpu=False):
     """Dispatch to either CPU or GPU NMS implementations."""

@@ -265,9 +265,9 @@ class ResNet():
                 # print self.y_train.shape
                 # break
                 batch = self.X_train.shape[0]
-                print batch
                 count+=batch
                 x += batch
+                print count, x
                 if batch > 0:
                     self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch_size,
                                    verbose=1, shuffle=True)

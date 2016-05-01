@@ -2,6 +2,13 @@ import numpy as np
 import cv2
 import time
 import glob
+import os
+
+
+def rmfaces():
+    for i in glob.glob('../extras/download/*/face/*.jpg'):
+        print i
+        os.remove(i)
 
 
 def one_hot_names():
@@ -129,7 +136,4 @@ def video():
 
 
 if __name__ == '__main__':
-    video()
-    # preprocess()
-    # one_hot_names()
-    # encode()
+    rmfaces()
