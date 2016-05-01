@@ -15,12 +15,19 @@ def detect(image,dets):
     # rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
     #                                   minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
 
-    x, y, w, h = dets
+    # print image
+    # print dets.split(',')
+    x, y, w, h = dets.split(',')
+    x = int(x)
+    y = int(y)
+    w = int(w)
+    h = int(h)
 
     if x!=0 and y!=0 and w!=0 and h!=0:
         roi_color = image[y:y + h, x:x + w]
     else:
         roi_color = image
+    # print 'ROI', roi_color
 
     return roi_color
 
@@ -81,14 +88,17 @@ def test_file(fname='traintest/classtest.txt'):
 def input_image(image):
 
     # res = detect(image)
-    res = cv2.resize(image, (im_size, im_size), interpolation=cv2.INTER_CUBIC)
+    try:
+        res = cv2.resize(image, (im_size, im_size), interpolation=cv2.INTER_CUBIC)
+    except cv2.error:
+        res = None
 
     return res
 
 
 def preprocess(images, classes):
 
-    NB_CLASS = 700
+    NB_CLASS = 696
     images = images.astype('float32')
     images /= 255
     images = images - np.average(images)
@@ -104,27 +114,32 @@ def imdb_read(chunk):
     image_classes = []
     image_dets = []
     for data in chunk.itertuples():
+        # print data
         image = data[3]
-        image_det = data[1]
+        image_det = data[4]
+        person = data[1]
         image_class = data[2]
-        try:
-            image = glob.glob("extras/downloads/*/" + image)[0]
-            image_classes.append(image_class)
-            # image_dets.append(image_det)
+
+        if cv2.imread(image)!=None:
             image = cv2.imread(image)
-            image = input_image(detect(image))
-            image = np.rollaxis(image, 2, start=0)
-            images.append(image)
-        except:
-            # print 'image not found !'
-            pass
+            image = input_image(detect(image,image_det))
+            
+            if image==None:
+                continue
+            else:
+                image = np.rollaxis(image, 2, start=0)
+                images.append(image)
+                image_classes.append(image_class)
+        else:
+            # print image, 'image not found !'
+            continue
 
     return preprocess(np.array(images), np.array(image_classes))
 
 
 def imdb(fname='traintest/training.txt'):
     read = pd.read_csv(
-        fname, names=['person','image', 'bbox'], iterator=True, chunksize=1024, sep='\s')
+        fname, names=['person','image', 'bbox'], iterator=True, chunksize=256, sep='\s')
 
     for data in read:
         yield (imdb_read(data))

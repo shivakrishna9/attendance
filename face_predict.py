@@ -14,7 +14,7 @@ resnet = resnet.ResNet()
 resnet.resnet101()
 resnet.compile_net()
 # resnet.normalise_data()
-resnet.train_net(nb_epoch=1)
+resnet.train_net(nb_epoch=1, batch_size=4)
 resnet.epsw(batch=4)
 
 # net.VGGNet(x,y,x_test,y_test)

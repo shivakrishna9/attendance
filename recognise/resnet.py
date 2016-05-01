@@ -14,7 +14,7 @@ from recognise.get_input import *
 import tensorflow as tf
 # from rpn.anchor_target_layer import AnchorTargetLayer
 
-NB_CLASS = 442  # number of classes
+NB_CLASS = 696  # number of classes
 # 'th' (channels, width, height) or 'tf' (width, height, channels)
 DIM_ORDERING = 'th'
 WEIGHT_DECAY = 0.  # L2 regularization factor
@@ -238,7 +238,7 @@ class ResNet():
 
     def compile_net(self, optimizer='sgd'):
 
-        self.model.load_weights('extras/resnet_weights.h5')
+        # self.model.load_weights('extras/resnet_weights.h5')
         optimizer = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
         print "Compiling model with nesterov momentum .."
@@ -248,47 +248,57 @@ class ResNet():
 
         print 'Compiled in ..', time.time() - start
 
-    def train_net(self, nb_epoch=2):
+    def train_net(self, nb_epoch=2, batch_size=4):
         print "Training on batch..."
         start = time.time()
 
-        read = pd.read_csv('traintest/training2.txt',
-            names=['person','image', 'bbox'], iterator=True, chunksize=1024, sep='\s', engine='python')
+        for epoch in xrange(400):
+            chunks = pd.read_csv('traintest/training2.txt',
+                names=['person', 'class','image', 'bbox'], chunksize=256, 
+                sep='\t', engine='python')
+            count = 0
+            x = 0
+            print 'Epoch:',epoch,'/ 400'
+            for data in chunks:
+                self.X_train, self.y_train = imdb_read(data)
+                # print self.X_train.shape
+                # print self.y_train.shape
+                # break
+                batch = self.X_train.shape[0]
+                print batch
+                count+=batch
+                x += batch
+                if batch > 0:
+                    self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch_size,
+                                   verbose=1, shuffle=True)
+                    if x>=256:
+                        x=0
+                        self.epsw(batch=4)
 
-        count = 0
-        for data in read:
-            self.X_train, self.y_train = imdb_read(data)
-            batch = self.X_train.shape[0]
-            print batch
-            count+=batch
-            if batch > 0:
-                self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch,
-                               verbose=1, shuffle=True)
-                if count%256==0:
-                    self.epsw(batch=4)
+            self.epsw(batch=4)
 
         print "Total training time ..", time.time() - start
 
     def epsw(self, batch=16):
         print 'Evaluating, predicting and saving weights ..'
 
-        print self.model.evaluate(self.X_test, self.Y_test, batch_size=batch)
-        preds = self.model.predict(self.X_test, batch_size=batch)
+        # print self.model.evaluate(self.X_test, self.Y_test, batch_size=batch)
+        # preds = self.model.predict(self.X_test, batch_size=batch)
         self.model.save_weights("extras/resnet_weights.h5", overwrite=True)
 
-        print preds
-        print np.argmax(preds, axis=1)
-        print np.argmax(self.Y_test, axis=1)
+        # print preds
+        # print np.argmax(preds, axis=1)
+        # print np.argmax(self.Y_test, axis=1)
 
         print 'Evaluated, predicted and saved weights !'
 
-    def normalise_data(self):
-        print 'Normalizing data...'
-        # self.X_train = self.X_train.astype('float32')
-        # self.X_test = self.X_test.astype('float32')
-        self.X_train /= 255
-        self.X_test /= 255
-        self.X_train = self.X_train - np.average(self.X_train)
-        self.X_test = self.X_test - np.average(self.X_test)
-        self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
-        self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)        
+    # def normalise_data(self):
+    #     print 'Normalizing data...'
+    #     # self.X_train = self.X_train.astype('float32')
+    #     # self.X_test = self.X_test.astype('float32')
+    #     self.X_train /= 255
+    #     self.X_test /= 255
+    #     self.X_train = self.X_train - np.average(self.X_train)
+    #     self.X_test = self.X_test - np.average(self.X_test)
+    #     self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
+    #     self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)        
