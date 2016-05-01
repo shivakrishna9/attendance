@@ -14,7 +14,7 @@ from recognise.get_input import *
 import tensorflow as tf
 # from rpn.anchor_target_layer import AnchorTargetLayer
 
-NB_CLASS = 21  # number of classes
+NB_CLASS = 442  # number of classes
 # 'th' (channels, width, height) or 'tf' (width, height, channels)
 DIM_ORDERING = 'th'
 WEIGHT_DECAY = 0.  # L2 regularization factor
@@ -25,11 +25,8 @@ USE_BN = True  # whether to use batch normalization
 # @profile
 class ResNet():
 
-    def get_data(self, X_train, y_train, X_test, Y_test):
-        self.X_train = X_train
-        self.y_train = y_train
-        self.X_test = X_test
-        self.Y_test = Y_test
+    def get_data(self):
+        self.X_train, self.y_train = imdb()
 
     # def get_pt(self):
 
@@ -251,15 +248,24 @@ class ResNet():
 
         print 'Compiled in ..', time.time() - start
 
-    def train_net(self, nb_epoch=2, batch=16):
+    def train_net(self, nb_epoch=2):
         print "Training on batch..."
         start = time.time()
 
-        for i in xrange(200):
-            self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch,
-                           verbose=1, shuffle=True)
-            if i%10==0:
-                self.epsw(batch=4)
+        read = pd.read_csv('traintest/training2.txt',
+            names=['person','image', 'bbox'], iterator=True, chunksize=1024, sep='\s', engine='python')
+
+        count = 0
+        for data in read:
+            self.X_train, self.y_train = imdb_read(data)
+            batch = self.X_train.shape[0]
+            print batch
+            count+=batch
+            if batch > 0:
+                self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch,
+                               verbose=1, shuffle=True)
+                if count%256==0:
+                    self.epsw(batch=4)
 
         print "Total training time ..", time.time() - start
 

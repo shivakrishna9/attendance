@@ -1,18 +1,34 @@
 import pandas as pd
-
+import time
 # reader1 = pd.read_csv('../traintest/dev_urls.txt', comment='#', sep='\t')
 # reader2 = pd.read_csv('../traintest/eval_urls.txt', comment='#', sep='\t')
-reader3 = pd.read_csv('../traintest/faceindex.txt', comment='#', sep='\t')
+print 'extracting'
+start = time.time()
+reader3 = pd.read_csv('../traintest/training.txt', sep='\t')
+print 'done in ..', time.time()-start
 
-# print reader1
-
-# # reader1['face_id'] = reader1[['person', 'imagenum']].apply(lambda x: '_'.join(x), axis=1)
-# reader1["face_id"] = '_'.join(reader1["person"]) +'_'+ reader1["imagenum"].map(str)
-
-# print reader1
-
-# # pd.concat([reader1, reader2, reader3], axis=0, join='outer')
-with open('../traintest/downloads.txt', 'a') as f:
+with open('../traintest/training2.txt', 'w') as f:
+	print 'file opened'
+	f.write('person'+'\timage'+'\tbbox'+'\n')
+	count = 0
+	person = []
+	print 'reading persons '
+	start = time.time()
 	for i in reader3.itertuples():
-		print str(i[1])+','+i[2]
-		f.write(str(i[1])+','+i[2]+'\n')
+		if i[1] not in person:
+			person += [i[1]]
+		# print person+'\t'+image+'\t'+bbox
+		# f.write(person+'\t'+image+'\t'+bbox+'\n')
+	print 'people read in ..', time.time()-start
+
+	print 'writing to file'
+	start = time.time()
+	for i in reader3.itertuples():
+		name = i[1]
+		image = i[2]
+		bbox = i[3]
+		p = str(person.index(name))
+		print p+'\t'+image+'\t'+bbox
+		f.write(p+'\t'+image+'\t'+bbox+'\n')
+
+	print 'Done in ..',time.time()-start
