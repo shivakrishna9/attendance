@@ -41,7 +41,11 @@ def generate_anchors(base_size=16, ratios=[0.5, 1, 2],
     scales wrt a reference (0, 0, 15, 15) window.
     """
 
+<<<<<<< HEAD
     base_anchor = np.array([1, 1, base_size, base_size])
+=======
+    base_anchor = np.array([1, 1, base_size, base_size]) - 1
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
     ratio_anchors = _ratio_enum(base_anchor, ratios)
     anchors = np.vstack([_scale_enum(ratio_anchors[i, :], scales)
                          for i in xrange(ratio_anchors.shape[0])])
@@ -99,6 +103,7 @@ def _scale_enum(anchor, scales):
 if __name__ == '__main__':
     import time
     t = time.time()
+<<<<<<< HEAD
     a = generate_anchors(scales=np.array((8, 16, 32)))
     print time.time() - t
     print 'anchors:'
@@ -109,3 +114,9 @@ if __name__ == '__main__':
                 a[:, 3::4] - a[:, 1::4],
             ))
     # from IPython import embed; embed()
+=======
+    a = generate_anchors()
+    print time.time() - t
+    print a
+    from IPython import embed; embed()
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1

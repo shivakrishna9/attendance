@@ -5,9 +5,15 @@
 # Written by Ross Girshick
 # --------------------------------------------------------
 
+<<<<<<< HEAD
 from recognise.fast_rcnn.config import cfg
 from recognise.utils.blob import im_list_to_blob
 from recognise.utils.timer import Timer
+=======
+from fast_rcnn.config import cfg
+from utils.blob import im_list_to_blob
+from utils.timer import Timer
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
 import numpy as np
 import cv2
 

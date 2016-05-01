@@ -6,6 +6,7 @@
 # --------------------------------------------------------
 
 import os
+<<<<<<< HEAD
 # import keras
 from keras.engine import Layer
 import yaml
@@ -20,6 +21,20 @@ DEBUG = True
 
 
 class AnchorTargetLayer(Layer):
+=======
+import caffe
+import yaml
+from fast_rcnn.config import cfg
+import numpy as np
+import numpy.random as npr
+from generate_anchors import generate_anchors
+from utils.cython_bbox import bbox_overlaps
+from fast_rcnn.bbox_transform import bbox_transform
+
+DEBUG = False
+
+class AnchorTargetLayer(caffe.Layer):
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
     """
     Assign anchors to ground-truth targets. Produces anchor classification
     labels and bounding-box regression targets.
@@ -152,8 +167,12 @@ class AnchorTargetLayer(Layer):
         labels[max_overlaps >= cfg.TRAIN.RPN_POSITIVE_OVERLAP] = 1
 
         if cfg.TRAIN.RPN_CLOBBER_POSITIVES:
+<<<<<<< HEAD
             # assign bg labels last so that negative labels can clobber
             # positives
+=======
+            # assign bg labels last so that negative labels can clobber positives
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
             labels[max_overlaps < cfg.TRAIN.RPN_NEGATIVE_OVERLAP] = 0
 
         # subsample positive labels if we have too many
@@ -171,18 +190,29 @@ class AnchorTargetLayer(Layer):
             disable_inds = npr.choice(
                 bg_inds, size=(len(bg_inds) - num_bg), replace=False)
             labels[disable_inds] = -1
+<<<<<<< HEAD
             # print "was %s inds, disabling %s, now %s inds" % (
             # len(bg_inds), len(disable_inds), np.sum(labels == 0))
+=======
+            #print "was %s inds, disabling %s, now %s inds" % (
+                #len(bg_inds), len(disable_inds), np.sum(labels == 0))
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
 
         bbox_targets = np.zeros((len(inds_inside), 4), dtype=np.float32)
         bbox_targets = _compute_targets(anchors, gt_boxes[argmax_overlaps, :])
 
         bbox_inside_weights = np.zeros((len(inds_inside), 4), dtype=np.float32)
+<<<<<<< HEAD
         bbox_inside_weights[labels == 1, :] = np.array(
             cfg.TRAIN.RPN_BBOX_INSIDE_WEIGHTS)
 
         bbox_outside_weights = np.zeros(
             (len(inds_inside), 4), dtype=np.float32)
+=======
+        bbox_inside_weights[labels == 1, :] = np.array(cfg.TRAIN.RPN_BBOX_INSIDE_WEIGHTS)
+
+        bbox_outside_weights = np.zeros((len(inds_inside), 4), dtype=np.float32)
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
         if cfg.TRAIN.RPN_POSITIVE_WEIGHT < 0:
             # uniform weighting of examples (given non-uniform sampling)
             num_examples = np.sum(labels >= 0)
@@ -200,8 +230,12 @@ class AnchorTargetLayer(Layer):
 
         if DEBUG:
             self._sums += bbox_targets[labels == 1, :].sum(axis=0)
+<<<<<<< HEAD
             self._squared_sums += (bbox_targets[labels ==
                                                 1, :] ** 2).sum(axis=0)
+=======
+            self._squared_sums += (bbox_targets[labels == 1, :] ** 2).sum(axis=0)
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
             self._counts += np.sum(labels == 1)
             means = self._sums / self._counts
             stds = np.sqrt(self._squared_sums / self._counts - means ** 2)
@@ -213,10 +247,15 @@ class AnchorTargetLayer(Layer):
         # map up to original set of anchors
         labels = _unmap(labels, total_anchors, inds_inside, fill=-1)
         bbox_targets = _unmap(bbox_targets, total_anchors, inds_inside, fill=0)
+<<<<<<< HEAD
         bbox_inside_weights = _unmap(
             bbox_inside_weights, total_anchors, inds_inside, fill=0)
         bbox_outside_weights = _unmap(
             bbox_outside_weights, total_anchors, inds_inside, fill=0)
+=======
+        bbox_inside_weights = _unmap(bbox_inside_weights, total_anchors, inds_inside, fill=0)
+        bbox_outside_weights = _unmap(bbox_outside_weights, total_anchors, inds_inside, fill=0)
+>>>>>>> 511e48a4eb5789410fd446469eead4c97e7543d1
 
         if DEBUG:
             print 'rpn: max max_overlap', np.max(max_overlaps)

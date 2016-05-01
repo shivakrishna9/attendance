@@ -8,48 +8,38 @@ from keras.models import Model
 from keras import regularizers
 from keras.optimizers import SGD, Adam
 import h5py
-from test import *
 import time
 from keras.utils import np_utils
 from recognise.get_input import *
-from rpn.anchor_target_layer import AnchorTargetLayer
-# from rpn.proposal_layer import ProposalLayer
-# from rpn.proposal_target_layer import ProposalTargetLayer
-from loss import *
-NB_CLASS = 21  # number of classes
+import tensorflow as tf
+# from rpn.anchor_target_layer import AnchorTargetLayer
+
+NB_CLASS = 442  # number of classes
 # 'th' (channels, width, height) or 'tf' (width, height, channels)
 DIM_ORDERING = 'th'
 WEIGHT_DECAY = 0.  # L2 regularization factor
 USE_BN = True  # whether to use batch normalization
 
+# import memory_profiler
 
+# @profile
 class ResNet():
 
     def get_data(self):
-        self.X_train, self.y_train, self.dets = imdb()
+        self.X_train, self.y_train = imdb()
 
-    def test(self):
+    # def get_pt(self):
 
-        input1 = Input(shape=(3, 227, 227))
-        rpn_cls = AnchorTargetLayer()(input1)
+    #     home = "/home/walle/"
 
-        model = Model(input1, output=[rpn_cls])
+    #     MODEL_FILE = home + 'Attendance/extras/models/ResNet-101-deploy.prototxt'
+    #     PRETRAINED = home + 'Attendance/extras/models/ResNet-101-model.caffemodel'
 
-        rcnn_cls(rpn_cls, )
-        model.compile
+    #     net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TRAIN)
 
-    def get_pt(self):
+    #     params = net.params.keys()
 
-        home = "/home/walle/"
-
-        MODEL_FILE = home + 'Attendance/extras/models/ResNet-101-deploy.prototxt'
-        PRETRAINED = home + 'Attendance/extras/models/ResNet-101-model.caffemodel'
-
-        net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TRAIN)
-
-        params = net.params.keys()
-
-        self.source_params = {pr: (net.params[pr][0].data) for pr in params}
+    #     self.source_params = {pr: (net.params[pr][0].data) for pr in params}
 
         # caffe.reset_all()
 
@@ -90,6 +80,7 @@ class ResNet():
     def resnet101(self):
 
         # ResNet-101 using functional API from keras
+        # with tf.device('/cpu:0'):    
         print 'Initialising ResNet-101 !'
         start = time.time()
         if DIM_ORDERING == 'th':
@@ -225,21 +216,16 @@ class ResNet():
 
         res5c_relu = Activation('relu')(x)
 
-        rpn_cls = AnchorTargetLayer()(res5c_relu)
-
-        x = ProposalLayer()(res5c_relu)
-        rpn_reg = ProposalTargetLayer()(x)
-
         # Region Proposal Network here
         pool5 = AveragePooling2D(pool_size=(7, 7), strides=(1, 1))(res5c_relu)
 
         x = Dropout(0.5)(pool5)
         x = Flatten()(x)
-        preds = Dense(NB_CLASS, activation='softmax')(x)
-        auxpreds = Dense(4, activation='softmax')(x)
+        final = Dense(NB_CLASS, activation='softmax')(x)
+        self.model = Model(input1, output=[final])
 
-        self.model = Model(input1, output=[rpn_reg, rpn_cls, preds, auxpreds])
         print 'Initialised fast_rcnn in ..', time.time() - start
+        # return preds, auxpreds, input1
 
     def init_weights(self):
         print 'Initialising weights from pretrained model ...'
@@ -253,11 +239,12 @@ class ResNet():
     def compile_net(self, optimizer='sgd'):
 
         self.model.load_weights('extras/resnet_weights.h5')
-        optimizer = SGD(lr=0.01, decay=1e-4, momentum=0.9, nesterov=True)
+        optimizer = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
         print "Compiling model with nesterov momentum .."
+        start = time.time()
 
-        self.model.compile(optimizer=sgd, loss='categorical_crossentropy')
+        self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
         print 'Compiled in ..', time.time() - start
 
@@ -265,18 +252,43 @@ class ResNet():
         print "Training on batch..."
         start = time.time()
 
-        for i in xrange(10):
-            self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=16,
-                           verbose=1, show_accuracy=True, shuffle=True)
-            self.epsw()
+        read = pd.read_csv('traintest/training2.txt',
+            names=['person','image', 'bbox'], iterator=True, chunksize=1024, sep='\s', engine='python')
+
+        count = 0
+        for data in read:
+            self.X_train, self.y_train = imdb_read(data)
+            batch = self.X_train.shape[0]
+            print batch
+            count+=batch
+            if batch > 0:
+                self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch,
+                               verbose=1, shuffle=True)
+                if count%256==0:
+                    self.epsw(batch=4)
 
         print "Total training time ..", time.time() - start
 
-    def epsw(self):
+    def epsw(self, batch=16):
         print 'Evaluating, predicting and saving weights ..'
 
-        # print self.model.evaluate(self.X_test, self.Y_test, batch_size=4, show_accuracy=True)
-        # print self.model.predict(self.X_test, batch_size=4)
+        print self.model.evaluate(self.X_test, self.Y_test, batch_size=batch)
+        preds = self.model.predict(self.X_test, batch_size=batch)
         self.model.save_weights("extras/resnet_weights.h5", overwrite=True)
 
+        print preds
+        print np.argmax(preds, axis=1)
+        print np.argmax(self.Y_test, axis=1)
+
         print 'Evaluated, predicted and saved weights !'
+
+    def normalise_data(self):
+        print 'Normalizing data...'
+        # self.X_train = self.X_train.astype('float32')
+        # self.X_test = self.X_test.astype('float32')
+        self.X_train /= 255
+        self.X_test /= 255
+        self.X_train = self.X_train - np.average(self.X_train)
+        self.X_test = self.X_test - np.average(self.X_test)
+        self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
+        self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)        
