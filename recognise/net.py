@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import cv2
 import keras
 import h5py
@@ -8,8 +9,9 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, Max
 from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
 import scipy.io
+from .get_input import *
 
-NB_CLASS = 21
+NB_CLASS = 696
 
 
 def get_pt_mat(model, layer_dict):
@@ -35,8 +37,35 @@ def get_pt_mat(model, layer_dict):
     model.save_weights("extras/cnn_weights.h5", overwrite=True)
     print "Batch trained and weights saved !"
 
+def epsw(model, batch=16):
+        print 'Evaluating, predicting and saving weights ..'
 
-def VGGNet(X_train, y_train, X_test, Y_test):
+        chunks = pd.read_csv('traintest/validation2.txt',
+            names=['person', 'class','image', 'bbox'], chunksize=256, 
+            sep='\t', engine='python')
+        count = 0
+        x = 0
+        # print 'Epoch:',epoch,'/ 400'
+        for data in chunks:
+            X_train, y_train = db_read(data)
+            batch = X_train.shape[0]
+            count+=batch
+            x += 256
+            print 'Count:',count, 'X:', x
+            # if batch > 0:
+            preds = model.predict(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
+                               verbose=1, shuffle=True)
+            print preds
+            print np.argmax(preds, axis=1)
+            print np.argmax(Y_test, axis=1)
+            with open('outputs/preds.txt','a') as f:
+                f.write('PREDS: '+np.argmax(preds, axis=1)+'\n')
+                f.write('TRUE: '+np.argmax(y_train, axis=1)+'\n')
+        model.save_weights("extras/resnet_weights.h5", overwrite=True)
+        print 'Evaluated, predicted and saved weights !'
+
+
+def VGGNet(nb_epoch=1, batch_size=4):
 
     PRETRAINED = "extras/cnn_weights.h5"
 
@@ -93,20 +122,10 @@ def VGGNet(X_train, y_train, X_test, Y_test):
 
     print 'Loading weights ...'
     start = time.time()
-    get_pt_mat(model, layer_dict)
-
     model.load_weights(PRETRAINED)
-
-    # f = h5py.File(PRETRAINED)
-    # for k in range(f.attrs['nb_layers']):
-    #     if k >= len(model.layers):
-    #         break
-    #     g = f['layer_{}'.format(k)]
-    #     weights = [g['param_{}'.format(p)]
-    #                for p in range(g.attrs['nb_params'])]
-    #     model.layers[k].set_weights(weights)
-    # f.close()
     print 'Model loaded in ..', time.time() - start
+    
+    # model.save_weights(PRETRAINED,overwrite=True)
 
     sgd = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
@@ -115,37 +134,32 @@ def VGGNet(X_train, y_train, X_test, Y_test):
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
-    print 'Normalizing data...'
-    # X_train = X_train.astype('float32')
-    # X_test = X_test.astype('float32')
-    X_train /= 255
-    X_test /= 255
-    X_train = X_train - np.average(X_train)
-    X_test = X_test - np.average(X_test)
-    y_train = np_utils.to_categorical(y_train, NB_CLASS)
-    Y_test = np_utils.to_categorical(Y_test, NB_CLASS)
-
     print "Training on batch..."
     start = time.time()
-    for i in xrange(10):
-        model.fit(X_train, y_train, nb_epoch=3, batch_size=4,
-                  verbose=1, shuffle=True)
-        print model.evaluate(X_test, Y_test, batch_size=4)
-        print model.predict(X_test, batch_size=4)
-    print "Total training time ..", time.time() - start, "Saving weights..."
+
+    for epoch in xrange(400):
+        chunks = pd.read_csv('traintest/training2.txt',
+            names=['person', 'class','image', 'bbox'], chunksize=256, 
+            sep='\t', engine='python')
+        count = 0
+        x = 0
+        print 'Epoch:',epoch,'/ 400'
+        for data in chunks:
+            X_train, y_train = db_read(data)
+            print X_train.shape, y_train.shape
+            batch = X_train.shape[0]
+            count+=batch
+            x += batch
+            print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x
+            if batch > 0:
+                model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
+                               verbose=1, shuffle=True)
+                if x>=256:
+                    x=0
+                    model.save_weights(PRETRAINED,overwrite=True)
+                    # epsw(batch=4)
+
+        epsw(model,batch=4)
+
+    print "Total training time ..", time.time() - start
     
-    model.save_weights(PRETRAINED,overwrite=True)
-    # print "Batch trained and weights saved !"
-
-    objective_score = model.evaluate(
-        X_test, Y_test, batch_size=4, show_accuracy=True)
-
-    print "Predicting for test images..."
-    start = time.time()
-    classes = model.predict(X_test, batch_size=4)
-
-    print objective_score
-    print classes
-    print np.argmax(classes, axis=1)
-    print np.argmax(Y_test, axis=1)
-    print "Predicted in ..", time.time() - start

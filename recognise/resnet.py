@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import pandas as pd
 import keras
 from keras.layers import Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D
 from keras.layers import BatchNormalization, Flatten, Dense, Dropout, Activation
@@ -10,9 +11,7 @@ from keras.optimizers import SGD, Adam
 import h5py
 import time
 from keras.utils import np_utils
-from recognise.get_input import *
-import tensorflow as tf
-# from rpn.anchor_target_layer import AnchorTargetLayer
+from .get_input import *
 
 NB_CLASS = 696  # number of classes
 # 'th' (channels, width, height) or 'tf' (width, height, channels)
@@ -238,7 +237,7 @@ class ResNet():
 
     def compile_net(self, optimizer='sgd'):
 
-        # self.model.load_weights('extras/resnet_weights.h5')
+        self.model.load_weights('extras/resnet_weights.h5')
         optimizer = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
 
         print "Compiling model with nesterov momentum .."
@@ -260,14 +259,11 @@ class ResNet():
             x = 0
             print 'Epoch:',epoch,'/ 400'
             for data in chunks:
-                self.X_train, self.y_train = imdb_read(data)
-                # print self.X_train.shape
-                # print self.y_train.shape
-                # break
+                self.X_train, self.y_train = db_read(data)
                 batch = self.X_train.shape[0]
                 count+=batch
                 x += batch
-                print count, x
+                print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x
                 if batch > 0:
                     self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch_size,
                                    verbose=1, shuffle=True)
