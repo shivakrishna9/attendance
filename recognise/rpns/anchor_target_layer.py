@@ -216,7 +216,7 @@ class AnchorTargetLayer(Layer):
         # bbox_outside_weights
         top[3].reshape(1, A * 4, height, width)
 
-    def build(self, input_shape):
+    def call(self, input_shape):
         # Algorithm:
         #
         # for each (H, W) location i
