@@ -94,6 +94,7 @@ def input_image(image):
 
     return res
 
+
 def preprocess(images, classes):
 
     NB_CLASS = 696
@@ -116,7 +117,6 @@ def db_read(chunk):
         image_det = data[4]
         person = data[1]
         image_class = data[2]
-
         if cv2.imread(image)!=None:
             image = cv2.imread(image)
             image = input_image(detect(image,image_det))
