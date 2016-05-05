@@ -102,12 +102,12 @@ def preprocess(images, classes):
     images /= 255
     images = images - np.average(images)
     classes = np_utils.to_categorical(classes, NB_CLASS)
+    # dets = dets.astype('float32')
 
     return images, classes
 
 
-def imdb_read(chunk):
-
+def db_read(chunk):
     images = []
     image_classes = []
     image_dets = []
@@ -132,4 +132,3 @@ def imdb_read(chunk):
             continue
 
     return preprocess(np.array(images), np.array(image_classes))
-
