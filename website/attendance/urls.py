@@ -15,15 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from panels import views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^[/]?$', views.index, name='index'),
-    url(r'^forgot_password[/]?$', views.forgot_password, name='forgot_password'),
-    url(r'^dashboard[/]?$', views.dashboard, name='dashboard'),
-    url(r'^forms[/]?$', views.forms, name='forms'),
-    url(r'^tables[/]?$', views.tables, name='tables'),
-    url(r'^surveillance[/]?$', views.surveillance, name='surveillance'),
+    url(r'^', include('panels.urls')),
 ]
