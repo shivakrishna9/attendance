@@ -73,10 +73,6 @@ def image_load():
                     print image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)
                     f.write(image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)+'\n')
 
-            elif cv2.waitKey(0) & 0xFF == ord('q'):
-                cv2.destroyAllWindows()
-                break
-
             elif cv2.waitKey(0) & 0xFF == ord('n'):
                 cv2.destroyAllWindows()
 

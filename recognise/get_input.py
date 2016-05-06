@@ -24,9 +24,15 @@ def detect(image,dets):
     h = int(h)
 
     if x!=0 and y!=0 and w!=0 and h!=0:
-        roi_color = image[y:y + h, x:x + w]
+        roi_color = image[y:h, x:w]
     else:
         roi_color = image
+
+    # print roi_color
+
+    # cv2.imshow('image', roi_color)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     return roi_color
 

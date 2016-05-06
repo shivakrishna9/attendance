@@ -50,36 +50,36 @@ def image():
 
     # cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     # print img.shape
-    for image in glob.glob("../extras/faceScrub/download/*/*.jpg"):
+    for image in glob.glob("../extras/Farewell/*/*.JPG"):
         start = time.time()
+        im_path = '/'.join(image.split('/')[:-1])
+        im_name = image.split('/')[-1].split('\.')[0]
         img = cv2.imread(image)
         # res = cv2.resize(img, (227, 227), interpolation=cv2.INTER_CUBIC)
 
         FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
 
         detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-        rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
-                                          minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+        rects = detector.detectMultiScale(img, scaleFactor=1.03, minNeighbors=5)
 
-        # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        # construct a list of bounding boxes from the detection
-        # rects = [(int(x), int(y), int(x + w), int(y + h)) for (x, y, w, h) in rects]
-
-        # update the data dictionary with the faces detected
-        # data.update({"num_faces": len(rects), "faces": rects, "success": True})
-
-        print "time", time.time() - start
-        for (x, y, w, h) in rects:
+        for i,(x, y, w, h) in enumerate(rects):
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = img[y:y + h, x:x + w]
+            f_path = im_path+'/faces'
+            if not os.path.exists(f_path):
+                os.makedirs(f_path)
+            print f_path+'/'+im_name+'_'+str(i)+'.jpg'
+            
             cv2.imshow('image', roi_color)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-
-        cv2.imshow('image', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+            
+            if cv2.waitKey(0) & 0xFF == ord('y'):
+                cv2.destroyAllWindows()
+                cv2.imwrite(f_path+'/'+im_name+'_'+str(i)+'.jpg', roi_color)
+            
+            elif cv2.waitKey(0) & 0xFF == ord('n'):
+                cv2.destroyAllWindows()    
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
 
 def video():
@@ -136,4 +136,4 @@ def video():
 
 
 if __name__ == '__main__':
-    rmfaces()
+    image()

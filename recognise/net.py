@@ -34,14 +34,14 @@ def get_pt_mat(model, layer_dict):
     print "model extracted in ..", time.time() - start
 
     print "Saving weights..."
-    model.save_weights("extras/cnn_weights.h5", overwrite=True)
+    # model.save_weights("extras/cnn_weights.h5", overwrite=True)
     print "Batch trained and weights saved !"
 
-def epsw(model, batch=16):
+def epsw(model, batch_size=16):
         print 'Evaluating, predicting and saving weights ..'
 
-        chunks = pd.read_csv('traintest/validation2.txt',
-            names=['person', 'class','image', 'bbox'], chunksize=256, 
+        chunks = pd.read_csv('traintest/testing2.txt',
+            names=['person', 'class','image', 'bbox'], chunksize=1024, 
             sep='\t', engine='python')
         count = 0
         x = 0
@@ -50,24 +50,23 @@ def epsw(model, batch=16):
             X_train, y_train = db_read(data)
             batch = X_train.shape[0]
             count+=batch
-            x += 256
+            x += 1024
             print 'Count:',count, 'X:', x
             # if batch > 0:
-            preds = model.predict(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
-                               verbose=1, shuffle=True)
+            preds = model.predict(X_train, batch_size=batch_size)
             print preds
             print np.argmax(preds, axis=1)
-            print np.argmax(Y_test, axis=1)
+            print np.argmax(y_train, axis=1)
             with open('outputs/preds.txt','a') as f:
-                f.write('PREDS: '+np.argmax(preds, axis=1)+'\n')
-                f.write('TRUE: '+np.argmax(y_train, axis=1)+'\n')
+                f.write('PREDS: '+str(np.argmax(preds, axis=1))+'\n')
+                f.write('TRUE: '+str(np.argmax(y_train, axis=1))+'\n')
         model.save_weights("extras/resnet_weights.h5", overwrite=True)
         print 'Evaluated, predicted and saved weights !'
 
 
 def VGGNet(nb_epoch=1, batch_size=4):
 
-    PRETRAINED = "extras/cnn_weights.h5"
+    PRETRAINED = "extras/cnn_weights_5.h5"
 
     print "Initialising model..."
     start = time.time()
@@ -93,11 +92,11 @@ def VGGNet(nb_epoch=1, batch_size=4):
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_2'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
@@ -122,12 +121,13 @@ def VGGNet(nb_epoch=1, batch_size=4):
 
     print 'Loading weights ...'
     start = time.time()
+    # get_pt_mat(model, layer_dict)
     model.load_weights(PRETRAINED)
     print 'Model loaded in ..', time.time() - start
     
     # model.save_weights(PRETRAINED,overwrite=True)
-
-    sgd = SGD(lr=0.001, decay=5e-4, momentum=0.9, nesterov=True)
+    lr = 1e-7
+    sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
     start = time.time()
@@ -135,13 +135,18 @@ def VGGNet(nb_epoch=1, batch_size=4):
     print "Model compiled in ..", time.time() - start
 
     print "Training on batch..."
-    start = time.time()
+    
+    # epsw(model,batch_size=2)
 
-    for epoch in xrange(400):
+    for epoch in xrange(1, 400):
+        start = time.time()
         chunks = pd.read_csv('traintest/training2.txt',
-            names=['person', 'class','image', 'bbox'], chunksize=256, 
+            names=['person', 'class','image', 'bbox'], chunksize=1024,
             sep='\t', engine='python')
         count = 0
+        for data in chunks:
+            x_test, y_test = db_read(data)
+            break
         x = 0
         print 'Epoch:',epoch,'/ 400'
         for data in chunks:
@@ -150,16 +155,27 @@ def VGGNet(nb_epoch=1, batch_size=4):
             batch = X_train.shape[0]
             count+=batch
             x += batch
-            print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x
+            print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x, 'Learning Rate:',lr
             if batch > 0:
                 model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
-                               verbose=1, shuffle=True)
-                if x>=256:
+                               verbose=1, shuffle=True, validation_data=(x_test,y_test))
+                if x>=5000:
                     x=0
+                    # preds = model.predict(x_test, batch_size=batch_size)
+                    # print preds
+                    # print np.argmax(preds, axis=1)
+                    # print np.argmax(y_test, axis=1)
+                    # with open('outputs/preds.txt','a') as f:
+                    #     f.write('PREDS: '+str(pred_classes)+'\n')
+                    #     f.write('TRUE: '+str(np.argmax(y_test, axis=1))+'\n')
+                    
                     model.save_weights(PRETRAINED,overwrite=True)
                     # epsw(batch=4)
-
-        epsw(model,batch=4)
+        print "Total training time ..", time.time() - start
+        epsw(model,batch_size=4)
 
     print "Total training time ..", time.time() - start
     
+# images trained on: 47462
+# number of testing images: 3069
+# validation set: 294
