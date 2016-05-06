@@ -22,6 +22,8 @@ USE_BN = True  # whether to use batch normalization
 # import memory_profiler
 
 # @profile
+
+
 class ResNet():
 
     def get_data(self):
@@ -79,7 +81,7 @@ class ResNet():
     def resnet101(self):
 
         # ResNet-101 using functional API from keras
-        # with tf.device('/cpu:0'):    
+        # with tf.device('/cpu:0'):
         print 'Initialising ResNet-101 !'
         start = time.time()
         if DIM_ORDERING == 'th':
@@ -253,22 +255,22 @@ class ResNet():
 
         for epoch in xrange(400):
             chunks = pd.read_csv('traintest/training2.txt',
-                names=['person', 'class','image', 'bbox'], chunksize=256, 
-                sep='\t', engine='python')
+                                 names=['person', 'class', 'image', 'bbox'], chunksize=256,
+                                 sep='\t', engine='python')
             count = 0
             x = 0
-            print 'Epoch:',epoch,'/ 400'
+            print 'Epoch:', epoch, '/ 400'
             for data in chunks:
                 self.X_train, self.y_train = db_read(data)
                 batch = self.X_train.shape[0]
-                count+=batch
+                count += batch
                 x += batch
-                print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x
+                print 'Epoch:', epoch, '/ 400', 'Count:', count, 'X:', x
                 if batch > 0:
                     self.model.fit(self.X_train, self.y_train, nb_epoch=nb_epoch, batch_size=batch_size,
                                    verbose=1, shuffle=True)
-                    if x>=256:
-                        x=0
+                    if x >= 256:
+                        x = 0
                         self.epsw(batch=4)
 
             self.epsw(batch=4)
@@ -297,4 +299,4 @@ class ResNet():
     #     self.X_train = self.X_train - np.average(self.X_train)
     #     self.X_test = self.X_test - np.average(self.X_test)
     #     self.y_train = np_utils.to_categorical(self.y_train, NB_CLASS)
-    #     self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)        
+    #     self.Y_test = np_utils.to_categorical(self.Y_test, NB_CLASS)

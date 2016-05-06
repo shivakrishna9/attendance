@@ -27,7 +27,8 @@ def get_pt_mat(model, layer_dict):
                 weight1 = np.rollaxis(i[0][0][2][0][0], 3, start=0)
                 weight1 = np.rollaxis(weight1, 3, start=1)
                 weight2 = np.rollaxis(i[0][0][2][0][1], 1, start=0)[0]
-                weights = [np.array(weight1).astype('float32'), np.array(weight2).astype('float32')]
+                weights = [np.array(weight1).astype(
+                    'float32'), np.array(weight2).astype('float32')]
                 layer_dict[a].set_weights(weights)
                 print "Weights added to", a
 
@@ -37,31 +38,32 @@ def get_pt_mat(model, layer_dict):
     # model.save_weights("extras/cnn_weights.h5", overwrite=True)
     print "Batch trained and weights saved !"
 
-def epsw(model, batch_size=16):
-        print 'Evaluating, predicting and saving weights ..'
 
-        chunks = pd.read_csv('traintest/testing2.txt',
-            names=['person', 'class','image', 'bbox'], chunksize=1024, 
-            sep='\t', engine='python')
-        count = 0
-        x = 0
-        # print 'Epoch:',epoch,'/ 400'
-        for data in chunks:
-            X_train, y_train = db_read(data)
-            batch = X_train.shape[0]
-            count+=batch
-            x += 1024
-            print 'Count:',count, 'X:', x
-            # if batch > 0:
-            preds = model.predict(X_train, batch_size=batch_size)
-            print preds
-            print np.argmax(preds, axis=1)
-            print np.argmax(y_train, axis=1)
-            with open('outputs/preds.txt','a') as f:
-                f.write('PREDS: '+str(np.argmax(preds, axis=1))+'\n')
-                f.write('TRUE: '+str(np.argmax(y_train, axis=1))+'\n')
-        model.save_weights("extras/cnn_weights_5.h5", overwrite=True)
-        print 'Evaluated, predicted and saved weights !'
+def epsw(model, batch_size=16):
+    print 'Evaluating, predicting and saving weights ..'
+
+    chunks = pd.read_csv('traintest/testing2.txt',
+                         names=['person', 'class', 'image', 'bbox'], chunksize=1024,
+                         sep='\t', engine='python')
+    count = 0
+    x = 0
+    # print 'Epoch:',epoch,'/ 400'
+    for data in chunks:
+        X_train, y_train = db_read(data)
+        batch = X_train.shape[0]
+        count += batch
+        x += 1024
+        print 'Count:', count, 'X:', x
+        # if batch > 0:
+        preds = model.predict(X_train, batch_size=batch_size)
+        print preds
+        print np.argmax(preds, axis=1)
+        print np.argmax(y_train, axis=1)
+        with open('outputs/preds.txt', 'a') as f:
+            f.write('PREDS: ' + str(np.argmax(preds, axis=1)) + '\n')
+            f.write('TRUE: ' + str(np.argmax(y_train, axis=1)) + '\n')
+    model.save_weights("extras/cnn_weights_5.h5", overwrite=True)
+    print 'Evaluated, predicted and saved weights !'
 
 
 def VGGNet(nb_epoch=1, batch_size=4):
@@ -72,31 +74,40 @@ def VGGNet(nb_epoch=1, batch_size=4):
     start = time.time()
     model = Sequential()
     model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
-                            activation='relu',trainable=False, name='conv1_1', border_mode='same'))
+                            activation='relu', trainable=False, name='conv1_1', border_mode='same'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(64, 3, 3, activation='relu',trainable=False, name='conv1_2'))
+    model.add(Convolution2D(64, 3, 3, activation='relu',
+                            trainable=False, name='conv1_2'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu',trainable=False, name='conv2_1'))
+    model.add(Convolution2D(128, 3, 3, activation='relu',
+                            trainable=False, name='conv2_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu',trainable=False, name='conv2_2'))
+    model.add(Convolution2D(128, 3, 3, activation='relu',
+                            trainable=False, name='conv2_2'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_1'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',
+                            trainable=False, name='conv3_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_2'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',
+                            trainable=False, name='conv3_2'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_3'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',
+                            trainable=False, name='conv3_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_1'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',
+                            trainable=False, name='conv4_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_2'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',
+                            trainable=False, name='conv4_2'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu',trainable=False, name='conv4_3'))
+    model.add(Convolution2D(512, 3, 3, activation='relu',
+                            trainable=False, name='conv4_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
@@ -124,43 +135,44 @@ def VGGNet(nb_epoch=1, batch_size=4):
     # get_pt_mat(model, layer_dict)
     model.load_weights(PRETRAINED)
     print 'Model loaded in ..', time.time() - start
-    
+
     # model.save_weights(PRETRAINED,overwrite=True)
     lr = 1e-6
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
     start = time.time()
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
     print "Training on batch..."
-    
+
     # epsw(model,batch_size=2)
 
     for epoch in xrange(6, 400):
         start = time.time()
         chunks = pd.read_csv('traintest/training2.txt',
-            names=['person', 'class','image', 'bbox'], chunksize=1024,
-            sep='\t', engine='python')
+                             names=['person', 'class', 'image', 'bbox'], chunksize=1024,
+                             sep='\t', engine='python')
         count = 0
         for data in chunks:
             x_test, y_test = db_read(data)
             break
         x = 0
-        print 'Epoch:',epoch,'/ 400'
+        print 'Epoch:', epoch, '/ 400'
         for data in chunks:
             X_train, y_train = db_read(data)
             print X_train.shape, y_train.shape
             batch = X_train.shape[0]
-            count+=batch
+            count += batch
             x += batch
-            print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x, 'Learning Rate:',lr
+            print 'Epoch:', epoch, '/ 400', 'Count:', count, 'X:', x, 'Learning Rate:', lr
             if batch > 0:
                 model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
-                               verbose=1, shuffle=True, validation_data=(x_test,y_test))
-                if x>=5000:
-                    x=0
+                          verbose=1, shuffle=True, validation_data=(x_test, y_test))
+                if x >= 5000:
+                    x = 0
                     # preds = model.predict(x_test, batch_size=batch_size)
                     # print preds
                     # print np.argmax(preds, axis=1)
@@ -168,14 +180,14 @@ def VGGNet(nb_epoch=1, batch_size=4):
                     # with open('outputs/preds.txt','a') as f:
                     #     f.write('PREDS: '+str(pred_classes)+'\n')
                     #     f.write('TRUE: '+str(np.argmax(y_test, axis=1))+'\n')
-                    
-                    model.save_weights(PRETRAINED,overwrite=True)
+
+                    model.save_weights(PRETRAINED, overwrite=True)
                     # epsw(batch=4)
         print "Total training time ..", time.time() - start
-        epsw(model,batch_size=4)
+        epsw(model, batch_size=4)
 
     print "Total training time ..", time.time() - start
-    
+
 # images trained on: 47462
 # number of testing images: 3069
 # validation set: 294

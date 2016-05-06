@@ -6,8 +6,8 @@ import time
 from keras.utils import np_utils
 im_size = 227
 
-def detect_haar(image):
 
+def detect_haar(image):
 
     FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
 
@@ -16,13 +16,13 @@ def detect_haar(image):
                                       minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
 
     faces = []
-    for (x,y,w,h) in rects:
+    for (x, y, w, h) in rects:
         faces += [image[y:y + h, x:x + w]]
 
     return faces
 
 
-def detect(image,dets):
+def detect(image, dets):
 
     x, y, w, h = dets.split(',')
     x = int(x)
@@ -30,7 +30,7 @@ def detect(image,dets):
     w = int(w)
     h = int(h)
 
-    if x!=0 and y!=0 and w!=0 and h!=0:
+    if x != 0 and y != 0 and w != 0 and h != 0:
         roi_color = image[y:h, x:w]
     else:
         roi_color = image
@@ -52,10 +52,10 @@ def categorize(x, n):
 
 
 def class_db_read(chunk):
-    
+
     images = []
     image_classes = []
-    
+
     for data in chunk.itertuples():
         image = data[2]
         person = data[0]
@@ -66,14 +66,15 @@ def class_db_read(chunk):
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
         image_classes.append(image_class)
-        
+
     return preprocess(np.array(images), np.array(image_classes), NB_CLASS=21)
 
 
 def input_image(image):
 
     try:
-        res = cv2.resize(image, (im_size, im_size), interpolation=cv2.INTER_CUBIC)
+        res = cv2.resize(image, (im_size, im_size),
+                         interpolation=cv2.INTER_CUBIC)
     except cv2.error:
         res = None
 
@@ -102,11 +103,11 @@ def db_read(chunk):
         image_det = data[4]
         person = data[1]
         image_class = data[2]
-        if cv2.imread(image)!=None:
+        if cv2.imread(image) != None:
             image = cv2.imread(image)
-            image = input_image(detect(image,image_det))
-            
-            if image==None:
+            image = input_image(detect(image, image_det))
+
+            if image == None:
                 continue
             else:
                 image = np.rollaxis(image, 2, start=0)

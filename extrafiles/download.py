@@ -16,7 +16,6 @@ if not exists(RESULT_ROOT):
 # def remove(names, urls, fnames):
 
 #     for image in glob(RESULT_ROOT+'*/*.jpg'):
-        
 
 
 def download((names, urls, fnames)):
@@ -74,7 +73,7 @@ if __name__ == '__main__':
                 name = '_'.join(components[0].split(' '))
                 # print name
                 url = components[3]
-                fname = name+'_'+components[1]
+                fname = name + '_' + components[1]
                 fnames.append(fname)
                 names.append(name)
                 urls.append(url)

@@ -6,7 +6,7 @@ import glob
 
 def one_hot_names():
     lst = []
-    with open("../traintest/lfwpeople.txt",'r') as f:
+    with open("../traintest/lfwpeople.txt", 'r') as f:
         for line in f:
             lst += [line.split(',')[1]]
     print one_hot(",".join(lst), 5749, split=",")[:10]
@@ -14,17 +14,18 @@ def one_hot_names():
 
 
 def preprocess():
-    
-    with open("../traintest/classtrain.txt",'w') as f:
+
+    with open("../traintest/classtrain.txt", 'w') as f:
         for image in glob.glob("newtest/*/*.jpg"):
-            print image.split('/')[2].split('.')[0]+","+image.split('/')[1]
-            f.write(image.split('/')[2].split('.')[0]+","+image.split('/')[1]+'\n')
+            print image.split('/')[2].split('.')[0] + "," + image.split('/')[1]
+            f.write(image.split('/')[2].split('.')
+                    [0] + "," + image.split('/')[1] + '\n')
 
 
 def encode():
     lst = []
     l1 = []
-    with open("../traintest/classtrain.txt",'r') as f:
+    with open("../traintest/classtrain.txt", 'r') as f:
         for i in f:
             if i.split(',')[1].split('\n')[0] not in l1:
                 l1.append(i.split(',')[1].split('\n')[0])
@@ -32,11 +33,11 @@ def encode():
 
     print l1
 
-    with open("train.txt",'w') as f:
+    with open("train.txt", 'w') as f:
         for i in lst:
-            print str(i[1])+","+str(l1.index(i[0]))
-            f.write(i[1]+","+str(l1.index(i[0]))+'\n')
-            
+            print str(i[1]) + "," + str(l1.index(i[0]))
+            f.write(i[1] + "," + str(l1.index(i[0])) + '\n')
+
 
 def image_load():
     # Load an color image in grayscale
@@ -69,9 +70,10 @@ def image_load():
             cv2.imshow('image', img)
             if cv2.waitKey(0) & 0xFF == ord('y'):
                 cv2.destroyAllWindows()
-                with open("../traintest/detrain.txt",'a') as f:        
-                    print image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)
-                    f.write(image.split('/')[5]+","+image.split('/')[4]+','+str(x)+','+str(y)+','+str(w)+','+str(h)+'\n')
+                with open("../traintest/detrain.txt", 'a') as f:
+                    print image.split('/')[5] + "," + image.split('/')[4] + ',' + str(x) + ',' + str(y) + ',' + str(w) + ',' + str(h)
+                    f.write(image.split('/')[5] + "," + image.split('/')[4] + ',' + str(
+                        x) + ',' + str(y) + ',' + str(w) + ',' + str(h) + '\n')
 
             elif cv2.waitKey(0) & 0xFF == ord('n'):
                 cv2.destroyAllWindows()
