@@ -1,13 +1,14 @@
-from __future__ import unicode_literals
 
-from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 
 # Create your models here.
+
+
 class Student(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
-    course = models.CharField(max_length=20, default="BTECH (Computer Engineering)")
+    course = models.CharField(
+        max_length=20, default="BTECH (Computer Engineering)")
     year = models.PositiveSmallIntegerField(default=2016)
     semester = models.SmallIntegerField(default=1)
     rollno = models.CharField(max_length=10, blank=True, null=True)
@@ -26,12 +27,14 @@ class Student(models.Model):
     def __str__(self):
         return self.name
 
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, blank=True, null=True)
     added_on = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return self.user.username
+
 
 class Subject(models.Model):
     code = models.CharField(max_length=10, blank=True, null=True)
@@ -40,6 +43,7 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Studies(models.Model):
     student = models.ForeignKey(Student)
@@ -50,11 +54,13 @@ class Studies(models.Model):
     def __str__(self):
         return self.subject_name + " <-> " + self.student_name
 
+
 class Logs(models.Model):
     subject = models.ForeignKey(Subject)
     student = models.ForeignKey(Student)
     timestamp = models.DateTimeField(default=datetime.now)
-    entry_in_out = models.BooleanField(default=False)      # true for coming in. false for going out
+    # true for coming in. false for going out
+    entry_in_out = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id) + ": " + str(self.timestamp)
