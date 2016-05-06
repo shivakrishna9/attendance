@@ -60,7 +60,7 @@ def image():
         FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
 
         detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-        rects = detector.detectMultiScale(img, scaleFactor=1.03, minNeighbors=5)
+        rects = detector.detectMultiScale(img, scaleFactor=1.03, minNeighbors=10)
 
         for i,(x, y, w, h) in enumerate(rects):
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)

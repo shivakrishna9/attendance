@@ -126,7 +126,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     print 'Model loaded in ..', time.time() - start
     
     # model.save_weights(PRETRAINED,overwrite=True)
-    lr = 1e-5
+    lr = 1e-6
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."

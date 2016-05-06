@@ -122,7 +122,7 @@ def train(model,batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
             count+=batch
             x += batch
             
-            print 'Epoch:',epoch,'/ 400', 'Count:',count, 'X:', x, 'Learning Rate:',lr
+            print 'Epoch:',epoch,'/',epochs, 'Count:',count, 'X:', x, 'Learning Rate:',lr
         
             if batch > 0:
                 model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
@@ -208,7 +208,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     # evaluate(model,batch_size=4)
     # print 'Checkout the results in class_eval.txt file !'
 
-    train(model,batch_size=4,epochs=20,lr=lr,nb_epoch=1)
+    train(model,batch_size=4, epochs=1000, lr=lr, nb_epoch=1)
 
     
     
