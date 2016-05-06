@@ -1,81 +1,66 @@
-from __future__ import unicode_literals
 
-from django.db import models
-import time
+from django.contrib.auth.models import User
+from datetime import datetime
 
 # Create your models here.
 
 
-class student(models.Model):
-    student_id = models.CharField(max_length=200)
-    name = models.IntegerField(default=1)
-    roll_no = models.IntegerField(default=0)
-    year = models.IntegerField(default=1)
-    dob = models.IntegerField(default=0)
-    image1 = models.BooleanField(default=0)
-    image2 = models.CharField(default='', max_length=500)
-    image3 = models.DateTimeField(default=time.strftime('%Y-%m-%d'))
-    image4 = models.DateTimeField(default=time.strftime('%Y-%m-%d %H:%M:%S'))
+class Student(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=True)
+    course = models.CharField(
+        max_length=20, default="BTECH (Computer Engineering)")
+    year = models.PositiveSmallIntegerField(default=2016)
+    semester = models.SmallIntegerField(default=1)
+    rollno = models.CharField(max_length=10, blank=True, null=True)
+    dob = models.DateField(default=datetime(1993, 01, 02))
 
-    def __unicode__(self):
+    username = models.CharField(max_length=20, blank=True, null=True)
+    password = models.CharField(max_length=20, blank=True, null=True)
+
+    image1 = models.ImageField(upload_to='images', default='no-image.png')
+    image2 = models.ImageField(upload_to='images', default='no-image.png')
+    image3 = models.ImageField(upload_to='images', default='no-image.png')
+    image4 = models.ImageField(upload_to='images', default='no-image.png')
+
+    added_on = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
         return self.name
 
 
-class teacher(models.Model):
-    teacher_id = models.CharField(max_length=200)
-    name = models.IntegerField(default=1)
-    username = models.BooleanField(default=0)
-    password = models.IntegerField(default=0)
+class Teacher(models.Model):
+    user = models.OneToOneField(User, blank=True, null=True)
+    added_on = models.DateTimeField(default=datetime.now)
 
-    def __unicode__(self):
+    def __str__(self):
+        return self.user.username
+
+
+class Subject(models.Model):
+    code = models.CharField(max_length=10, blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    teacher = models.ForeignKey(Teacher)
+
+    def __str__(self):
         return self.name
 
 
-class lab(models.Model):
-	lab_code = models.IntegerField(default=0)
-    name = models.IntegerField(default=0)
-    semester = models.IntegerField(default=0)
-    teacher_id = models.IntegerField(default=0)
-    
-    def __unicode__(self):
-        return self.name
+class Studies(models.Model):
+    student = models.ForeignKey(Student)
+    subject = models.ForeignKey(Subject)
+    attendance = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(default=datetime.now)
 
-class attendance(models.Model):
-    timestamp = models.DateTimeField(default=time.strftime('%Y-%m-%d %H:%M:%S'))
-    student_id = models.IntegerField(default=0)
-    lab_code = models.IntegerField(default=0)
-    teacher_id = models.IntegerField(default=0)
-    onlydate = models.DateTimeField(default=time.strftime('%Y-%m-%d'))
-    
-    def __unicode__(self):
-        return self.student_id
-
-class admin(models.Model):
-    admin_id = models.IntegerField(default=0)
-    username = models.IntegerField(default=0)
-    name = models.IntegerField(default=0)
-    password = models.IntegerField(default=0)
-    
-    def __unicode__(self):
-        return self.name
-
-class logs(models.Model):
-    timestamp = models.DateTimeField(default=time.strftime('%Y-%m-%d %H:%M:%S'))
-    student_id = models.IntegerField(default=0)
-    lab_code = models.IntegerField(default=0)
-    enter_exit = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.timestamp
+    def __str__(self):
+        return self.subject_name + " <-> " + self.student_name
 
 
-class session(models.Model):
-    session_id = models.IntegerField(default=0)
-    ip_address = models.IntegerField(default=0)
-    user_agent = models.IntegerField(default=0)
-    last_activity = models.IntegerField(default=0)
-    onlydate = models.DateTimeField(default=time.strftime('%Y-%m-%d'))
-    timestamp = models.DateTimeField(default=time.strftime('%Y-%m-%d %H:%M:%S'))
+class Logs(models.Model):
+    subject = models.ForeignKey(Subject)
+    student = models.ForeignKey(Student)
+    timestamp = models.DateTimeField(default=datetime.now)
+    # true for coming in. false for going out
+    entry_in_out = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return self.user_agent
+    def __str__(self):
+        return str(self.id) + ": " + str(self.timestamp)

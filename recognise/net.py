@@ -73,23 +73,23 @@ def VGGNet(nb_epoch=1, batch_size=4):
     start = time.time()
     model = Sequential()
     model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
-                            activation='relu', name='conv1_1', border_mode='same'))
+                            activation='relu',trainable=False, name='conv1_1', border_mode='same'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
+    model.add(Convolution2D(64, 3, 3, activation='relu',trainable=False, name='conv1_2'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
+    model.add(Convolution2D(128, 3, 3, activation='relu',trainable=False, name='conv2_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
+    model.add(Convolution2D(128, 3, 3, activation='relu',trainable=False, name='conv2_2'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_1'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_2'))
     model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3'))
+    model.add(Convolution2D(256, 3, 3, activation='relu',trainable=False, name='conv3_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
@@ -127,7 +127,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     
     # model.save_weights(PRETRAINED,overwrite=True)
 
-    sgd = SGD(lr=0.01, decay=5e-4, momentum=0.9, nesterov=True)
+    sgd = SGD(lr=0.001, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
     start = time.time()
