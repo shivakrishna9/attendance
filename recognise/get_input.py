@@ -51,50 +51,23 @@ def categorize(x, n):
     return array
 
 
-def from_file(fname='traintest/train.txt'):
-    print 'Collecting training images...'
-    start = time.time()
-    read = pd.read_csv(fname, names=['filename', 'name'])
-
+def class_db_read(chunk):
+    
     images = []
     image_classes = []
-    for data in read.itertuples():
-        image = data[1]
-        image_class = data[2]
-        # print "extracting", image, image_class
-        image = glob.glob("newtest/*/" + image)
-        # print image
-        image_classes.append(image_class)
-        image = cv2.imread(image[0])
-        image = input_image(image)
-        image = np.rollaxis(image, 2, start=0)
-        images.append(image)
-
-    print "Training images collected in ..", time.time() - start
-    # print "No. of images:", len([images][0]), "No. of classes:",
-    # len(image_classes)
-    return np.array(images).astype('float32'), image_classes
-
-
-def test_file(fname='traintest/classtest.txt'):
-    print 'Collecting testing images...'
-    start = time.time()
-    read = pd.read_csv(fname, names=['filename', 'name'])
-
-    images = []
-    image_classes = []
-    for data in read.itertuples():
-        image = data[1]
-        image_class = data[2]
-        image = glob.glob("newtest/*/" + image)[0]
-        image_classes.append(image_class)
+    
+    for data in chunk.itertuples():
+        image = data[2]
+        person = data[0]
+        image_class = data[1]
+        # print image, person, image_class
         image = cv2.imread(image)
         image = input_image(image)
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
-
-    print "Testing images collected in ..", time.time() - start
-    return np.array(images).astype('float32'), image_classes
+        image_classes.append(image_class)
+        
+    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=21)
 
 
 def input_image(image):
@@ -107,9 +80,9 @@ def input_image(image):
     return res
 
 
-def preprocess(images, classes):
+def preprocess(images, classes, NB_CLASS=696):
 
-    NB_CLASS = 696
+    # NB_CLASS = 696
     images = images.astype('float32')
     images /= 255
     images = images - np.average(images)
@@ -143,4 +116,4 @@ def db_read(chunk):
             # print image, 'image not found !'
             continue
 
-    return preprocess(np.array(images), np.array(image_classes))
+    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=696)
