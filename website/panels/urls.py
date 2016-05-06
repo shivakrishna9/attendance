@@ -8,4 +8,6 @@ urlpatterns = patterns('',
     url(r'^forms[/]?$', views.forms, name='forms'),
     url(r'^tables[/]?$', views.tables, name='tables'),
     url(r'^surveillance[/]?$', views.surveillance, name='surveillance'),
+    url(r'^logout[/]?$', views.user_logout, name='logout'),
+    url(r'^add_student[/]?$', views.add_student, name='add_student'),
 )
