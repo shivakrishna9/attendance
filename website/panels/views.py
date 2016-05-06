@@ -47,7 +47,7 @@ def add_student(request):
         name = escape(request.POST.get('name', None).strip())
         username = escape(request.POST.get('username', None).strip())
         password = escape(request.POST.get('password', None).strip())
-        rno = escape(request.POST.get('roll', None).strip())
+        rno = escape(request.POST.get('rno', None).strip())
         dob = escape(request.POST.get('dob', None).strip())
         course = escape(request.POST.get('course', None).strip())
         year = escape(request.POST.get('year', None).strip())
@@ -57,10 +57,10 @@ def add_student(request):
         image3 = request.FILES.get('image3')
         image4 = request.FILES.get('image4')
         image1.name = '{}{}'.format(uuid4().hex, image1.name[image1.name.rfind('.'):])
-        image2.name = '{}{}'.format(uuid4().hex, image2.name[image1.name.rfind('.'):])
-        image3.name = '{}{}'.format(uuid4().hex, image3.name[image1.name.rfind('.'):])
-        image4.name = '{}{}'.format(uuid4().hex, image4.name[image1.name.rfind('.'):])
-        student = Student(name=name, username=username, password=password, rno=rno, dob=dob,
+        image2.name = '{}{}'.format(uuid4().hex, image2.name[image2.name.rfind('.'):])
+        image3.name = '{}{}'.format(uuid4().hex, image3.name[image3.name.rfind('.'):])
+        image4.name = '{}{}'.format(uuid4().hex, image4.name[image4.name.rfind('.'):])
+        student = Student(name=name, username=username, password=password, rollno=rno, dob=dob,
                           course=course, year=year, semester=semester, image1=image1, image2=image2,
                           image3=image3, image4=image4)
         student.save()
