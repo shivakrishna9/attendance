@@ -129,141 +129,69 @@
             Form Default
           </div>
           <div class="panel-body">
-            <form>
+            <form action="{% url 'add_student' %}" method="post">
+                {% csrf_token %}
               <fieldset>
                 <legend>Enter New Student Information</legend>
                 <div class="form-group">
-                  <label class="control-label">Name</label>
-                  <input class="form-control" placeholder="Enter username" type="text">
+                  <label class="control-label">Full Name</label>
+                  <input class="form-control" placeholder="Enter full name" type="text" name="name">
+                </div>
+                  <div class="form-group">
+                  <label class="control-label">Username</label>
+                  <input class="form-control" placeholder="Enter username" type="text" name="username">
                 </div>
                 <div class="form-group">
                   <label class="control-label">Password</label>
-                  <input class="form-control" placeholder="Enter password" type="password">
+                  <input class="form-control" placeholder="Enter password" type="password" name="password">
                 </div>
                 <div class="form-group">
                   <label class="control-label">Roll Number</label>
-                  <input class="form-control" placeholder=".help-block">
-                  <p class="help-block">Example block-level help text here.</p>
+                  <input class="form-control" placeholder="Enter roll number" name="roll">
                 </div>
-                <!-- <div class="form-group">
-                  <label class="control-label">Disabled field</label>
-                  <input class="form-control" disabled="" placeholder="This is field is disabled!">
-                </div> -->
-                <!-- <div class="form-group">
-                  <label class="control-label">Tooltip field</label>
-                  <input data-original-title="Input tips here" class="form-control" data-toggle="tooltip" placeholder="This is field is disabled!" title="">
-                </div> -->
-                <!-- <div class="form-group">
-                  <label class="control-label">Textarea field</label>
-                  <textarea class="form-control" rows="4"></textarea>
-                </div> -->
                 <div class="form-group">
-                  <label class="control-label">Image Upload</label>
-                  <input type="file">
+                  <label class="control-label">Date of Birth</label>
+                  <input class="form-control" placeholder="Enter date of birth (yyyy-mm-dd)" name="dob">
                 </div>
+
+                <div class="form-group">
+                  <label class="control-label">Course</label>
+                  <input class="form-control" placeholder="Enter course" name="course">
+                </div>
+
                 <div class="form-group">
                   <label class="control-label">Year</label>
-                  <input class="form-control input-lg" placeholder=".input-lg" type="text">
+                  <input class="form-control" placeholder="Enter year" name="year">
                 </div>
+
                 <div class="form-group">
-                  <label class="control-label">Date Of Birth</label>
-                  <input class="form-control input-sm" placeholder=".input-sm" type="text">
+                  <label class="control-label">Semester</label>
+                  <input class="form-control" placeholder="Enter semester" name="roll">
                 </div>
-                <div class="form-group row">
-                  <div class="col-lg-2">
-                    <label class="control-label">Column sizing</label>
-                    <input class="form-control" placeholder=".col-lg-2" type="text">
-                  </div>
-                  <div class="col-lg-3">
-                    <label class="control-label">Column sizing</label>
-                    <input class="form-control" placeholder=".col-lg-3" type="text">
-                  </div>
-                  <div class="col-lg-7">
-                    <label class="control-label">Column sizing</label>
-                    <input class="form-control" placeholder=".col-lg-7" type="text">
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>Input Validation States</legend>
-                <div class="form-group has-warning">
-                  <label class="control-label">Input field with help</label>
-                  <input class="form-control" placeholder=".has-warning">
-                  <p class="help-block">Example block-level help text here.</p>
-                </div>
-                <div class="form-group has-error">
-                  <label class="control-label">Input field with help</label>
-                  <input class="form-control" placeholder=".has-error">
-                  <p class="help-block">Example block-level help text here.</p>
-                </div>
-                <div class="form-group has-success">
-                  <label class="control-label">Input field with help</label>
-                  <input class="form-control" placeholder=".has-success">
-                  <p class="help-block">Example block-level help text here.</p>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>Checkboxes and radios</legend>
+
                 <div class="form-group">
-                  <label class="control-label">Checkbox</label>
-                  <div class="checkbox">
-                    <input value="" type="checkbox">
-                    Option one is this and that—be sure to include why it's great
-                  </div>
+                  <label class="control-label">Image 1</label>
+                  <input type="file" name="image1">
                 </div>
-                <div class="form-group">
-                  <label class="control-label">Inline checkbox</label>
-                  <br>
-                  <div class="checkbox-inline">
-                    <input value="" type="checkbox">
-                    1
-                  </div>
-                  <div class="checkbox-inline">
-                    <input value="" type="checkbox">
-                    2
-                  </div>
-                  <div class="checkbox-inline">
-                    <input value="" type="checkbox">
-                    3
-                  </div>
+
+                  <div class="form-group">
+                  <label class="control-label">Image 2</label>
+                  <input type="file" name="image2">
                 </div>
-                <div class="form-group">
-                  <label class="control-label">Radio</label>
-                  <div class="radio">
-                    <input checked="" name="options_radio" value="option1" type="radio">
-                    Option one is this and that—be sure to include why it's great
-                    <br>
-                    <input checked="" name="options_radio" value="option2" type="radio">
-                    Option two can be something else and selecting it will deselect option one
-                  </div>
+
+                  <div class="form-group">
+                  <label class="control-label">Image 3</label>
+                  <input type="file" name="image3">
                 </div>
-              </fieldset>
-              <fieldset>
-                <legend>Selects</legend>
-                <div class="form-group">
-                  <label class="control-label">Single select</label>
-                  <select class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Multiple select</label>
-                  <select class="form-control" multiple="">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </select>
+
+                  <div class="form-group">
+                  <label class="control-label">Image 4</label>
+                  <input type="file" name="image4">
                 </div>
               </fieldset>
               <div class="form-actions">
                 <button class="btn btn-default" type="submit">Submit</button>
-                <a class="btn" href="#">Cancel</a>
+{#                <a class="btn" href="#">Cancel</a>#}
               </div>
             </form>
           </div>
