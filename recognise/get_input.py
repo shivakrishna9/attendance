@@ -6,17 +6,24 @@ import time
 from keras.utils import np_utils
 im_size = 227
 
+def detect_haar(image):
+
+
+    FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
+
+    detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
+    rects = detector.detectMultiScale(img, scaleFactor=1.2, minNeighbors=5,
+                                      minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+
+    faces = []
+    for (x,y,w,h) in rects:
+        faces += [image[y:y + h, x:x + w]]
+
+    return faces
+
+
 def detect(image,dets):
 
-    # img = cv2.imread(image)
-    # FACE_DETECTOR_PATH = "extras/haarcascade_frontalface_default.xml"
-
-    # detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-    # rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
-    #                                   minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
-
-    # print image
-    # print dets.split(',')
     x, y, w, h = dets.split(',')
     x = int(x)
     y = int(y)
@@ -86,7 +93,6 @@ def test_file(fname='traintest/classtest.txt'):
 
 def input_image(image):
 
-    # res = detect(image)
     try:
         res = cv2.resize(image, (im_size, im_size), interpolation=cv2.INTER_CUBIC)
     except cv2.error:
