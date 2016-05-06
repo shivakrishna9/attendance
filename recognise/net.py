@@ -126,7 +126,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     print 'Model loaded in ..', time.time() - start
     
     # model.save_weights(PRETRAINED,overwrite=True)
-    lr = 1e-7
+    lr = 1e-5
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
@@ -138,7 +138,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     
     # epsw(model,batch_size=2)
 
-    for epoch in xrange(1, 400):
+    for epoch in xrange(6, 400):
         start = time.time()
         chunks = pd.read_csv('traintest/training2.txt',
             names=['person', 'class','image', 'bbox'], chunksize=1024,
