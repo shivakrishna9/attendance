@@ -72,15 +72,15 @@ def image():
                 os.makedirs(f_path)
             print f_path + '/' + im_name + '_' + str(i) + '.jpg'
 
-            cv2.imshow('image', roi_color)
+            # cv2.imshow('image', roi_color)
 
-            if cv2.waitKey(0) & 0xFF == ord('y'):
-                cv2.destroyAllWindows()
-                cv2.imwrite(f_path + '/' + im_name + '_' +
-                            str(i) + '.jpg', roi_color)
+            # if cv2.waitKey(0) & 0xFF == ord('y'):
+            #     cv2.destroyAllWindows()
+            cv2.imwrite(f_path + '/' + im_name + '_' +
+                        str(i) + '.jpg', roi_color)
 
-            elif cv2.waitKey(0) & 0xFF == ord('n'):
-                cv2.destroyAllWindows()
+            # elif cv2.waitKey(0) & 0xFF == ord('n'):
+            #     cv2.destroyAllWindows()
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
