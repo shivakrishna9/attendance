@@ -25,8 +25,7 @@ def preprocess():
     with open("../traintest/classtrain.txt", 'w') as f:
         for image in glob.glob("newtest/*/*.jpg"):
             print image.split('/')[2].split('.')[0] + "," + image.split('/')[1]
-            f.write(image.split('/')[2].split('.')
-                    [0] + "," + image.split('/')[1] + '\n')
+            f.write(image.split('/')[2].split('.')[0] + "," + image.split('/')[1] + '\n')
 
 
 def encode():
@@ -47,10 +46,7 @@ def encode():
 
 
 def image():
-    # Load an color image in grayscale
-
-    # cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-    # print img.shape
+    
     for image in glob.glob("../extras/Farewell/*/*.JPG"):
         start = time.time()
         im_path = '/'.join(image.split('/')[:-1])
