@@ -61,7 +61,7 @@ def image():
                                           scaleFactor=1.03,
                                           minNeighbors=10,
                                           minSize=(30, 30),
-                                          flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+                                          flags=cv2.CASCADE_SCALE_IMAGE)
 
         for i, (x, y, w, h) in enumerate(rects):
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -80,10 +80,9 @@ def image():
 
             # elif cv2.waitKey(0) & 0xFF == ord('n'):
             #     cv2.destroyAllWindows()
-        cv2.imshow('image', img)
+        # cv2.imshow('image', img)
         # cv2.waitKey(0)
-        time.sleep(2)
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
 
 def video():
