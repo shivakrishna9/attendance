@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import time
 import glob
+import re
+import random
 
 
 def one_hot_names():
@@ -14,13 +16,31 @@ def one_hot_names():
 
 
 def preprocess():
+    i=[]
+    for image in glob.glob("../newtest/myclass/*/*.jpg"):
+        person = image.split('/')[3]
+        image = re.sub('\.\./', '', image)
+        img = image
+        if 'not' in person:
+            i.append((person,'none',img))
+        else:
+            i.append(('face',person,img))
 
-    with open("../traintest/classtrain.txt", 'w') as f:
-        for image in glob.glob("newtest/*/*.jpg"):
-            print image.split('/')[2].split('.')[0] + "," + image.split('/')[1]
-            f.write(image.split('/')[2].split('.')
-                    [0] + "," + image.split('/')[1] + '\n')
+    up = [x for (a,x,y) in i if x!='none']
+    up = list(set(up))
+    up = sorted(up)
+    random.shuffle(i)
 
+    with open("../traintest/class_66.txt", 'w') as f:
+        for k in i:
+            if k[1]!='none':
+                print k[0]+'\t'+k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]
+                f.write(k[0]+'\t'+k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]+'\n')
+            else:
+                print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
+                f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
+
+    print up
 
 def encode():
     lst = []
@@ -47,14 +67,7 @@ def image_load():
     for image in glob.glob("../extras/faceScrub/download/*/*.jpg"):
         start = time.time()
         img = cv2.imread(image)
-        # res = cv2.resize(img, (227, 227), interpolation=cv2.INTER_CUBIC)
-
-        FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
-
-        detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-        rects = detector.detectMultiScale(img, scaleFactor=1.4, minNeighbors=1,
-                                          minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
-
+        # res = cv2.resize(img, (227, 227), interpolation=cv2.INTER_CUBIC
         # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # construct a list of bounding boxes from the detection
@@ -80,4 +93,6 @@ def image_load():
 
 
 if __name__ == '__main__':
-    image_load()
+    # image_load()
+
+    preprocess()
