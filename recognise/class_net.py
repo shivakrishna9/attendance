@@ -61,10 +61,10 @@ def evaluate(model, plist, batch_size=16):
 
         # print 'EVAL: ' + str(ev)
         for i, j in enumerate(cls):
-            f_path = imgs[i].split('/')[:-1]
+            f_path = '/'.join(imgs[i].split('/')[:-1])
             directory = f_path + '/' + plist[j[0]]
             im_name = plist[j[0]]
-            f_path = f_path + '/' + im_name + '_' + str(i) + '.jpg'
+            f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
             print im_name, str(j), f_path, imgs[i]
             cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
             f_path = imgs[i].split('/')[:-1]
