@@ -67,19 +67,30 @@ def evaluate(model, plist, batch_size=16):
             directory = f_path + '/' + plist[j[0]]
             im_name = plist[j[0]]
             f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
+
             print im_name, str(j), f_path, imgs[i]
             cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
-            if cv2.waitKey(0) & 0xFF == ord('y'):
-                if not exists(directory):
+            if not exists(directory):
                     os.mkdir(directory)
                 os.rename(imgs[i], f_path)
+
+        for i, j in enumerate(cls):
+            f_path = '/'.join(imgs[i].split('/')[:-1])
+            directory = f_path + '/' + plist[j[0]]
+            im_name = plist[j[0]]
+            f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
+            
+            print im_name, str(j), f_path, imgs[i]
+            if cv2.waitKey(0) & 0xFF == ord('y'):
+                with open('outputs/unsorted_out.txt', 'a') as f:
+                    f.write(im_name + '\t' + str(j[0]) + '\t' + f_path + '\t' +'1' + '\n')
                 cv2.destroyAllWindows()
             elif cv2.waitKey(0) & 0xFF == ord('n'):
+                with open('outputs/unsorted_out.txt', 'a') as f:
+                    f.write(im_name + '\t' + str(j[0]) + '\t' + f_path + '\t' +'0' + '\n')
                 cv2.destroyAllWindows()
 
-        # with open('outputs/unsorted_out.txt', 'a') as f:
-        #     for i, j in enumerate(cls):
-        #         f.write(plist[j[0]] + '\t' + str(j[0]) + '\t' + imgs[i] + '\n')
+        
     print 'Evaluated, predicted and saved weights !'
 
 
