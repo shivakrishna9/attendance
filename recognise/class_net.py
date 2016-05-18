@@ -74,6 +74,10 @@ def evaluate(model, plist, batch_size=16):
                 os.mkdir(directory)
             os.rename(imgs[i], f_path)
 
+            #mislabelled 1403 - including unknowns
+            #unknowns = 355 - so mislabelled = 1048
+            #total images = 
+
         for i, j in enumerate(cls):
             f_path = '/'.join(imgs[i].split('/')[:-1])
             directory = f_path + '/' + plist[j[0]]
