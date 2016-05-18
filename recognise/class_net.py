@@ -41,12 +41,13 @@ def evaluate(model, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
     chunks = pd.read_csv('traintest/unsorted.txt',
-                         names=['person', 'class', 'image'], chunksize=1024,
+                         names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
+    plist = preprocess()
     count = 0
     x = 0
     for data in chunks:
-        X_train, y_train = class_db_read(data)
+        imgs, X_train, y_train = class_db_read1(data)
         batch = X_train.shape[0]
         count += batch
         x += 1024
@@ -60,13 +61,11 @@ def evaluate(model, batch_size=16):
 
         print 'EVAL: ' + str(ev)
         for i, j in enumerate(cls):
-            print 'PRED: ' + str(j), 'TRUE: ' + str(np.argmax(y_train[i]))
+            print str(j[0]), plist[j[0]], 'image:', imgs[i]
 
-        with open('outputs/class_eval.txt', 'a') as f:
-            f.write('EVAL: ' + str(ev) + '\n')
+        with open('outputs/unsorted_out.txt', 'a') as f:
             for i, j in enumerate(cls):
-                f.write('PRED: ' + str(j) + '\tTRUE: ' +
-                        str(np.argmax(y_train[i])) + '\n')
+                f.write(plist[j[0]] + '\t' + str(j[0]) + '\t' + imgs[i] + '\n')
     print 'Evaluated, predicted and saved weights !'
 
 
@@ -91,10 +90,10 @@ def epsw(model, batch_size=16):
             cls += [[j, np.max(preds[i])]]
         # print cls
         # print np.argmax(y_train, axis=1)
-        evl = model.evaluate(X_train,y_train, batch_size=4)
+        evl = model.evaluate(X_train, y_train, batch_size=4)
         print evl
         with open('outputs/class20_preds.txt', 'a') as f:
-            f.write('EVAL: '+str(evl)+'\n')
+            f.write('EVAL: ' + str(evl) + '\n')
             for i, j in enumerate(cls):
                 f.write('PRED: ' + str(j) + '\tTRUE: ' +
                         str(np.argmax(y_train[i])) + '\n')
