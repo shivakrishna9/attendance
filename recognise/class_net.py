@@ -11,7 +11,7 @@ from keras.utils import np_utils
 import scipy.io
 from .get_input import *
 
-NB_CLASS = 66
+NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
 
 
@@ -107,7 +107,7 @@ def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
     for epoch in xrange(0, epochs):
         start = time.time()
         chunks = pd.read_csv('traintest/class66_train.txt',
-                             names=['person', 'class', 'image'], chunksize=1024,
+                             names=['person', 'class', 'image'], chunksize=256,
                              sep='\t', engine='python')
         count = 0
         # for data in chunks:
@@ -196,9 +196,9 @@ def VGGNet(nb_epoch=1, batch_size=4):
     start = time.time()
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu',
-                    trainable=False, init="uniform"))
+                    init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform",
-                    trainable=False, activation='relu'))
+                    activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
     print 'FC layers added ! Time taken :', time.time() - start

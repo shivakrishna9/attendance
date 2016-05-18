@@ -42,6 +42,7 @@ def preprocess():
             m.append(('face',person,img))
 
     random.shuffle(m)
+    random.shuffle(i)
 
     with open("../traintest/class20_test.txt", 'w') as f:
         for k in m:
@@ -54,6 +55,7 @@ def preprocess():
             #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
 
     print up
+    print len(up)
 
 def encode():
     lst = []
