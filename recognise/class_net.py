@@ -11,6 +11,7 @@ from keras.utils import np_utils
 import scipy.io
 from .get_input import *
 from os.path import exists
+import os
 # from extrafiles import *
 
 NB_CLASS = 67
