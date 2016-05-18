@@ -71,8 +71,8 @@ def evaluate(model, plist, batch_size=16):
             print im_name, str(j), f_path, imgs[i]
             cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
             if not exists(directory):
-                    os.mkdir(directory)
-                os.rename(imgs[i], f_path)
+                os.mkdir(directory)
+            os.rename(imgs[i], f_path)
 
         for i, j in enumerate(cls):
             f_path = '/'.join(imgs[i].split('/')[:-1])
