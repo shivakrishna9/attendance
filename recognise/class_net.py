@@ -10,6 +10,7 @@ from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
 import scipy.io
 from .get_input import *
+from os.path import exists
 # from extrafiles import *
 
 NB_CLASS = 67
