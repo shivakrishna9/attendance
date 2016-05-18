@@ -104,7 +104,7 @@ def epsw(model, batch_size=16):
 def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
     print "Training on batch..."
 
-    for epoch in xrange(0, epochs):
+    for epoch in xrange(27, epochs):
         start = time.time()
         chunks = pd.read_csv('traintest/class66_train.txt',
                              names=['person', 'class', 'image'], chunksize=256,
