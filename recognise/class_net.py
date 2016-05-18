@@ -37,7 +37,7 @@ def get_pt_mat(model, layer_dict):
     print "model extracted in ..", time.time() - start
 
 
-def evaluate(model,plist, batch_size=16):
+def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
     chunks = pd.read_csv('traintest/unsorted.txt',
@@ -47,7 +47,7 @@ def evaluate(model,plist, batch_size=16):
     count = 0
     x = 0
     for data in chunks:
-        imgs, X_train= class_db_read1(data)
+        imgs, X_train = class_db_read1(data)
         batch = X_train.shape[0]
         count += batch
         x += 1024
@@ -61,10 +61,19 @@ def evaluate(model,plist, batch_size=16):
 
         # print 'EVAL: ' + str(ev)
         for i, j in enumerate(cls):
-            print str(j[0]), plist[j[0]], 'image:', imgs[i]
+            f_path = imgs[i].split('/')[:-1]
+            directory = f_path + '/' + plist[j[0]]
+            im_name = plist[j[0]]
+            f_path = f_path + '/' + im_name + '_' + str(i) + '.jpg'
+            print im_name, str(j), f_path
             cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            f_path = imgs[i].split('/')[:-1]
+            if cv2.waitKey(0) & 0xFF == ord('n'):
+                if not exists(directory):
+                    os.mkdir(directory)
+                cv2.imwrite(f_path, roi_color)
+            elif cv2.waitKey(0) & 0xFF == ord('n'):
+                cv2.destroyAllWindows()
 
         # with open('outputs/unsorted_out.txt', 'a') as f:
         #     for i, j in enumerate(cls):
@@ -139,7 +148,7 @@ def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
         epsw(model, batch_size=4)
 
 
-def VGGNet(plist,nb_epoch=1, batch_size=4):
+def VGGNet(plist, nb_epoch=1, batch_size=4):
 
     print "Initialising model..."
     start = time.time()
@@ -223,7 +232,7 @@ def VGGNet(plist,nb_epoch=1, batch_size=4):
     print "Model compiled in ..", time.time() - start
 
     print 'Evaluating ..'
-    evaluate(model,plist,batch_size=4)
+    evaluate(model, plist, batch_size=4)
     print 'Checkout the results in class_eval.txt file !'
 
     # train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
