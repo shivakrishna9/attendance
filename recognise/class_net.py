@@ -11,8 +11,8 @@ from keras.utils import np_utils
 import scipy.io
 from .get_input import *
 
-NB_CLASS = 21
-PRETRAINED = "extras/cnn_weights_class.h5"
+NB_CLASS = 66
+PRETRAINED = "extras/cnn_weights_class66.h5"
 
 
 def get_pt_mat(model, layer_dict):
@@ -72,7 +72,7 @@ def evaluate(model, batch_size=16):
 def epsw(model, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/classtest.txt',
+    chunks = pd.read_csv('traintest/class20_test.txt',
                          names=['person', 'class', 'image'], chunksize=1024,
                          sep='\t', engine='python')
     count = 0
@@ -90,10 +90,13 @@ def epsw(model, batch_size=16):
             cls += [[j, np.max(preds[i])]]
         # print cls
         # print np.argmax(y_train, axis=1)
-        # print model.evaluate(X_train,y_train, batch_size=4)
-        with open('outputs/class_preds.txt', 'a') as f:
-            f.write('PREDS: ' + str(cls) + '\n')
-            f.write('TRUE: ' + str(np.argmax(y_train, axis=1)) + '\n')
+        evl = model.evaluate(X_train,y_train, batch_size=4)
+        print evl
+        with open('outputs/class20_preds.txt', 'a') as f:
+            f.write('EVAL: '+str(evl)+'\n')
+            for i, j in enumerate(cls):
+                f.write('PRED: ' + str(j) + '\tTRUE: ' +
+                        str(np.argmax(y_train[i])) + '\n')
     # model.save_weights("extras/cnn_weights_class.h5", overwrite=True)
     print 'Evaluated, predicted and saved weights !'
 
@@ -103,8 +106,8 @@ def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
 
     for epoch in xrange(0, epochs):
         start = time.time()
-        chunks = pd.read_csv('traintest/train.txt',
-                             names=['person', 'class', 'image'], chunksize=256,
+        chunks = pd.read_csv('traintest/class66_train.txt',
+                             names=['person', 'class', 'image'], chunksize=1024,
                              sep='\t', engine='python')
         count = 0
         # for data in chunks:
@@ -125,7 +128,7 @@ def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
 
             if batch > 0:
                 model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
-                          verbose=1, shuffle=True, validation_split=0.05)
+                          verbose=1, shuffle=True)
 
                 model.save_weights(PRETRAINED, overwrite=True)
 
@@ -220,7 +223,7 @@ def VGGNet(nb_epoch=1, batch_size=4):
     # evaluate(model,batch_size=4)
     # print 'Checkout the results in class_eval.txt file !'
 
-    train(model, batch_size=4, epochs=1000, lr=lr, nb_epoch=1)
+    train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
 
 
 # images trained on: 241

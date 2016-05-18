@@ -50,8 +50,7 @@ def categorize(x, n):
     # print array
     return array
 
-
-def class_db_read(chunk):
+def class_db_read1(chunk):
 
     images = []
     image_classes = []
@@ -67,7 +66,26 @@ def class_db_read(chunk):
         images.append(image)
         image_classes.append(image_class)
 
-    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=21)
+    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=66)
+
+
+def class_db_read(chunk):
+
+    images = []
+    image_classes = []
+
+    for data in chunk.itertuples():
+        image = data[3]
+        person = data[1]
+        image_class = data[2]
+        # print image, person, image_class
+        image = cv2.imread(image)
+        image = input_image(image)
+        image = np.rollaxis(image, 2, start=0)
+        images.append(image)
+        image_classes.append(image_class)
+
+    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=66)
 
 
 def input_image(image):
