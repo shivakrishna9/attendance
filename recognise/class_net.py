@@ -10,6 +10,7 @@ from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
 import scipy.io
 from .get_input import *
+from extrafiles.utility import *
 
 NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
@@ -39,7 +40,7 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/class_20.txt',
+    chunks = pd.read_csv('traintest/unsorted.txt',
                          names=['person', 'class', 'image'], chunksize=1024,
                          sep='\t', engine='python')
     count = 0
