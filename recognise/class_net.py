@@ -69,11 +69,10 @@ def evaluate(model, plist, batch_size=16):
             f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
             print im_name, str(j), f_path, imgs[i]
             cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
-            f_path = imgs[i].split('/')[:-1]
             if cv2.waitKey(0) & 0xFF == ord('y'):
                 if not exists(directory):
                     os.mkdir(directory)
-                os.rename(f_path, imgs[i])
+                os.rename(imgs[i], f_path)
             elif cv2.waitKey(0) & 0xFF == ord('n'):
                 cv2.destroyAllWindows()
 
