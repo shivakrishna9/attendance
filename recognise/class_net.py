@@ -42,58 +42,36 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/unsorted.txt',
-                         names=['image'], chunksize=256,
+    chunks = pd.read_csv('traintest/demo.txt',
+                         names=['person','class','image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()
     count = 0
     x = 0
     for data in chunks:
-        imgs, X_train = class_db_read1(data)
+        imgs, s = class_db_read1(data)
+        X_train, y_train = s
         batch = X_train.shape[0]
         count += batch
-        x += 1024
         print 'Count:', count, 'X:', x
         preds = model.predict(X_train, batch_size=batch_size)
         class_preds = np.argmax(preds, axis=1)
         cls = []
         for i, j in enumerate(class_preds):
             cls += [[j, np.max(preds[i])]]
-        # ev = model.evaluate(X_train, y_train, batch_size=4)
-
-        # print 'EVAL: ' + str(ev)
+        # print cls
+        # print np.argmax(y_train, axis=1)
+        evl = model.evaluate(X_train, y_train, batch_size=4)
+        print evl
         for i, j in enumerate(cls):
-            f_path = '/'.join(imgs[i].split('/')[:-1])
-            directory = f_path + '/' + plist[j[0]]
-            im_name = plist[j[0]]
-            f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
-
-            print im_name, str(j), f_path, imgs[i]
-            # cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
-            if not exists(directory):
-                os.mkdir(directory)
-            os.rename(imgs[i], f_path)
-
-            #mislabelled 1403 - including unknowns
-            #unknowns = 355 - so mislabelled = 1048
-            #total images = 
-
-        # for i, j in enumerate(cls):
-        #     f_path = '/'.join(imgs[i].split('/')[:-1])
-        #     directory = f_path + '/' + plist[j[0]]
-        #     im_name = plist[j[0]]
-        #     f_path = directory + '/' + im_name + '_' + str(i) + '.jpg'
+            # print np.argmax(y_train[i])
+            t = (plist[j[0]], plist[np.argmax(y_train[i])])
             
-        #     print im_name, str(j), f_path, imgs[i]
-        #     if cv2.waitKey(0) & 0xFF == ord('y'):
-        #         with open('outputs/unsorted_out.txt', 'a') as f:
-        #             f.write(im_name + '\t' + str(j[0]) + '\t' + f_path + '\t' +'1' + '\n')
-        #         cv2.destroyAllWindows()
-        #     elif cv2.waitKey(0) & 0xFF == ord('n'):
-        #         with open('outputs/unsorted_out.txt', 'a') as f:
-        #             f.write(im_name + '\t' + str(j[0]) + '\t' + f_path + '\t' +'0' + '\n')
-        #         cv2.destroyAllWindows()
+            print t, j
 
+            cv2.imshow(str(t), cv2.imread(imgs[i]))
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         
     print 'Evaluated, predicted and saved weights !'
 
@@ -227,7 +205,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     model.add(Dense(output_dim=4096, activation='relu',
                     trainable=False, init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform",
-                    trainable=False, activation='relu'))
+                     activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
     print 'FC layers added ! Time taken :', time.time() - start
@@ -239,7 +217,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     print 'Model loaded in ..', time.time() - start
 
     # model.save_weights(PRETRAINED,overwrite=True)
-    lr = 1e-4
+    lr = 1.5e-4
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
@@ -248,11 +226,11 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
                   optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
-    # print 'Evaluating ..'
-    # evaluate(model, plist, batch_size=4)
-    # print 'Checkout the results in class_eval.txt file !'
+    print 'Evaluating ..'
+    evaluate(model, plist, batch_size=4)
+    print 'Checkout the results in class_eval.txt file !'
 
-    train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
+    # train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
 
 
 # images trained on: 241

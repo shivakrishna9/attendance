@@ -10,7 +10,7 @@ from collections import Counter
 def get_images():
     lst = []
     lw = []
-    for image in glob.glob("../extras/newtest/test_faces/*/*.jpg"):
+    for image in glob.glob("../extras/newtest/test/*/*.jpg"):
         image = re.sub('\.\./', '', image)
         person = image.split('/')[3]
         lst.append((image, person))
@@ -20,8 +20,9 @@ def get_images():
 
     up = pre_process()
     print up 
+    random.shuffle(lst)
 
-    with open('../traintest/class20_test.txt', 'w') as f:
+    with open('../traintest/demo.txt', 'w') as f:
         for i in lst:
             print i[1] +'\t'+ str(up.index(i[1])) +'\t'+ i[0]
             f.write(i[1] +'\t'+ str(up.index(i[1])) +'\t'+ i[0]+'\n')
@@ -85,9 +86,9 @@ def image_ext():
 
 def pre_process():
     i = []
-    for image in glob.glob("../extras/newtest/myclass/*/*.jpg"):
-        person = image.split('/')[4]
+    for image in glob.glob("extras/newtest/myclass/*/*.jpg"):
         image = re.sub('\.\./', '', image)
+        person = image.split('/')[3]
         img = image
         if 'not' in person:
             i.append((person, 'none', img))
