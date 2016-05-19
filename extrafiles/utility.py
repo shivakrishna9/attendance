@@ -161,6 +161,6 @@ def image_load():
 
 if __name__ == '__main__':
     # image_load()
-    # get_images()
+    get_images()
     # pre_process()
-    image_ext()
+    # image_ext()
