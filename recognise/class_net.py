@@ -225,9 +225,9 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     start = time.time()
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu',
-                    init="uniform"))
+                    trainable=False, init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform",
-                    activation='relu'))
+                    trainable=False, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
     print 'FC layers added ! Time taken :', time.time() - start
@@ -239,7 +239,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     print 'Model loaded in ..', time.time() - start
 
     # model.save_weights(PRETRAINED,overwrite=True)
-    lr = 1e-5
+    lr = 1e-4
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
