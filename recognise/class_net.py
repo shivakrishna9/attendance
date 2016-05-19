@@ -73,6 +73,7 @@ def evaluate(model, plist, batch_size=16):
                 if not exists(directory):
                     os.mkdir(directory)
                 os.rename(imgs[i], f_path)
+                cv2.destroyAllWindows()
             elif cv2.waitKey(0) & 0xFF == ord('n'):
                 cv2.destroyAllWindows()
 

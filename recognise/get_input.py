@@ -58,7 +58,7 @@ def class_db_read1(chunk):
     for data in chunk.itertuples():
         image = data[1]
         imgs.append(image)
-        # print image, person, image_class
+        print image
         image = cv2.imread(image)
         image = input_image(image)
         image = np.rollaxis(image, 2, start=0)

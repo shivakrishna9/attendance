@@ -1,11 +1,8 @@
 extras/newtest/test_faces/DSC_1483.JPG_8.jpg
 extras/newtest/test_faces/DSC_1493.JPG_11.jpg
 extras/newtest/test_faces/DSC00032.JPG_1.jpg
-extras/newtest/test_faces/DSC_1668.JPG_44.jpg
 extras/newtest/test_faces/DSC_1664.JPG_40.jpg
 extras/newtest/test_faces/DSC_1663.JPG_58.jpg
-extras/newtest/test_faces/DSC_1787.JPG_2.jpg
-extras/newtest/test_faces/DSC_1814.JPG_14.jpg
 extras/newtest/test_faces/DSC_1914.JPG_11.jpg
 extras/newtest/test_faces/DSC_1496.JPG_12.jpg
 extras/newtest/test_faces/DSC_2130.JPG_7.jpg
