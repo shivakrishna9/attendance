@@ -43,7 +43,7 @@ def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
     chunks = pd.read_csv('traintest/demo.txt',
-                         names=['person','class','image'], chunksize=256,
+                         names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()
     count = 0
@@ -55,24 +55,38 @@ def evaluate(model, plist, batch_size=16):
         count += batch
         print 'Count:', count, 'X:', x
         preds = model.predict(X_train, batch_size=batch_size)
-        class_preds = np.argmax(preds, axis=1)
-        cls = []
-        for i, j in enumerate(class_preds):
-            cls += [[j, np.max(preds[i])]]
+
+        list_best5 = []
+        for i, j in enumerate(preds):
+            prob = j
+            prob5 = prob.sort()[:5]
+            best5 = []
+            for k in prob5:
+                best5.append([k, i.index(k)])
+
+            list_best5.append(best5)
+
+        # class_preds = np.argmax(preds, axis=1)
+        # cls = []
+        # for i, j in enumerate(class_preds):
+        #     cls += [[j, np.max(preds[i])]]
         # print cls
         # print np.argmax(y_train, axis=1)
         evl = model.evaluate(X_train, y_train, batch_size=4)
         print evl
-        for i, j in enumerate(cls):
+        for i, j in enumerate(list_best5):
             # print np.argmax(y_train[i])
-            t = (plist[j[0]], plist[np.argmax(y_train[i])])
-            
-            print t, j
+            best5 = j
+            for k in best5:
+                print plist[k[0]], k[1]
+
+            t = (plist[j[0][0]], plist[np.argmax(y_train[i])])
+            print 'First prediction:', t
 
             cv2.imshow(str(t), cv2.imread(imgs[i]))
             cv2.waitKey(0)
             cv2.destroyAllWindows()
-        
+
     print 'Evaluated, predicted and saved weights !'
 
 
@@ -205,7 +219,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     model.add(Dense(output_dim=4096, activation='relu',
                     trainable=False, init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform",
-                     activation='relu'))
+                    activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
     print 'FC layers added ! Time taken :', time.time() - start
