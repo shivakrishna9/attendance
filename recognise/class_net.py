@@ -133,7 +133,7 @@ def epsw(model, batch_size=16):
 def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
     print "Training on batch..."
 
-    for epoch in xrange(99, epochs):
+    for epoch in xrange(169, epochs):
         start = time.time()
         chunks = pd.read_csv('traintest/class66_train.txt',
                              names=['person', 'class', 'image'], chunksize=256,
@@ -239,7 +239,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     print 'Model loaded in ..', time.time() - start
 
     # model.save_weights(PRETRAINED,overwrite=True)
-    lr = 1e-4
+    lr = 1e-5
     sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
     print "Compiling model..."
@@ -248,11 +248,11 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
                   optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
-    print 'Evaluating ..'
-    evaluate(model, plist, batch_size=4)
-    print 'Checkout the results in class_eval.txt file !'
+    # print 'Evaluating ..'
+    # evaluate(model, plist, batch_size=4)
+    # print 'Checkout the results in class_eval.txt file !'
 
-    # train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
+    train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
 
 
 # images trained on: 241
