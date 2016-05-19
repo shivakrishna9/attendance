@@ -42,7 +42,7 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/demo.txt',
+    chunks = pd.read_csv('traintest/class_20.txt',
                          names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()
@@ -59,10 +59,10 @@ def evaluate(model, plist, batch_size=16):
         list_best5 = []
         for i, j in enumerate(preds):
             prob = j
-            prob5 = prob.sort()[:5]
+            prob5 = sorted(prob, reverse=True)[:5]
             best5 = []
             for k in prob5:
-                best5.append([k, i.index(k)])
+                best5.append([k, np.where(j==k)])
 
             list_best5.append(best5)
 
@@ -78,9 +78,10 @@ def evaluate(model, plist, batch_size=16):
             # print np.argmax(y_train[i])
             best5 = j
             for k in best5:
-                print plist[k[0]], k[1]
+                # print k[1][0], k[0]
+                print plist[k[1][0]], k[0]
 
-            t = (plist[j[0][0]], plist[np.argmax(y_train[i])])
+            t = (plist[j[0][1][0]], plist[np.argmax(y_train[i])])
             print 'First prediction:', t
 
             cv2.imshow(str(t), cv2.imread(imgs[i]))

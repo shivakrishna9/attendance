@@ -44,17 +44,17 @@ def image_ext():
 
     
 
-    # m = []
+    m = []
     for image in glob.glob("../newtest/*/*.jpg"):
         person = image.split('/')[2].lower()
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
-            i.append((person, 'none', img))
+            m.append((person, 'none', img))
         else:
-            i.append(('face', person, img))
+            m.append(('face', person, img))
 
-    # random.shuffle(m)
+    random.shuffle(m)
     up = [x for (a, x, y) in i if x != 'none']
     upx = up
     x = Counter(up)
@@ -63,8 +63,8 @@ def image_ext():
     # i.append(m)
     random.shuffle(i)
 
-    with open("../traintest/class66_train.txt", 'w') as f:
-        for k in i:
+    with open("../traintest/class_20.txt", 'w') as f:
+        for k in m:
             if k[1] != 'none':
                 # pass
                 print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
@@ -112,9 +112,9 @@ def pre_process():
     #         m.append(('face',person,img))
 
     # random.shuffle(m)
-    # random.shuffle(i)
+    # # random.shuffle(i)
 
-    # with open("../traintest/class20_test.txt", 'w') as f:
+    # with open("../traintest/class_20.txt", 'w') as f:
     #     for k in m:
     #         if k[1]!='none':
     #             # pass
