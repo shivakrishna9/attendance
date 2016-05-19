@@ -75,8 +75,8 @@ def image_ext():
 
 def pre_process():
     i = []
-    for image in glob.glob("extras/newtest/myclass/*/*.jpg"):
-        person = image.split('/')[3]
+    for image in glob.glob("newtest/myclass/*/*.jpg"):
+        person = image.split('/')[2]
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
