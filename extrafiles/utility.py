@@ -9,52 +9,68 @@ from collections import Counter
 
 def get_images():
     lst = []
-    for image in glob.glob("../extras/newtest/test_faces/*.jpg"):
+    lw = []
+    for image in glob.glob("../extras/newtest/test_faces/*/*.jpg"):
         image = re.sub('\.\./', '', image)
-        lst.append(image)
+        person = image.split('/')[4]
+        if 'wrong' not in image:
+            lst.append((image, person))
+        else:
+            lw.append((image, person))
 
-    with open('../traintest/unsorted.txt','w') as f:
+    up = [x for (a, x, y) in lst]
+    upw = [x for (a, x, y) in lw]
+    x = Counter(up)
+    xw = Counter(upw)
+
+
+    with open('../traintest/correct.txt', 'w') as f:
         for i in lst:
-            print i
-            f.write(i+'\n')
+            print i[0] + '\t' + i[1]
+            f.write(i[0] + '\t' + i[1] + '\n')
+
+    print len(up)
+    print len(upw)
+    print x
+    print xw
+
 
 def image_ext():
-    i=[]
+    i = []
     for image in glob.glob("../extras/newtest/myclass/*/*.jpg"):
         person = image.split('/')[4]
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
-            i.append((person,'none',img))
+            i.append((person, 'none', img))
         else:
-            i.append(('face',person,img))
+            i.append(('face', person, img))
 
-    up = [x for (a,x,y) in i if x!='none']
+    up = [x for (a, x, y) in i if x != 'none']
     upx = up
     x = Counter(up)
     up = list(set(up))
     up = sorted(up)
-    
 
-    m= []
+    m = []
     for image in glob.glob("../newtest/*/*.jpg"):
         person = image.split('/')[2].lower()
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
-            m.append((person,'none',img))
+            m.append((person, 'none', img))
         else:
-            m.append(('face',person,img))
+            m.append(('face', person, img))
 
     random.shuffle(m)
     random.shuffle(i)
 
     with open("../traintest/class20_test.txt", 'w') as f:
         for k in m:
-            if k[1]!='none':
+            if k[1] != 'none':
                 # pass
-                print k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]
-                f.write(k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]+'\n')
+                print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
+                f.write(k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2] + '\n')
             # else:
             #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
             #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
@@ -63,23 +79,23 @@ def image_ext():
     print len(upx)
     print x
 
+
 def pre_process():
-    i=[]
+    i = []
     for image in glob.glob("extras/newtest/myclass/*/*.jpg"):
         person = image.split('/')[3]
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
-            i.append((person,'none',img))
+            i.append((person, 'none', img))
         else:
-            i.append(('face',person,img))
+            i.append(('face', person, img))
 
-    up = [x for (a,x,y) in i if x!='none']
+    up = [x for (a, x, y) in i if x != 'none']
     upx = up
     x = Counter(up)
     up = list(set(up))
     up = sorted(up)
-    
 
     # m= []
     # for image in glob.glob("../newtest/*/*.jpg"):
@@ -108,6 +124,7 @@ def pre_process():
     # print len(upx)
     # print x
     return up
+
 
 def encode():
     lst = []
