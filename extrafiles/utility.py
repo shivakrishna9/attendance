@@ -10,30 +10,23 @@ from collections import Counter
 def get_images():
     lst = []
     lw = []
-    for image in glob.glob("../extras/newtest/test_faces/*/*.jpg"):
+    for image in glob.glob("../extras/newtest/test_faces/*.jpg"):
         image = re.sub('\.\./', '', image)
-        person = image.split('/')[4]
-        if 'wrong' not in image:
-            lst.append((image, person))
-        else:
-            lw.append((image, person))
-
-    up = [x for (a, x, y) in lst]
-    upw = [x for (a, x, y) in lw]
+        person = '_'.join(image.split('/')[3].split('\.')[0].split('_')[:-1])
+        lst.append((image, person))
+    
+    up = [x for (a, x) in lst]
     x = Counter(up)
-    xw = Counter(upw)
+    
 
-
-    with open('../traintest/correct.txt', 'w') as f:
+    with open('../traintest/incorrect.txt', 'w') as f:
         for i in lst:
-            print i[0] + '\t' + i[1]
-            f.write(i[0] + '\t' + i[1] + '\n')
+            print i[0] +'\t'+ i[1]
+            f.write(i[0]+'\t'+ i[1]+'\n')
 
     print len(up)
-    print len(upw)
     print x
-    print xw
-
+    
 
 def image_ext():
     i = []
@@ -65,8 +58,8 @@ def image_ext():
     random.shuffle(m)
     random.shuffle(i)
 
-    with open("../traintest/class20_test.txt", 'w') as f:
-        for k in m:
+    with open("../traintest/class66_train.txt", 'w') as f:
+        for k in i:
             if k[1] != 'none':
                 # pass
                 print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
