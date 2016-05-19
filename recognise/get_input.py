@@ -56,18 +56,20 @@ def class_db_read1(chunk):
     image_classes = []
     imgs = []
     for data in chunk.itertuples():
-        image = data[2]
-        person = data[0]
-        image_class = data[1]
+        image = data[1]
         imgs.append(image)
         # print image, person, image_class
         image = cv2.imread(image)
         image = input_image(image)
         image = np.rollaxis(image, 2, start=0)
         images.append(image)
-        image_classes.append(image_class)
 
-    return imgs, preprocess(np.array(images), np.array(image_classes), NB_CLASS=67)
+    images = np.array(images)
+    images = images.astype('float32')
+    images /= 255
+    images = images - np.average(images)
+
+    return imgs, images
 
 
 def class_db_read(chunk):

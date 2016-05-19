@@ -10,7 +10,7 @@ from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
 import scipy.io
 from .get_input import *
-from extrafiles.utility import *
+# from extrafiles import *
 
 NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
@@ -37,17 +37,17 @@ def get_pt_mat(model, layer_dict):
     print "model extracted in ..", time.time() - start
 
 
-def evaluate(model, batch_size=16):
+def evaluate(model,plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
     chunks = pd.read_csv('traintest/unsorted.txt',
-                         names=['person', 'class', 'image'], chunksize=256,
+                         names=['image'], chunksize=256,
                          sep='\t', engine='python')
-    plist = preprocess()
+    # plist = pre_process()
     count = 0
     x = 0
     for data in chunks:
-        imgs, X_train, y_train = class_db_read1(data)
+        imgs, X_train= class_db_read1(data)
         batch = X_train.shape[0]
         count += batch
         x += 1024
@@ -57,15 +57,18 @@ def evaluate(model, batch_size=16):
         cls = []
         for i, j in enumerate(class_preds):
             cls += [[j, np.max(preds[i])]]
-        ev = model.evaluate(X_train, y_train, batch_size=4)
+        # ev = model.evaluate(X_train, y_train, batch_size=4)
 
-        print 'EVAL: ' + str(ev)
+        # print 'EVAL: ' + str(ev)
         for i, j in enumerate(cls):
             print str(j[0]), plist[j[0]], 'image:', imgs[i]
+            cv2.imshow(plist[j[0]], cv2.imread(imgs[i]))
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
-        with open('outputs/unsorted_out.txt', 'a') as f:
-            for i, j in enumerate(cls):
-                f.write(plist[j[0]] + '\t' + str(j[0]) + '\t' + imgs[i] + '\n')
+        # with open('outputs/unsorted_out.txt', 'a') as f:
+        #     for i, j in enumerate(cls):
+        #         f.write(plist[j[0]] + '\t' + str(j[0]) + '\t' + imgs[i] + '\n')
     print 'Evaluated, predicted and saved weights !'
 
 
@@ -104,7 +107,7 @@ def epsw(model, batch_size=16):
 def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
     print "Training on batch..."
 
-    for epoch in xrange(27, epochs):
+    for epoch in xrange(99, epochs):
         start = time.time()
         chunks = pd.read_csv('traintest/class66_train.txt',
                              names=['person', 'class', 'image'], chunksize=256,
@@ -136,7 +139,7 @@ def train(model, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
         epsw(model, batch_size=4)
 
 
-def VGGNet(nb_epoch=1, batch_size=4):
+def VGGNet(plist,nb_epoch=1, batch_size=4):
 
     print "Initialising model..."
     start = time.time()
@@ -219,11 +222,11 @@ def VGGNet(nb_epoch=1, batch_size=4):
                   optimizer=sgd, metrics=['accuracy'])
     print "Model compiled in ..", time.time() - start
 
-    # print 'Evaluating ..'
-    # evaluate(model,batch_size=4)
-    # print 'Checkout the results in class_eval.txt file !'
+    print 'Evaluating ..'
+    evaluate(model,plist,batch_size=4)
+    print 'Checkout the results in class_eval.txt file !'
 
-    train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
+    # train(model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
 
 
 # images trained on: 241

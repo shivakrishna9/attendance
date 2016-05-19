@@ -4,6 +4,7 @@ import time
 import glob
 import re
 import random
+from collections import Counter
 
 
 def get_images():
@@ -17,7 +18,7 @@ def get_images():
             print i
             f.write(i+'\n')
 
-def preprocess():
+def image_ext():
     i=[]
     for image in glob.glob("../extras/newtest/myclass/*/*.jpg"):
         person = image.split('/')[4]
@@ -29,6 +30,53 @@ def preprocess():
             i.append(('face',person,img))
 
     up = [x for (a,x,y) in i if x!='none']
+    upx = up
+    x = Counter(up)
+    up = list(set(up))
+    up = sorted(up)
+    
+
+    m= []
+    for image in glob.glob("../newtest/*/*.jpg"):
+        person = image.split('/')[2].lower()
+        image = re.sub('\.\./', '', image)
+        img = image
+        if 'not' in person:
+            m.append((person,'none',img))
+        else:
+            m.append(('face',person,img))
+
+    random.shuffle(m)
+    random.shuffle(i)
+
+    with open("../traintest/class20_test.txt", 'w') as f:
+        for k in m:
+            if k[1]!='none':
+                # pass
+                print k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]
+                f.write(k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]+'\n')
+            # else:
+            #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
+            #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
+
+    print up
+    print len(upx)
+    print x
+
+def pre_process():
+    i=[]
+    for image in glob.glob("extras/newtest/myclass/*/*.jpg"):
+        person = image.split('/')[3]
+        image = re.sub('\.\./', '', image)
+        img = image
+        if 'not' in person:
+            i.append((person,'none',img))
+        else:
+            i.append(('face',person,img))
+
+    up = [x for (a,x,y) in i if x!='none']
+    upx = up
+    x = Counter(up)
     up = list(set(up))
     up = sorted(up)
     
@@ -57,7 +105,8 @@ def preprocess():
     #         #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
 
     # print up
-    # print len(up)
+    # print len(upx)
+    # print x
     return up
 
 def encode():
@@ -112,5 +161,6 @@ def image_load():
 
 if __name__ == '__main__':
     # image_load()
-    get_images()
-    # preprocess()
+    # get_images()
+    # pre_process()
+    image_ext()
