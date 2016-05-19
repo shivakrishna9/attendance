@@ -8,7 +8,7 @@ import random
 
 def get_images():
     lst = []
-    for image in glob.glob("../newtest/test_faces/*.jpg"):
+    for image in glob.glob("../extras/newtest/test_faces/*.jpg"):
         image = re.sub('\.\./', '', image)
         lst.append(image)
 
