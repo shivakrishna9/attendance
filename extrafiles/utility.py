@@ -6,14 +6,16 @@ import re
 import random
 
 
-def one_hot_names():
+def get_images():
     lst = []
-    with open("../traintest/lfwpeople.txt", 'r') as f:
-        for line in f:
-            lst += [line.split(',')[1]]
-    print one_hot(",".join(lst), 5749, split=",")[:10]
-    print lst[:10]
+    for image in glob.glob("../newtest/test_faces/*.jpg"):
+        image = re.sub('\.\./', '', image)
+        lst.append(image)
 
+    with open('../traintest/unsorted.txt','w') as f:
+        for i in lst:
+            print i
+            f.write(i+'\n')
 
 def preprocess():
     i=[]
@@ -31,31 +33,32 @@ def preprocess():
     up = sorted(up)
     
 
-    m= []
-    for image in glob.glob("../newtest/*/*.jpg"):
-        person = image.split('/')[2].lower()
-        image = re.sub('\.\./', '', image)
-        img = image
-        if 'not' in person:
-            m.append((person,'none',img))
-        else:
-            m.append(('face',person,img))
+    # m= []
+    # for image in glob.glob("../newtest/*/*.jpg"):
+    #     person = image.split('/')[2].lower()
+    #     image = re.sub('\.\./', '', image)
+    #     img = image
+    #     if 'not' in person:
+    #         m.append((person,'none',img))
+    #     else:
+    #         m.append(('face',person,img))
 
-    random.shuffle(m)
-    random.shuffle(i)
+    # random.shuffle(m)
+    # random.shuffle(i)
 
-    with open("../traintest/class20_test.txt", 'w') as f:
-        for k in m:
-            if k[1]!='none':
-                # pass
-                print k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]
-                f.write(k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]+'\n')
-            # else:
-            #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
-            #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
+    # with open("../traintest/class20_test.txt", 'w') as f:
+    #     for k in m:
+    #         if k[1]!='none':
+    #             # pass
+    #             print k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]
+    #             f.write(k[1]+'\t'+str(up.index(k[1]))+'\t'+k[2]+'\n')
+    #         # else:
+    #         #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
+    #         #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
 
-    print up
-    print len(up)
+    # print up
+    # print len(up)
+    return up
 
 def encode():
     lst = []
@@ -109,5 +112,5 @@ def image_load():
 
 if __name__ == '__main__':
     # image_load()
-
-    preprocess()
+    get_images()
+    # preprocess()
