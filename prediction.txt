@@ -1,0 +1,1234 @@
+Script started on Saturday 21 May 2016 04:34:27 AM IST
+]0;karpathy@karpathy: ~/Attendancekarpathy@karpathy:~/Attendance$ git push origin master[12Pcommitadd --all[3Pstatuscd Attendance/[4Pgit statusadd --all[3Pcommitpush origin master[Kpythno[K[Kon class_predict.py 
+Using Theano backend.
+Using gpu device 0: Quadro K5000 (CNMeM is enabled with initial size: 80.0% of memory, cuDNN 5004)
+Initialising model...
+model init in .. 0.228621959686
+Adding fully connected layers ...
+FC layers added ! Time taken : 1.48895597458
+Loading weights ...
+Model loaded in .. 0.298000097275
+Compiling model...
+Model compiled in .. 0.0636830329895
+Evaluating ..
+Evaluating, predicting and saving weights ..
+Count: 197 X: 0
+  4/197 [..............................] - ETA: 12s  8/197 [>.............................] - ETA: 12s 12/197 [>.............................] - ETA: 12s 16/197 [=>............................] - ETA: 12s 20/197 [==>...........................] - ETA: 11s 24/197 [==>...........................] - ETA: 11s 28/197 [===>..........................] - ETA: 11s 32/197 [===>..........................] - ETA: 10s 36/197 [====>.........................] - ETA: 10s 40/197 [=====>........................] - ETA: 10s 44/197 [=====>........................] - ETA: 10s 48/197 [======>.......................] - ETA: 9s  52/197 [======>.......................] - ETA: 9s 56/197 [=======>......................] - ETA: 9s 60/197 [========>.....................] - ETA: 9s 64/197 [========>.....................] - ETA: 8s 68/197 [=========>....................] - ETA: 8s 72/197 [=========>....................] - ETA: 8s 76/197 [==========>...................] - ETA: 8s 80/197 [===========>..................] - ETA: 7s 84/197 [===========>..................] - ETA: 7s 88/197 [============>.................] - ETA: 7s 92/197 [=============>................] - ETA: 6s 96/197 [=============>................] - ETA: 6s100/197 [==============>...............] - ETA: 6s104/197 [==============>...............] - ETA: 6s108/197 [===============>..............] - ETA: 5s112/197 [================>.............] - ETA: 5s116/197 [================>.............] - ETA: 5s120/197 [=================>............] - ETA: 5s124/197 [=================>............] - ETA: 4s128/197 [==================>...........] - ETA: 4s132/197 [===================>..........] - ETA: 4s136/197 [===================>..........] - ETA: 4s140/197 [====================>.........] - ETA: 3s144/197 [====================>.........] - ETA: 3s148/197 [=====================>........] - ETA: 3s152/197 [======================>.......] - ETA: 2s156/197 [======================>.......] - ETA: 2s160/197 [=======================>......] - ETA: 2s164/197 [=======================>......] - ETA: 2s168/197 [========================>.....] - ETA: 1s172/197 [=========================>....] - ETA: 1s176/197 [=========================>....] - ETA: 1s180/197 [==========================>...] - ETA: 1s184/197 [===========================>..] - ETA: 0s188/197 [===========================>..] - ETA: 0s192/197 [============================>.] - ETA: 0s196/197 [============================>.] - ETA: 0s197/197 [==============================] - 13s    
+[1.4240628045222481, 0.80203045685279184]
+nikhil_raman 0.0890332981944
+shivam 0.0440345332026
+sahil 0.0406706668437
+sarthak 0.0383621454239
+suhani 0.0320955887437
+First prediction: ('nikhil_raman', 'nikhil_raman')
+Traceback (most recent call last):
+  File "class_predict.py", line 19, in <module>
+    class_net.VGGNet(plist)
+  File "/home/karpathy/Attendance/recognise/class_net.py", line 247, in VGGNet
+    evaluate(model, plist, batch_size=4)
+  File "/home/karpathy/Attendance/recognise/class_net.py", line 87, in evaluate
+    cv2.imwrite('outputs/classification/'+t+'.jpg', cv2.imread(imgs[i]))
+TypeError: cannot concatenate 'str' and 'tuple' objects
+]0;karpathy@karpathy: ~/Attendancekarpathy@karpathy:~/Attendance$ [H[2J]0;karpathy@karpathy: ~/Attendancekarpathy@karpathy:~/Attendance$ python class_predict.py 
+Using Theano backend.
+Using gpu device 0: Quadro K5000 (CNMeM is enabled with initial size: 80.0% of memory, cuDNN 5004)
+Initialising model...
+model init in .. 0.233397006989
+Adding fully connected layers ...
+FC layers added ! Time taken : 1.5012140274
+Loading weights ...
+Model loaded in .. 0.29937505722
+Compiling model...
+Model compiled in .. 0.0677530765533
+Evaluating ..
+Evaluating, predicting and saving weights ..
+Count: 197 X: 0
+  4/197 [..............................] - ETA: 12s  8/197 [>.............................] - ETA: 12s 12/197 [>.............................] - ETA: 12s 16/197 [=>............................] - ETA: 11s 20/197 [==>...........................] - ETA: 11s 24/197 [==>...........................] - ETA: 11s 28/197 [===>..........................] - ETA: 11s 32/197 [===>..........................] - ETA: 10s 36/197 [====>.........................] - ETA: 10s 40/197 [=====>........................] - ETA: 10s 44/197 [=====>........................] - ETA: 10s 48/197 [======>.......................] - ETA: 9s  52/197 [======>.......................] - ETA: 9s 56/197 [=======>......................] - ETA: 9s 60/197 [========>.....................] - ETA: 9s 64/197 [========>.....................] - ETA: 8s 68/197 [=========>....................] - ETA: 8s 72/197 [=========>....................] - ETA: 8s 76/197 [==========>...................] - ETA: 8s 80/197 [===========>..................] - ETA: 7s 84/197 [===========>..................] - ETA: 7s 88/197 [============>.................] - ETA: 7s 92/197 [=============>................] - ETA: 6s 96/197 [=============>................] - ETA: 6s100/197 [==============>...............] - ETA: 6s104/197 [==============>...............] - ETA: 6s108/197 [===============>..............] - ETA: 5s112/197 [================>.............] - ETA: 5s116/197 [================>.............] - ETA: 5s120/197 [=================>............] - ETA: 5s124/197 [=================>............] - ETA: 4s128/197 [==================>...........] - ETA: 4s132/197 [===================>..........] - ETA: 4s136/197 [===================>..........] - ETA: 4s140/197 [====================>.........] - ETA: 3s144/197 [====================>.........] - ETA: 3s148/197 [=====================>........] - ETA: 3s152/197 [======================>.......] - ETA: 2s156/197 [======================>.......] - ETA: 2s160/197 [=======================>......] - ETA: 2s164/197 [=======================>......] - ETA: 2s168/197 [========================>.....] - ETA: 1s172/197 [=========================>....] - ETA: 1s176/197 [=========================>....] - ETA: 1s180/197 [==========================>...] - ETA: 1s184/197 [===========================>..] - ETA: 0s188/197 [===========================>..] - ETA: 0s192/197 [============================>.] - ETA: 0s196/197 [============================>.] - ETA: 0s197/197 [==============================] - 13s    
+[1.4240628045222481, 0.80203045685279184]
+nikhil_raman 0.0890332981944
+shivam 0.0440345332026
+sahil 0.0406706668437
+sarthak 0.0383621454239
+suhani 0.0320955887437
+First prediction: ('nikhil_raman', 'nikhil_raman')
+prerit 0.549063682556
+aditya 0.0887467637658
+shadab 0.0204155482352
+abdul_wajid 0.0173244085163
+mohib 0.0160388797522
+First prediction: ('prerit', 'prerit')
+ghalib 0.065730907023
+shoib 0.0541466660798
+umar 0.0456242896616
+sajjad 0.0417265743017
+avishkar 0.0414498783648
+First prediction: ('ghalib', 'raghib_ahsan')
+prerit 0.647730708122
+sushmita 0.0349643230438
+shadab 0.0255354661494
+sahil 0.0253307707608
+aditya 0.0209548138082
+First prediction: ('prerit', 'prerit')
+habib 0.521684288979
+irfan_ansari 0.0357884839177
+nikhil_raman 0.0263903290033
+shahjahan 0.0244862250984
+aly 0.0232794005424
+First prediction: ('habib', 'habib')
+sultana 0.539237618446
+bushra 0.13447599113
+shafiya 0.0553796216846
+shruti 0.0463286936283
+sana 0.0323833115399
+First prediction: ('sultana', 'sultana')
+habib 0.0706410035491
+nikhil_raman 0.0470617748797
+rehan 0.0450665093958
+ghalib 0.0401227287948
+rezwan 0.0372846163809
+First prediction: ('habib', 'habib')
+sushmita 0.165756702423
+sachin 0.103184595704
+dhawal 0.0562985055149
+shafiya 0.0416660904884
+aman 0.0414110422134
+First prediction: ('sushmita', 'sachin')
+manish 0.151916891336
+shadab 0.13887257874
+shivam 0.0972691699862
+nikhil_raman 0.0406285561621
+akshat 0.0319428406656
+First prediction: ('manish', 'manish')
+habib 0.139536947012
+mohib 0.112903945148
+sultana 0.0658221766353
+suhani 0.0623376257718
+sahil 0.0303628630936
+First prediction: ('habib', 'mohib')
+ameen 0.606990993023
+shivam 0.162152409554
+ghalib 0.0285197552294
+nikhil_mittal 0.0213090255857
+tushar 0.0130839692429
+First prediction: ('ameen', 'ameen')
+nikhil_mittal 0.072669364512
+shivam 0.044700153172
+sahil 0.0443387441337
+tushar 0.0355814620852
+shadab 0.0322849340737
+First prediction: ('nikhil_mittal', 'nikhil_mittal')
+sachin 0.729890167713
+harsh 0.155744791031
+naeem 0.022964425385
+raghib_ahsan 0.0192473642528
+asif 0.0116940867156
+First prediction: ('sachin', 'sachin')
+sultana 0.714633643627
+sushmita 0.0555876381695
+bushra 0.0439660809934
+suhani 0.0414122007787
+shruti 0.0385912917554
+First prediction: ('sultana', 'sultana')
+sultana 0.507596969604
+ashar 0.0470216758549
+habib 0.0377608574927
+suhani 0.0321226418018
+sahil 0.0315091013908
+First prediction: ('sultana', 'sultana')
+nikhil_raman 0.065817810595
+suhani 0.0526315309107
+habib 0.0486092381179
+shafiya 0.0447807013988
+sahil 0.0446679629385
+First prediction: ('nikhil_raman', 'suhani')
+sachin 0.455494463444
+shadab 0.0539704225957
+sushmita 0.0466473177075
+aman 0.0419511944056
+saif 0.022244758904
+First prediction: ('sachin', 'sachin')
+sana 0.404714107513
+sahil 0.0424479879439
+shadab 0.0332335457206
+shafiya 0.0324208475649
+nikhil_raman 0.0317647568882
+First prediction: ('sana', 'sana')
+ghalib 0.118257634342
+umar 0.0704646706581
+avishkar 0.0446141436696
+shivam 0.043808311224
+nikhil_raman 0.036330960691
+First prediction: ('ghalib', 'ghalib')
+habib 0.0799695402384
+rehan 0.0540620684624
+shahjahan 0.0526984110475
+irfan_ansari 0.0467250458896
+sushmita 0.0357030704618
+First prediction: ('habib', 'nikhil_mittal')
+abdul_wajid 0.202560514212
+rehan 0.0503631606698
+shivam 0.0376245304942
+prerit 0.0335063077509
+shadab 0.0326517447829
+First prediction: ('abdul_wajid', 'abdul_wajid')
+saifur 0.252753347158
+habib 0.12342749536
+shahjahan 0.0753178671002
+shoaib 0.0463925376534
+ravi 0.0401089638472
+First prediction: ('saifur', 'saifur')
+prerit 0.323100596666
+shivam 0.0677647963166
+tushar 0.0549208000302
+irfan_ansari 0.0506342463195
+nikhil_raman 0.0495766960084
+First prediction: ('prerit', 'prerit')
+ameen 0.118101581931
+antriksh 0.0810674801469
+umar 0.0730947181582
+tushar 0.0572004690766
+prerit 0.0557873696089
+First prediction: ('ameen', 'ameen')
+sushmita 0.85232937336
+sultana 0.0182126760483
+tushar 0.0175476446748
+nikhil_mittal 0.0160686783493
+sarah_masud 0.0107886204496
+First prediction: ('sushmita', 'sushmita')
+sahil 0.153378546238
+habib 0.135058775544
+umar 0.13349160552
+irfan_ansari 0.0804186835885
+nikhil_raman 0.072572439909
+First prediction: ('sahil', 'umar')
+anzal 0.195348739624
+prerit 0.135934919119
+tushar 0.0446104332805
+sushmita 0.0414283014834
+nikhil_mittal 0.0394111201167
+First prediction: ('anzal', 'anzal')
+tushar 0.96922826767
+shivam 0.00542629975826
+chaitanya 0.00351419765502
+sushmita 0.00233655283228
+nikhil_mittal 0.00195155048277
+First prediction: ('tushar', 'tushar')
+shadab 0.630524158478
+sachin 0.0780843421817
+ashar 0.0411267317832
+sahil 0.0323669016361
+aman 0.026071080938
+First prediction: ('shadab', 'shadab')
+tushar 0.974346399307
+sarah_masud 0.00463423365727
+ghalib 0.00358075276017
+umar 0.00255438918248
+sultana 0.00235860631801
+First prediction: ('tushar', 'tushar')
+nikhil_raman 0.245650887489
+tushar 0.0395562835038
+sahil 0.0390940457582
+prerit 0.0367807410657
+umar 0.0324102602899
+First prediction: ('nikhil_raman', 'nikhil_raman')
+sarah_masud 0.218168526888
+tushar 0.0694933608174
+sana 0.0476374290884
+sultana 0.0426613613963
+sushmita 0.040575325489
+First prediction: ('sarah_masud', 'sarah_masud')
+sachin 0.233815073967
+mohib 0.142420962453
+aditya 0.0939604863524
+shadab 0.0847135409713
+rahul 0.0541162192822
+First prediction: ('sachin', 'sachin')
+nikhil_raman 0.568663835526
+manish 0.0977850556374
+dhawal 0.0313344448805
+shadab 0.0215217936784
+sahil 0.0187177825719
+First prediction: ('nikhil_raman', 'nikhil_raman')
+antriksh 0.28937330842
+umar 0.194444343448
+ameen 0.127938047051
+ghalib 0.0528853051364
+manish 0.029489858076
+First prediction: ('antriksh', 'umar')
+rehan 0.830393970013
+shoib 0.0140432873741
+ghalib 0.0116469040513
+tushar 0.0111092599109
+farhan 0.009432381019
+First prediction: ('rehan', 'rehan')
+nikhil_raman 0.178145080805
+aly 0.146871060133
+saifur 0.0822363495827
+habib 0.0484406985343
+ameen 0.0333577357233
+First prediction: ('nikhil_raman', 'aly')
+rehan 0.988072931767
+shoib 0.00366718624718
+nikhil_mittal 0.00218389881775
+tushar 0.000740407616831
+abdul_wajid 0.00072758179158
+First prediction: ('rehan', 'rehan')
+sachin 0.993902266026
+farheen 0.000999363255687
+aman 0.000927713757847
+harsh 0.000631884904578
+shadab 0.000434260087786
+First prediction: ('sachin', 'sachin')
+sultana 0.511580228806
+bushra 0.286063611507
+shafiya 0.0427883565426
+suhani 0.0418249294162
+shruti 0.013447066769
+First prediction: ('sultana', 'sultana')
+rezwan 0.0448242723942
+farhan 0.0446179546416
+antriksh 0.0443228445947
+sharan 0.0433344952762
+rehan 0.034377425909
+First prediction: ('rezwan', 'rezwan')
+tushar 0.0624213479459
+farhan 0.0546326376498
+saifur 0.0528309009969
+abhishek_joshi 0.0470449738204
+shahjahan 0.0442828647792
+First prediction: ('tushar', 'shahjahan')
+sultana 0.96849244833
+bushra 0.0091561768204
+aman 0.0058227609843
+sushmita 0.00161995587405
+tushar 0.00157643738203
+First prediction: ('sultana', 'sultana')
+shadab 0.0696141198277
+nikhil_raman 0.0663458034396
+shahjahan 0.0530752055347
+irfan_ansari 0.0499142967165
+sahil 0.0416837595403
+First prediction: ('shadab', 'shadab')
+umar 0.065679602325
+ghalib 0.0608862228692
+irfan_ansari 0.0571730732918
+aman 0.0529607944191
+shoib 0.0446806885302
+First prediction: ('umar', 'irfan_ansari')
+rehan 0.889871716499
+shivam 0.0150577779859
+ameen 0.00785501860082
+ghalib 0.00760195823386
+abdul_wajid 0.00691093038768
+First prediction: ('rehan', 'rehan')
+sachin 0.368950009346
+ravi 0.0968058183789
+aman 0.085396297276
+zishan 0.0393973663449
+saif 0.0393077358603
+First prediction: ('sachin', 'sachin')
+umar 0.340715169907
+ghalib 0.216481074691
+ameen 0.057163529098
+shoib 0.0516868941486
+sarah_masud 0.0371465273201
+First prediction: ('umar', 'umar')
+shivam 0.176498323679
+irfan_ansari 0.158631429076
+shahjahan 0.0825440660119
+habib 0.0555739887059
+rehan 0.0355304889381
+First prediction: ('shivam', 'shivam')
+sultana 0.572375774384
+aman 0.0729163736105
+ashar 0.0357837863266
+sana 0.0270195472986
+prerit 0.0250192601234
+First prediction: ('sultana', 'sultana')
+nikhil_raman 0.0999512150884
+habib 0.0763141289353
+ameen 0.0457956381142
+sharan 0.0438627004623
+shahjahan 0.0431711710989
+First prediction: ('nikhil_raman', 'sharan')
+manaff 0.10250158608
+antriksh 0.0920169427991
+aditya 0.064711920917
+rehan 0.0581931844354
+mohib 0.0450603216887
+First prediction: ('manaff', 'manaff')
+sultana 0.701979219913
+ashar 0.0687305927277
+aman 0.0306662078947
+bushra 0.0240895766765
+sana 0.0138457128778
+First prediction: ('sultana', 'sultana')
+bushra 0.153598383069
+shafiya 0.0970260053873
+sana 0.0563609451056
+sapna 0.0527605637908
+maria 0.051029458642
+First prediction: ('bushra', 'sana')
+sachin 0.206163331866
+ashar 0.125944137573
+shadab 0.104055762291
+habib 0.0716972202063
+aman 0.0576254837215
+First prediction: ('sachin', 'sachin')
+shahjahan 0.117807030678
+bushra 0.0823999047279
+shafiya 0.0782090947032
+maria 0.0686250254512
+sushmita 0.0494583509862
+First prediction: ('shahjahan', 'maria')
+sultana 0.963075518608
+bushra 0.00845622085035
+sana 0.00576760759577
+sarah_khan 0.00361208594404
+sapna 0.00356478942558
+First prediction: ('sultana', 'sultana')
+shruti 0.235351577401
+sushmita 0.110169962049
+sana 0.0744961574674
+shafiya 0.05776174739
+suhani 0.0470968708396
+First prediction: ('shruti', 'shruti')
+rehan 0.970589697361
+abdul_wajid 0.00295357522555
+shivam 0.00237437640317
+rezwan 0.00194415112492
+shoib 0.0019389083609
+First prediction: ('rehan', 'rehan')
+nikhil_raman 0.447935163975
+umar 0.0330055877566
+aman 0.0282889921218
+aly 0.0264309924096
+habib 0.0263487249613
+First prediction: ('nikhil_raman', 'nikhil_raman')
+sachin 0.654823660851
+aditya 0.0589208416641
+shadab 0.0558450892568
+prerit 0.0397358573973
+chaitanya 0.0197301916778
+First prediction: ('sachin', 'sachin')
+shivam 0.206007987261
+prerit 0.0483050122857
+sahil 0.0461245141923
+shahjahan 0.0393200665712
+tushar 0.0291252825409
+First prediction: ('shivam', 'shivam')
+tushar 0.63526314497
+sarah_masud 0.0537980385125
+shivam 0.0422549583018
+ameen 0.0373208336532
+chaitanya 0.0262645222247
+First prediction: ('tushar', 'tushar')
+umar 0.448470801115
+shivam 0.0458881929517
+ghalib 0.0446280390024
+ameen 0.0412340089679
+sarah_masud 0.0351108796895
+First prediction: ('umar', 'umar')
+sultana 0.539102911949
+bushra 0.17240190506
+aman 0.0631775856018
+farheen 0.028028363362
+suhani 0.0263719968498
+First prediction: ('sultana', 'sultana')
+rehan 0.892289280891
+nikhil_mittal 0.00984833482653
+sarah_masud 0.00857599452138
+tushar 0.00747933099046
+abdul_wajid 0.00732938339934
+First prediction: ('rehan', 'rehan')
+farheen 0.238346159458
+bushra 0.214859202504
+sushmita 0.120033800602
+shafiya 0.0974311083555
+sultana 0.0884360298514
+First prediction: ('farheen', 'farheen')
+bushra 0.26801097393
+shafiya 0.0785747021437
+habib 0.0457496531308
+suhani 0.0442395955324
+rezwan 0.041164252907
+First prediction: ('bushra', 'sana')
+tushar 0.958279132843
+nikhil_mittal 0.00831520184875
+antriksh 0.00397727265954
+shivam 0.00341922789812
+chaitanya 0.00260648620315
+First prediction: ('tushar', 'tushar')
+habib 0.153292551637
+sarah_khan 0.12026154995
+suhani 0.0902634933591
+shruti 0.0635591596365
+mohib 0.0363791137934
+First prediction: ('habib', 'sarah_khan')
+sultana 0.577901482582
+bushra 0.094336129725
+mohib 0.0425045415759
+shahjahan 0.0365407504141
+habib 0.0246729012579
+First prediction: ('sultana', 'sultana')
+abhishek_joshi 0.15860016644
+nikhil_mittal 0.105588130653
+ghalib 0.0517144612968
+irfan_ansari 0.0480026528239
+aman 0.0416053272784
+First prediction: ('abhishek_joshi', 'abhishek_joshi')
+ashar 0.0971514508128
+farheen 0.0623835138977
+shafiya 0.0555355623364
+aly 0.0528036318719
+sana 0.0445630736649
+First prediction: ('ashar', 'farheen')
+abdul_wajid 0.160821527243
+habib 0.0657878145576
+harsh 0.0411662384868
+rehan 0.04031220451
+aman 0.040162704885
+First prediction: ('abdul_wajid', 'abdul_wajid')
+rehan 0.507710516453
+rezwan 0.0368170365691
+farhan 0.0350214131176
+shahjahan 0.0249552298337
+abdul_wajid 0.0245020259172
+First prediction: ('rehan', 'rehan')
+bushra 0.100943282247
+shahjahan 0.0663694515824
+nikhil_raman 0.0395813211799
+sahil 0.0319882445037
+rezwan 0.0276257507503
+First prediction: ('bushra', 'bushra')
+nikhil_raman 0.122255265713
+irfan_ansari 0.0799703598022
+habib 0.0559579394758
+sultana 0.0542980842292
+aly 0.05064528808
+First prediction: ('nikhil_raman', 'irfan_ansari')
+sultana 0.54682725668
+suhani 0.137146741152
+bushra 0.103876844049
+shruti 0.0326750092208
+shafiya 0.0288427509367
+First prediction: ('sultana', 'sultana')
+abhishek_joshi 0.211921349168
+irfan_ansari 0.127750426531
+tushar 0.0447898618877
+saifur 0.0443632528186
+sajjad 0.0390057973564
+First prediction: ('abhishek_joshi', 'abhishek_joshi')
+ameen 0.239260748029
+avishkar 0.162849038839
+umar 0.156913116574
+shivam 0.0965660437942
+antriksh 0.0874139592052
+First prediction: ('ameen', 'ameen')
+sushmita 0.246784180403
+sultana 0.0963805094361
+bushra 0.0474599041045
+aman 0.0413794331253
+farheen 0.0355441011488
+First prediction: ('sushmita', 'sushmita')
+sachin 0.233139157295
+sahil 0.159356355667
+habib 0.122596889734
+aditya 0.046563539654
+mohib 0.0406353734434
+First prediction: ('sachin', 'sachin')
+sahil 0.114843294024
+shivam 0.0730434209108
+nikhil_raman 0.0644040033221
+akshat 0.045218821615
+dhawal 0.0428955033422
+First prediction: ('sahil', 'dhawal')
+sachin 0.676536977291
+mohib 0.0788677409291
+saif 0.0761537775397
+aman 0.0295434258878
+ravi 0.00919282529503
+First prediction: ('sachin', 'sachin')
+sushmita 0.150517717004
+suhani 0.0958868712187
+aman 0.061746224761
+shruti 0.0567224621773
+bushra 0.0506319142878
+First prediction: ('sushmita', 'sushmita')
+tushar 0.538132309914
+aditya 0.0338888801634
+sarah_masud 0.0255015511066
+rehan 0.0164633058012
+shivam 0.015312936157
+First prediction: ('tushar', 'tushar')
+irfan_ansari 0.156733334064
+habib 0.0736418962479
+saifur 0.0646321475506
+aditya 0.044580642134
+ghalib 0.0428007952869
+First prediction: ('irfan_ansari', 'irfan_ansari')
+nikhil_raman 0.293775171041
+ghalib 0.0989932268858
+habib 0.0475366041064
+ameen 0.0339969918132
+umar 0.0310908239335
+First prediction: ('nikhil_raman', 'nikhil_raman')
+umar 0.105113744736
+ghalib 0.102323628962
+sarthak 0.0904977470636
+avishkar 0.051449008286
+mohib 0.0514392890036
+First prediction: ('umar', 'sarthak')
+habib 0.0513634085655
+shahjahan 0.0459504574537
+sushmita 0.0417044684291
+shivam 0.0409091413021
+rehan 0.0356008633971
+First prediction: ('habib', 'chaitanya')
+bushra 0.411544024944
+sultana 0.0905040875077
+shahjahan 0.0652922540903
+habib 0.0517453476787
+suhani 0.0335071869195
+First prediction: ('bushra', 'bushra')
+habib 0.326380968094
+shahjahan 0.0570771805942
+sahil 0.0560717210174
+aly 0.0549980439246
+saifur 0.0508701130748
+First prediction: ('habib', 'raghib_ahsan')
+ravi 0.0459080673754
+nikhil_raman 0.0404575578868
+bushra 0.0346206910908
+sahil 0.0329809263349
+farhan 0.0329182781279
+First prediction: ('ravi', 'naeem')
+shahjahan 0.369355291128
+aly 0.0997417867184
+sahil 0.0704411566257
+shadab 0.0375242009759
+nikhil_raman 0.0332022681832
+First prediction: ('shahjahan', 'shahjahan')
+nikhil_raman 0.330095857382
+habib 0.049986846745
+shadab 0.0451879166067
+zishan 0.0321132950485
+irfan_ansari 0.029795717448
+First prediction: ('nikhil_raman', 'nikhil_raman')
+tushar 0.732935369015
+shivam 0.04962053895
+sarah_masud 0.0261902734637
+umar 0.0255192834884
+ghalib 0.0229950398207
+First prediction: ('tushar', 'tushar')
+sultana 0.129089251161
+shruti 0.107356898487
+aman 0.066085703671
+suhani 0.0440288595855
+avishkar 0.0430306196213
+First prediction: ('sultana', 'shruti')
+saif 0.448934942484
+saifur 0.101268984377
+rezwan 0.0520735494792
+shahjahan 0.0451184138656
+shafiya 0.0288784187287
+First prediction: ('saif', 'saif')
+sushmita 0.205894678831
+suhani 0.0662110820413
+ghalib 0.0606576725841
+aditya 0.05163564533
+tushar 0.041383612901
+First prediction: ('sushmita', 'sushmita')
+sultana 0.516762316227
+ghalib 0.0406696312129
+tushar 0.0379593111575
+nikhil_raman 0.0297132451087
+ashar 0.0250776782632
+First prediction: ('sultana', 'sultana')
+sushmita 0.0840295553207
+suhani 0.082399584353
+habib 0.059487760067
+bushra 0.0470327623188
+shafiya 0.045355822891
+First prediction: ('sushmita', 'sushmita')
+aman 0.25124001503
+sajjad 0.0630627721548
+irfan_ansari 0.0503236167133
+saif 0.035836301744
+abhishek_joshi 0.0325435250998
+First prediction: ('aman', 'aman')
+sultana 0.980238556862
+aman 0.00401468528435
+bushra 0.00217440258712
+tushar 0.00167283206247
+sushmita 0.000956016476266
+First prediction: ('sultana', 'sultana')
+sultana 0.577154576778
+bushra 0.265597313643
+suhani 0.0350568890572
+farheen 0.0232174489647
+shafiya 0.0164406727999
+First prediction: ('sultana', 'sultana')
+nikhil_raman 0.467459380627
+aly 0.0914093479514
+sahil 0.0465801246464
+habib 0.0330304577947
+saifur 0.0214908495545
+First prediction: ('nikhil_raman', 'nikhil_raman')
+nikhil_mittal 0.406438082457
+aditya 0.0834713056684
+ameen 0.0480407513678
+tushar 0.0339939706028
+prerit 0.0318648293614
+First prediction: ('nikhil_mittal', 'nikhil_mittal')
+nikhil_raman 0.0781473964453
+shahjahan 0.0645209103823
+shivam 0.04769949615
+nikhil_mittal 0.0431598424911
+prerit 0.037849329412
+First prediction: ('nikhil_raman', 'anzal')
+ghalib 0.190584078431
+umar 0.0755859315395
+antriksh 0.0714378729463
+shivam 0.0491117611527
+nikhil_raman 0.0482850074768
+First prediction: ('ghalib', 'ghalib')
+sahil 0.097088932991
+shahjahan 0.0789776071906
+habib 0.0603929944336
+sushmita 0.0366915129125
+nikhil_raman 0.0341831445694
+First prediction: ('sahil', 'sahil')
+sarah_khan 0.269212782383
+shafiya 0.107815533876
+shruti 0.105450741947
+bushra 0.0606951452792
+suhani 0.0581383146346
+First prediction: ('sarah_khan', 'sarah_khan')
+nikhil_raman 0.319044589996
+sahil 0.0608960278332
+irfan_ansari 0.0597355775535
+shadab 0.0395460911095
+nikhil_mittal 0.0389976203442
+First prediction: ('nikhil_raman', 'nikhil_raman')
+aman 0.726944804192
+tushar 0.0823728889227
+sana 0.029887702316
+sapna 0.0229192897677
+mohib 0.019390758127
+First prediction: ('aman', 'aman')
+chaitanya 0.711906731129
+prerit 0.0530953593552
+farhan 0.0350709334016
+saif 0.0308759957552
+nikhil_mittal 0.0263878200203
+First prediction: ('chaitanya', 'chaitanya')
+shivam 0.357243835926
+tushar 0.108283624053
+ghalib 0.0365584157407
+irfan_ansari 0.0318437404931
+manish 0.0316623933613
+First prediction: ('shivam', 'shivam')
+sultana 0.621475696564
+bushra 0.0398396775126
+ashar 0.0307377874851
+sana 0.0290377028286
+shafiya 0.0246496591717
+First prediction: ('sultana', 'sultana')
+ghalib 0.0745226144791
+nikhil_raman 0.0725249126554
+umar 0.0714548900723
+avishkar 0.0385370366275
+farhan 0.0338294394314
+First prediction: ('ghalib', 'manaff')
+nikhil_raman 0.208279699087
+habib 0.10884732008
+sultana 0.0975799039006
+aly 0.0530161857605
+sahil 0.0461812540889
+First prediction: ('nikhil_raman', 'nikhil_raman')
+tushar 0.94411200285
+aditya 0.0100529538468
+chaitanya 0.00918453093618
+nikhil_mittal 0.00849163345993
+antriksh 0.00385948107578
+First prediction: ('tushar', 'tushar')
+avishkar 0.642775058746
+sarthak 0.0370226688683
+sapna 0.0313422679901
+umar 0.0306105427444
+sana 0.0214623957872
+First prediction: ('avishkar', 'avishkar')
+manish 0.218061178923
+shahjahan 0.116121836007
+saif 0.101469509304
+farhan 0.0770756974816
+raghib_ahsan 0.0445478819311
+First prediction: ('manish', 'manish')
+tushar 0.800496101379
+sarah_masud 0.0200247950852
+aman 0.0144739449024
+prerit 0.0128866266459
+aditya 0.0118747325614
+First prediction: ('tushar', 'tushar')
+aly 0.179515555501
+habib 0.0928163602948
+nikhil_raman 0.0826158225536
+sultana 0.0593076199293
+suhani 0.0386452451348
+First prediction: ('aly', 'aly')
+sultana 0.568805634975
+sushmita 0.108274377882
+suhani 0.0868135616183
+sana 0.0498956479132
+shruti 0.0334644392133
+First prediction: ('sultana', 'sultana')
+sultana 0.290211111307
+bushra 0.253387331963
+suhani 0.0576430223882
+shruti 0.0493609718978
+habib 0.0406676195562
+First prediction: ('sultana', 'sultana')
+saif 0.353775501251
+shadab 0.131263777614
+naeem 0.106211677194
+raghib_ahsan 0.0805882588029
+harsh 0.0688936635852
+First prediction: ('saif', 'saif')
+umar 0.272986084223
+sarah_masud 0.0512639395893
+tushar 0.050467338413
+ghalib 0.0503758452833
+shivam 0.0359689109027
+First prediction: ('umar', 'umar')
+habib 0.134856835008
+irfan_ansari 0.0451006107032
+ghalib 0.0440231375396
+mohib 0.0387522689998
+saifur 0.0340249314904
+First prediction: ('habib', 'tushar')
+sarthak 0.874979197979
+avishkar 0.0227578952909
+sahil 0.010139699094
+ghalib 0.00778760062531
+shivam 0.00763239478692
+First prediction: ('sarthak', 'sarthak')
+sajjad 0.0885935053229
+abdul_karim 0.0740437731147
+saif 0.0604561157525
+irfan_ansari 0.0491516254842
+manaff 0.0464473180473
+First prediction: ('sajjad', 'sajjad')
+sushmita 0.603230118752
+sarah_masud 0.0574126765132
+nikhil_mittal 0.0321559682488
+sana 0.0315360575914
+sultana 0.0304554570466
+First prediction: ('sushmita', 'sushmita')
+rehan 0.864616155624
+shoib 0.0380467772484
+abdul_wajid 0.0162941329181
+sarah_masud 0.00910580717027
+irfan_ansari 0.00490885041654
+First prediction: ('rehan', 'rehan')
+sapna 0.152727484703
+sultana 0.0943257883191
+dhawal 0.0890174210072
+sana 0.0427552200854
+tushar 0.0346663147211
+First prediction: ('sapna', 'sapna')
+farhan 0.370490640402
+nikhil_raman 0.0990773811936
+manish 0.0733172893524
+aly 0.0528362989426
+saif 0.0479897409678
+First prediction: ('farhan', 'farhan')
+sarah_masud 0.0744126662612
+dhawal 0.0598115921021
+suhani 0.0463605709374
+tushar 0.0449552536011
+umar 0.0449143387377
+First prediction: ('sarah_masud', 'dhawal')
+umar 0.211839780211
+avishkar 0.0798844099045
+ghalib 0.0573286898434
+sapna 0.0418204553425
+antriksh 0.0386834144592
+First prediction: ('umar', 'umar')
+sultana 0.747927904129
+aman 0.0346210673451
+prerit 0.0259009972215
+ashar 0.0240204241127
+sana 0.0153833869845
+First prediction: ('sultana', 'sultana')
+shadab 0.135786116123
+sultana 0.0760017111897
+saif 0.0726244449615
+nikhil_mittal 0.065789334476
+rahul 0.0429327972233
+First prediction: ('shadab', 'shadab')
+zishan 0.153893396258
+nikhil_raman 0.0552820563316
+manish 0.0545002035797
+aly 0.0524330884218
+sahil 0.0490369163454
+First prediction: ('zishan', 'zishan')
+sultana 0.691874265671
+sapna 0.034180060029
+aman 0.0286101195961
+sana 0.0229006893933
+tushar 0.0156518835574
+First prediction: ('sultana', 'sultana')
+nikhil_raman 0.462468355894
+aly 0.0611148178577
+shahjahan 0.0388693995774
+irfan_ansari 0.0383467562497
+habib 0.0254705045372
+First prediction: ('nikhil_raman', 'nikhil_raman')
+sapna 0.46367290616
+bushra 0.089816711843
+aman 0.0349387489259
+sana 0.0337741114199
+suhani 0.0256123822182
+First prediction: ('sapna', 'sapna')
+antriksh 0.258002847433
+ameen 0.11000456661
+ghalib 0.0606819950044
+shivam 0.0557842440903
+umar 0.0504441186786
+First prediction: ('antriksh', 'antriksh')
+nikhil_mittal 0.405755311251
+ameen 0.0739512518048
+shivam 0.0733583047986
+chaitanya 0.0533544719219
+tushar 0.0427630320191
+First prediction: ('nikhil_mittal', 'nikhil_mittal')
+aman 0.163054734468
+umar 0.10290453583
+ghalib 0.0679608881474
+shivam 0.0601808018982
+avishkar 0.05706352368
+First prediction: ('aman', 'aman')
+sahil 0.0607516877353
+shahjahan 0.0583732314408
+nikhil_raman 0.0575992688537
+habib 0.0569153241813
+shivam 0.0298766307533
+First prediction: ('sahil', 'manaff')
+nikhil_raman 0.452040910721
+sahil 0.0553668774664
+umar 0.0355272106826
+aman 0.0287253390998
+sana 0.0265353005379
+First prediction: ('nikhil_raman', 'nikhil_raman')
+shadab 0.19059997797
+aly 0.11862950027
+sachin 0.0816164314747
+aman 0.0640435144305
+ashar 0.06371922791
+First prediction: ('shadab', 'sachin')
+tushar 0.136862099171
+irfan_ansari 0.0886325910687
+farhan 0.0593392625451
+abhishek_joshi 0.0495307892561
+aditya 0.0464521609247
+First prediction: ('tushar', 'tushar')
+shadab 0.224227964878
+shahjahan 0.0768904536963
+raghib_ahsan 0.0746373683214
+saif 0.0654338300228
+sachin 0.0564025901258
+First prediction: ('shadab', 'shadab')
+sana 0.594915568829
+aman 0.0653262510896
+bushra 0.0515025220811
+maria 0.0449594445527
+sultana 0.04096050933
+First prediction: ('sana', 'sana')
+shahjahan 0.0642124041915
+nikhil_raman 0.063477806747
+sahil 0.0623169727623
+habib 0.0548618212342
+sultana 0.0492457076907
+First prediction: ('shahjahan', 'farheen')
+tushar 0.823002815247
+sana 0.0228044558316
+sarah_masud 0.0181417129934
+sushmita 0.0161147601902
+sahil 0.0154110863805
+First prediction: ('tushar', 'tushar')
+tushar 0.264470100403
+aditya 0.259402275085
+aman 0.0593610964715
+irfan_ansari 0.0560088902712
+ghalib 0.0546882748604
+First prediction: ('tushar', 'tushar')
+tushar 0.189706653357
+shivam 0.066419608891
+ghalib 0.0587950460613
+umar 0.0514745749533
+antriksh 0.0331268124282
+First prediction: ('tushar', 'tushar')
+nikhil_raman 0.481748849154
+saifur 0.0311352387071
+habib 0.0276549309492
+irfan_ansari 0.0274087190628
+aly 0.0249453634024
+First prediction: ('nikhil_raman', 'nikhil_raman')
+sultana 0.238021835685
+aman 0.088979370892
+farheen 0.0510212630033
+bushra 0.0464719571173
+mohib 0.0359276048839
+First prediction: ('sultana', 'sultana')
+aman 0.554152011871
+sana 0.158058658242
+tushar 0.0310239419341
+sapna 0.0251401532441
+umar 0.0221092235297
+First prediction: ('aman', 'aman')
+sapna 0.367607682943
+suhani 0.14455331862
+sultana 0.115128554404
+sana 0.0527006499469
+aman 0.0264789946377
+First prediction: ('sapna', 'sapna')
+sahil 0.304373681545
+tushar 0.148649156094
+antriksh 0.0867817997932
+umar 0.0704824924469
+chaitanya 0.0406242907047
+First prediction: ('sahil', 'tushar')
+nikhil_raman 0.31381675601
+habib 0.0435993224382
+sahil 0.0363590531051
+aly 0.0348404832184
+suhani 0.0278818123043
+First prediction: ('nikhil_raman', 'nikhil_raman')
+aman 0.208722949028
+shivam 0.077344596386
+shahjahan 0.0480354204774
+nikhil_raman 0.04552834481
+aly 0.0431792065501
+First prediction: ('aman', 'aman')
+saifur 0.465656608343
+shadab 0.0708997920156
+aman 0.0554193519056
+ashar 0.0425888225436
+nikhil_raman 0.0403298698366
+First prediction: ('saifur', 'saifur')
+nikhil_raman 0.392687857151
+aly 0.0487632229924
+dhawal 0.047754317522
+manish 0.0452068038285
+shadab 0.0359972193837
+First prediction: ('nikhil_raman', 'nikhil_raman')
+manaff 0.199692726135
+nikhil_raman 0.0955162420869
+aly 0.060905277729
+shahjahan 0.0519968308508
+sahil 0.0518611371517
+First prediction: ('manaff', 'manaff')
+sachin 0.544191658497
+shadab 0.130693390965
+harsh 0.0982607677579
+ashar 0.0382832325995
+naeem 0.0268025398254
+First prediction: ('sachin', 'sachin')
+ameen 0.850618779659
+shivam 0.0595119073987
+akshat 0.0120873367414
+nikhil_mittal 0.00915020238608
+umar 0.00775867840275
+First prediction: ('ameen', 'ameen')
+aman 0.0779114440084
+mohib 0.0435810722411
+sarthak 0.0429325811565
+rehan 0.0392699427903
+abdul_wajid 0.0388721674681
+First prediction: ('aman', 'aman')
+sahil 0.335158228874
+tushar 0.0679875686765
+habib 0.0404339693487
+aman 0.0241933017969
+irfan_ansari 0.0236509423703
+First prediction: ('sahil', 'sahil')
+sultana 0.608243525028
+bushra 0.0283574890345
+suhani 0.0241814460605
+habib 0.0224468335509
+ashar 0.020769989118
+First prediction: ('sultana', 'sultana')
+sultana 0.896552681923
+sana 0.0150098651648
+sushmita 0.0146581130102
+sapna 0.013570853509
+bushra 0.00748633639887
+First prediction: ('sultana', 'sultana')
+shruti 0.35754558444
+sushmita 0.207487300038
+bushra 0.066317550838
+shafiya 0.0531795695424
+habib 0.0406624190509
+First prediction: ('shruti', 'shruti')
+suhani 0.113892905414
+sahil 0.0394726954401
+aditya 0.0388131886721
+antriksh 0.0306451637298
+aman 0.0272152964026
+First prediction: ('suhani', 'suhani')
+shruti 0.259153872728
+sultana 0.143478319049
+sushmita 0.121923536062
+bushra 0.0928369984031
+farheen 0.0833607017994
+First prediction: ('shruti', 'shruti')
+rehan 0.974516868591
+abdul_wajid 0.00398439634591
+shoib 0.0021390565671
+shivam 0.00132305803709
+nikhil_mittal 0.00132268306334
+First prediction: ('rehan', 'rehan')
+nikhil_raman 0.0859232768416
+sahil 0.0551293119788
+rezwan 0.0435529313982
+irfan_ansari 0.0410646684468
+shahjahan 0.0357698947191
+First prediction: ('nikhil_raman', 'harsh')
+tushar 0.814131259918
+ghalib 0.0178734678775
+shoib 0.0142494682223
+manish 0.0139956697822
+umar 0.0139774382114
+First prediction: ('tushar', 'tushar')
+tushar 0.82021510601
+shivam 0.0372355468571
+umar 0.0303024407476
+ghalib 0.0202769003808
+sarah_masud 0.0167385526001
+First prediction: ('tushar', 'tushar')
+sultana 0.577726602554
+suhani 0.0875973105431
+aman 0.0709198489785
+bushra 0.0293844956905
+sapna 0.0110584758222
+First prediction: ('sultana', 'sultana')
+umar 0.275289326906
+avishkar 0.0692096576095
+ghalib 0.0458859466016
+sarthak 0.0365607477725
+ameen 0.0340060591698
+First prediction: ('umar', 'umar')
+ghalib 0.0445212312043
+shadab 0.039185795933
+shivam 0.0364397391677
+avishkar 0.0343002900481
+irfan_ansari 0.0338035151362
+First prediction: ('ghalib', 'manaff')
+habib 0.315207451582
+suhani 0.0748377367854
+nikhil_raman 0.0647224113345
+aly 0.0352738127112
+saifur 0.0286644808948
+First prediction: ('habib', 'habib')
+sachin 0.340788811445
+shadab 0.226660475135
+manaff 0.0710584819317
+harsh 0.0489992536604
+abhishek_joshi 0.0463883951306
+First prediction: ('sachin', 'sachin')
+sapna 0.173117339611
+mohib 0.167843773961
+shadab 0.0375837758183
+habib 0.0349799655378
+ravi 0.0283707883209
+First prediction: ('sapna', 'mohib')
+habib 0.398654818535
+sultana 0.11124984175
+aman 0.0451560392976
+suhani 0.0372516736388
+aly 0.0210568457842
+First prediction: ('habib', 'habib')
+sajjad 0.0928313061595
+irfan_ansari 0.076290614903
+abdul_wajid 0.0665593892336
+aly 0.0564574226737
+farhan 0.0508921965957
+First prediction: ('sajjad', 'sajjad')
+aly 0.194152474403
+saifur 0.0895401835442
+shoib 0.0713051408529
+nikhil_raman 0.0604861117899
+shadab 0.0505663640797
+First prediction: ('aly', 'shoib')
+habib 0.0647311657667
+sajjad 0.0456650666893
+shahjahan 0.0389898903668
+shafiya 0.035745728761
+suhani 0.0308668706566
+First prediction: ('habib', 'sajjad')
+sultana 0.845943033695
+bushra 0.0192719046026
+suhani 0.0154337584972
+sarah_khan 0.0123404385522
+aman 0.00942038744688
+First prediction: ('sultana', 'sultana')
+raghib_ahsan 0.277637898922
+habib 0.0761995017529
+shahjahan 0.0689547732472
+sachin 0.0587087757885
+shadab 0.0530949160457
+First prediction: ('raghib_ahsan', 'raghib_ahsan')
+sana 0.320039153099
+sultana 0.0928099676967
+suhani 0.0876515731215
+bushra 0.0666658058763
+aman 0.0447961352766
+First prediction: ('sana', 'sana')
+manaff 0.108712814748
+sushmita 0.077431678772
+antriksh 0.0772003680468
+nikhil_mittal 0.0647211894393
+chaitanya 0.0524017550051
+First prediction: ('manaff', 'manaff')
+nikhil_raman 0.113168954849
+shivam 0.109206825495
+ghalib 0.0796148329973
+ameen 0.0594790279865
+zishan 0.0571274422109
+First prediction: ('nikhil_raman', 'zishan')
+tushar 0.807366788387
+aman 0.0190081074834
+aditya 0.0115457493812
+shivam 0.011492934078
+sultana 0.0110235502943
+First prediction: ('tushar', 'tushar')
+sultana 0.876346886158
+aman 0.0224271211773
+sana 0.0200622268021
+bushra 0.0115880612284
+tushar 0.00794961955398
+First prediction: ('sultana', 'sultana')
+suhani 0.187170237303
+aly 0.0746509432793
+habib 0.0521874837577
+shahjahan 0.0499482229352
+nikhil_raman 0.0463662296534
+First prediction: ('suhani', 'suhani')
+sushmita 0.0864316523075
+suhani 0.0737379491329
+sarah_masud 0.0670010447502
+shivam 0.0591336824
+shafiya 0.0487663038075
+First prediction: ('sushmita', 'sarah_masud')
+sarah_khan 0.225395277143
+sana 0.148454725742
+suhani 0.0860479921103
+mohib 0.06694162637
+shafiya 0.0604690387845
+First prediction: ('sarah_khan', 'sana')
+Evaluated, predicted and saved weights !
+Checkout the results in class_eval.txt file !
+]0;karpathy@karpathy: ~/Attendancekarpathy@karpathy:~/Attendance$ exit
+
+Script done on Saturday 21 May 2016 04:36:38 AM IST

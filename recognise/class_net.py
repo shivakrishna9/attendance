@@ -84,9 +84,11 @@ def evaluate(model, plist, batch_size=16):
             t = (plist[j[0][1][0]], plist[np.argmax(y_train[i])])
             print 'First prediction:', t
 
-            cv2.imshow(str(t), cv2.imread(imgs[i]))
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imwrite('outputs/classification/'+str(t)+'.jpg', cv2.imread(imgs[i]))
+
+            # cv2.imshow(str(t), cv2.imread(imgs[i]))
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
     print 'Evaluated, predicted and saved weights !'
 
