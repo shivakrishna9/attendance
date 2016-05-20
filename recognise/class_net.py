@@ -42,7 +42,7 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/class_20.txt',
+    chunks = pd.read_csv('traintest/demo.txt',
                          names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()

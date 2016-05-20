@@ -59,7 +59,7 @@ def evaluate(model, plist, batch_size=16):
         list_best5 = []
         for i, j in enumerate(preds):
             prob = j
-            prob5 = sorted(prob, reverse=True)[:5]
+            prob5 = sorted(prob, reverse=True)[:3]
             best5 = []
             for k in prob5:
                 best5.append([k, np.where(j==k)])
@@ -218,7 +218,7 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
     start = time.time()
     model.add(Flatten())
     model.add(Dense(output_dim=4096, activation='relu',
-                    trainable=False, init="uniform"))
+                     init="uniform"))
     model.add(Dense(output_dim=4096, init="uniform",
                     activation='relu'))
     model.add(Dropout(0.5))
