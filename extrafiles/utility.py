@@ -4,7 +4,42 @@ import time
 import glob
 import re
 import random
+import pandas as pd
 from collections import Counter
+import matplotlib.pyplot as plt
+import matplotlib
+
+def plot():
+
+    lst = []
+    acc= []
+    with open("../outputs/visual.txt") as f:
+        for i in f:
+            x = i[1:-2].split(', ')
+            lst += [[float(x[0])]]
+            acc += [[float(x[1])]]
+            
+    df = pd.DataFrame(lst, columns=['loss'])
+    df1 = pd.DataFrame(acc, columns=['accuracy'])
+    df.plot()
+
+    # data = {
+    #         # 'train': pd.Series(dtrain.values(),index=dtrain.keys()),
+    #         # 'test': pd.Series(dtest.values(),index=dtest.keys()),
+    #         'Data Distribution': pd.Series(dval.values(),index=dval.keys())
+    #         }
+
+    # df = pd.DataFrame(data)
+    # # df = df.sort('train')
+
+    # fig, axes = plt.subplots(nrows=1, ncols=1)
+    # for i, c in enumerate(df.columns):
+    #     df[c].plot(kind='bar', figsize=(12, 10), title=c)
+    #     break
+
+    plt.savefig('../vis/loss_old.png', bbox_inches='tight')
+    df1.plot()
+    plt.savefig('../vis/accuracy_old.png', bbox_inches='tight')
 
 
 def get_images():
@@ -181,7 +216,8 @@ def image_load():
 
 
 if __name__ == '__main__':
+    plot()
     # image_load()
-    get_images()
+    # get_images()
     # pre_process()
     # image_ext()
