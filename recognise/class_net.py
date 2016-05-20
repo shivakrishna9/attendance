@@ -42,7 +42,7 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/class_20.txt',
+    chunks = pd.read_csv('traintest/demo.txt',
                          names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()
@@ -84,9 +84,11 @@ def evaluate(model, plist, batch_size=16):
             t = (plist[j[0][1][0]], plist[np.argmax(y_train[i])])
             print 'First prediction:', t
 
-            cv2.imshow(str(t), cv2.imread(imgs[i]))
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imwrite('outputs/classification/'+str(t)+'.jpg', cv2.imread(imgs[i]))
+
+            # cv2.imshow(str(t), cv2.imread(imgs[i]))
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
     print 'Evaluated, predicted and saved weights !'
 

@@ -3,6 +3,9 @@ import cv2
 import time
 import glob
 import os
+import re
+from collections import Counter
+import random
 
 
 def rmfaces():
@@ -19,13 +22,64 @@ def one_hot_names():
     print one_hot(",".join(lst), 5749, split=",")[:10]
     print lst[:10]
 
+def pre_process():
+    i = []
+    for image in glob.glob("extras/train/*/*.jpg"):
+        image = re.sub('\.\./', '', image)
+        person = image.split('/')[2]
+        img = image
+        if 'not' in person:
+            i.append((person, 'none', img))
+        else:
+            i.append(('face', person, img))
 
-def preprocess():
+    up = [x for (a, x, y) in i if x != 'none']
+    upx = up
+    x = Counter(up)
+    up = list(set(up))
+    up = sorted(up)
 
-    with open("../traintest/classtrain.txt", 'w') as f:
-        for image in glob.glob("newtest/*/*.jpg"):
-            print image.split('/')[2].split('.')[0] + "," + image.split('/')[1]
-            f.write(image.split('/')[2].split('.')[0] + "," + image.split('/')[1] + '\n')
+    return up
+
+
+def image_set():
+    i = []
+    for image in glob.glob("../extras/test1/*/*.jpg"):
+        image = re.sub('\.\./', '', image)
+        person = image.split('/')[2]
+        img = image
+        if 'not' in person:
+            i.append((person, img))
+        else:
+            i.append((person, img))
+
+    up = [x for (x, y) in i]
+    upx = up
+    x = Counter(up)
+    up = list(set(up))
+    up = sorted(up)
+    # i.append(m)
+    random.shuffle(i)
+
+    with open("../traintest/race_test1.txt", 'w') as f:
+        for k in i:
+            if k[1] != 'none':
+                # pass
+                print k[0] + '\t' + str(up.index(k[0])) + '\t' + k[1]
+                f.write(k[0] + '\t' + str(up.index(k[0])) + '\t' + k[1] + '\n')
+            # else:
+            #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
+            #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
+
+        # for k in m:
+        #     if k[1] != 'none':
+        #         # pass
+        #         print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
+        #         f.write(k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2] + '\n')
+            
+    print up
+    print len(upx)
+    print x
 
 
 def encode():
@@ -47,10 +101,12 @@ def encode():
 
 def image():
     
-    for image in glob.glob("../extras/Farewell/*/*.JPG"):
+    for image in glob.glob("../extras/test/*.jpg"):
         start = time.time()
-        im_path = '/'.join(image.split('/')[:-1])
+        r_path = '/'.join(image.split('/')[:-1])
+        im_race = image.split('/')[-1].split('\.')[0].split('_')[0]
         im_name = image.split('/')[-1].split('\.')[0]
+
         img = cv2.imread(image)
         # res = cv2.resize(img, (227, 227), interpolation=cv2.INTER_CUBIC)
 
@@ -66,9 +122,9 @@ def image():
         for i, (x, y, w, h) in enumerate(rects):
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_color = img[y:y + h, x:x + w]
-            f_path = im_path + '/faces'
+            f_path = r_path + '/' + im_race
             if not os.path.exists(f_path):
-                os.makedirs(f_path)
+                os.mkdir(f_path)
             print f_path + '/' + im_name + '_' + str(i) + '.jpg'
 
             # cv2.imshow('image', roi_color)
@@ -77,6 +133,40 @@ def image():
             #     cv2.destroyAllWindows()
             cv2.imwrite(f_path + '/' + im_name + '_' +
                         str(i) + '.jpg', roi_color)
+
+    for image in glob.glob("../extras/test1/*.jpg"):
+        start = time.time()
+        r_path = '/'.join(image.split('/')[:-1])
+        im_race = image.split('/')[-1].split('\.')[0].split('_')[0]
+        im_name = image.split('/')[-1].split('\.')[0]
+
+        img = cv2.imread(image)
+        # res = cv2.resize(img, (227, 227), interpolation=cv2.INTER_CUBIC)
+
+        FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
+
+        detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
+        rects = detector.detectMultiScale(img,
+                                          scaleFactor=1.03,
+                                          minNeighbors=10,
+                                          minSize=(30, 30),
+                                          flags=cv2.CASCADE_SCALE_IMAGE)
+
+        for i, (x, y, w, h) in enumerate(rects):
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            roi_color = img[y:y + h, x:x + w]
+            f_path = r_path + '/' + im_race
+            if not os.path.exists(f_path):
+                os.mkdir(f_path)
+            print f_path + '/' + im_name + '_' + str(i) + '.jpg'
+
+            # cv2.imshow('image', roi_color)
+
+            # if cv2.waitKey(0) & 0xFF == ord('y'):
+            #     cv2.destroyAllWindows()
+            cv2.imwrite(f_path + '/' + im_name + '_' +
+                        str(i) + '.jpg', roi_color)
+
 
             # elif cv2.waitKey(0) & 0xFF == ord('n'):
             #     cv2.destroyAllWindows()
@@ -140,4 +230,5 @@ def video():
 
 
 if __name__ == '__main__':
-    image()
+    # image()
+    image_set()

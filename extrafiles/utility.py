@@ -51,6 +51,7 @@ def get_images():
         lst.append((image, person))
     
     up = [x for (a, x) in lst]
+    upx = up
     x = Counter(up)
 
     up = pre_process()
@@ -62,7 +63,7 @@ def get_images():
             print i[1] +'\t'+ str(up.index(i[1])) +'\t'+ i[0]
             f.write(i[1] +'\t'+ str(up.index(i[1])) +'\t'+ i[0]+'\n')
 
-    print len(up)
+    print len(upx)
     print x
     
 
@@ -85,9 +86,9 @@ def image_ext():
         image = re.sub('\.\./', '', image)
         img = image
         if 'not' in person:
-            m.append((person, 'none', img))
+            i.append((person, 'none', img))
         else:
-            m.append(('face', person, img))
+            i.append(('face', person, img))
 
     random.shuffle(m)
     up = [x for (a, x, y) in i if x != 'none']
@@ -98,8 +99,8 @@ def image_ext():
     # i.append(m)
     random.shuffle(i)
 
-    with open("../traintest/class_20.txt", 'w') as f:
-        for k in m:
+    with open("../traintest/class66_train.txt", 'w') as f:
+        for k in i:
             if k[1] != 'none':
                 # pass
                 print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
@@ -220,4 +221,4 @@ if __name__ == '__main__':
     # image_load()
     # get_images()
     # pre_process()
-    # image_ext()
+    image_ext()
