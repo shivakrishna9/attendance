@@ -261,6 +261,7 @@ class VGG(oject):
     def network():
         input1 = Input(shape=(3, 227, 227))
 
+        model = Sequential()
         model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
                             activation='relu', trainable=False, name='conv1_1', border_mode='same'))
         model.add(ZeroPadding2D((1, 1)))
@@ -308,3 +309,16 @@ class VGG(oject):
         model.add(Convolution2D(512, 3, 3, activation='relu',
                                 trainable=False, name='conv5_3'))
         model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+        model.add(Flatten())
+        model.add(Dense(output_dim=4096, activation='relu',
+                        trainable=False, init="uniform"))
+        model.add(Dense(output_dim=4096, init="uniform",
+                        activation='relu'))
+        model.add(Dropout(0.5))
+
+        to_out = model(input1)
+
+        face_not = Dense(output_dim=2, init="uniform", activation='softmax')(to_out)
+        output = Dense(output_dim=NB_CLASS, init="uniform", activation='softmax')(to_out)
+
+        graph = Model(input=input1, output=[face_out,output])
