@@ -62,7 +62,7 @@ def evaluate(model, plist, batch_size=16):
             prob5 = sorted(prob, reverse=True)[:5]
             best5 = []
             for k in prob5:
-                best5.append([k, np.where(j==k)])
+                best5.append([k, np.where(j == k)])
 
             list_best5.append(best5)
 

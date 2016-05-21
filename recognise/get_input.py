@@ -12,7 +12,7 @@ def detect_haar(image):
     FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
 
     detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
-    rects = detector.detectMultiScale(img, scaleFactor=1.2, minNeighbors=5,
+    rects = detector.detectMultiScale(img, scaleFactor=1.03, minNeighbors=5,
                                       minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
 
     faces = []
