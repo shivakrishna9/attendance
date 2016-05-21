@@ -42,7 +42,7 @@ def get_pt_mat(model, layer_dict):
 def evaluate(model, plist, batch_size=16):
     print 'Evaluating, predicting and saving weights ..'
 
-    chunks = pd.read_csv('traintest/demo.txt',
+    chunks = pd.read_csv('traintest/class_20.txt',
                          names=['person', 'class', 'image'], chunksize=256,
                          sep='\t', engine='python')
     # plist = pre_process()
@@ -84,11 +84,11 @@ def evaluate(model, plist, batch_size=16):
             t = (plist[j[0][1][0]], plist[np.argmax(y_train[i])])
             print 'First prediction:', t
 
-            cv2.imwrite('outputs/classification/'+str(t)+'.jpg', cv2.imread(imgs[i]))
+            # cv2.imwrite('outputs/classification/'+str(t)+'.jpg', cv2.imread(imgs[i]))
 
-            # cv2.imshow(str(t), cv2.imread(imgs[i]))
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+            cv2.imshow(str(t), cv2.imread(imgs[i]))
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
     print 'Evaluated, predicted and saved weights !'
 
@@ -253,3 +253,58 @@ def VGGNet(plist, nb_epoch=1, batch_size=4):
 # images trained on: 241
 # number of testing images: 63
 # validationi images: 13
+
+
+class VGG(oject):
+
+
+    def network():
+        input1 = Input(shape=(3, 227, 227))
+
+        model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
+                            activation='relu', trainable=False, name='conv1_1', border_mode='same'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(64, 3, 3, activation='relu',
+                                trainable=False, name='conv1_2'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(128, 3, 3, activation='relu',
+                                trainable=False, name='conv2_1'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(128, 3, 3, activation='relu',
+                                trainable=False, name='conv2_2'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu',
+                                trainable=False, name='conv3_1'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu',
+                                trainable=False, name='conv3_2'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(256, 3, 3, activation='relu',
+                                trainable=False, name='conv3_3'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv4_1'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv4_2'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv4_3'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv5_1'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv5_2'))
+        model.add(ZeroPadding2D((1, 1)))
+        model.add(Convolution2D(512, 3, 3, activation='relu',
+                                trainable=False, name='conv5_3'))
+        model.add(MaxPooling2D((2, 2), strides=(2, 2)))
