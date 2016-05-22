@@ -189,22 +189,22 @@ def video():
 
         image = frame
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        faces = faceCascade.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=1,
-            minSize=(30, 30),
-            flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-        )
+        # faces = faceCascade.detectMultiScale(
+        #     gray,
+        #     scaleFactor=1.1,
+        #     minNeighbors=1,
+        #     minSize=(30, 30),
+        #     flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+        # )
 
         # Draw a rectangle around the faces
-        start = time.time()
+        # start = time.time()
 
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            img = image[y:y + h, x:x + w]
+        # for (x, y, w, h) in faces:
+        #     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #     img = image[y:y + h, x:x + w]
 
         # if time.time()-start >= 20:
         # print "Taken image", i
@@ -231,4 +231,5 @@ def video():
 
 if __name__ == '__main__':
     # image()
-    image_set()
+    # image_set()
+    video()

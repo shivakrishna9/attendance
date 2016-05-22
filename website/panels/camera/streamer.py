@@ -2,6 +2,7 @@
 import numpy as np
 import cv2
 import time
+# import scikit.io
 
 
 class Camera(object):
@@ -13,10 +14,10 @@ class Camera(object):
         self.request = request
         self.req = 'rtsp://' + self.user + ':' + \
             self.password + '@' + self.ip + self.request
-        self.cam = cv2.VideoCapture(self.req)
+        self.cam = cv2.VideoCapture('small.mp4')
 
     def read_cam(self):
-        _, frame = self.cam.read()
+        ret, frame = self.cam.read()
         return frame
 
     def surveillance(self):
@@ -24,29 +25,17 @@ class Camera(object):
         # faceCascade = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
 
         start = time.time()
-        for i in xrange(500):
-            frame = self.read_cam()
+        i=0
+        while 1:
+            ret, frame = self.cam.read()
+            # print frame
 
-            # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            cv2.imshow('IP Camera', frame)
 
-            # faces = faceCascade.detectMultiScale(
-            #     gray,
-            #     scaleFactor=1.3,
-            #     minNeighbors=1,
-            #     minSize=(30, 30),
-            #     flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-            # )
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-            # for (x, y, w, h) in faces:
-            #     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            #     img = image[y:y + h, x:x + w]
-
-            cv2.imwrite('cam/%s.jpg' % i, frame)
-
-            # cv2.imshow('IP Camera', frame)
-
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
+            i+=1
 
         # # When everything is done, release the capture
         self.cam.release()
@@ -56,4 +45,5 @@ class Camera(object):
 
 if __name__ == '__main__':
     obj = Camera()
+    # obj.__init__()
     obj.surveillance()
