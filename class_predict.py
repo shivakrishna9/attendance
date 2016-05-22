@@ -14,10 +14,10 @@ people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 
  'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 
  'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
 # class_net.VGG(plist)
-images = ['DSC_1665.JPG','DSC_1664.JPG']
-
-X_train, images	= detect_haar('demo/'+images[1])
-
+images = ['DSC_1663.JPG','DSC_1666.JPG']
 rec = VGG()
 rec.VGGNet(people)
-rec.demo(people,images,X_train=X_train)
+
+for img in images:
+	X_train, imgs = detect_haar('demo/'+img)
+	rec.demo(people,imgs,X_train=X_train)

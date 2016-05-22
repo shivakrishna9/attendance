@@ -38,25 +38,26 @@ class VGG(object):
         # print evl
         for i, j in enumerate(list_best5):
             best5 = j
+            print best5
             for k in best5:
                 print plist[k[1][0]], k[0]
 
             if best5[0][0]<0.30:
-                t = (plist[best5[0][0]])
+                t = (plist[best5[0][1][0]])
                 print 'First prediction:', t
                 print 'due to low confidence, this image has not been attended to'
             if best5[0][0]>0.30 and best5[0][0]<0.70 :
                 t = (plist[j[0][1][0]])
                 print 'First prediction:', t
-                print 'due to low confidence, I would like you to check this image'
-                cv2.imshow(str(t), imgs[i])
+                print 'due to medium confidence, I would like you to check this image'
+                cv2.imshow(str(t), input_image(imgs[i]))
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
             if best5[0][0]>0.70:
                 t = (plist[j[0][1][0]])
                 print 'First prediction:', t
                 print 'I have confidence on my prediction !'
-                cv2.imshow(str(t), imgs[i])
+                cv2.imshow(str(t), input_image(imgs[i]))
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
