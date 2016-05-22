@@ -17,25 +17,91 @@ import os
 NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
 
-class VGG():
 
-    def demo(frame, plist, batch_size=16):
-        X_train = detect_haar(frame)
+class VGG(object):
+
+    def demo(self, plist, imgs, X_train=None, batch_size=16):
 
         preds = self.model.predict(X_train, batch_size=batch_size)
 
-        people = []
-        for pred in preds:
-            if np.max(pred)>0.30:
-                people.append(plist[np.argmax(pred)])
+        list_best5 = []
+        for i, j in enumerate(preds):
+            prob = j
+            prob5 = sorted(prob, reverse=True)[:5]
+            best5 = []
+            for k in prob5:
+                best5.append([k, np.where(j == k)])
 
-        print people
+            list_best5.append(best5)
 
-        return people
+        # evl = self.model.evaluate(X_train, y_train, batch_size=4)
+        # print evl
+        for i, j in enumerate(list_best5):
+            best5 = j
+            print best5
+            for k in best5:
+                print plist[k[1][0]], k[0]
 
+            if best5[0][0] < 0.30:
+                t = (plist[best5[0][1][0]])
+                print 'First prediction:', t
+                print 'due to low confidence, this image has not been attended to'
+            if best5[0][0] > 0.30 and best5[0][0] < 0.70:
+                t = (plist[j[0][1][0]])
+                print 'First prediction:', t
+                print 'due to medium confidence, I would like you to check this image'
+                cv2.imshow(str(t), input_image(imgs[i]))
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+            if best5[0][0] > 0.70:
+                t = (plist[j[0][1][0]])
+                print 'First prediction:', t
+                print 'I have confidence on my prediction !'
+                cv2.imshow(str(t), input_image(imgs[i]))
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
 
+    def run(self, plist, frame, batch_size=4):
 
-    def get_pt_mat(layer_dict):
+        X_train, imgs = detect_haar(frame)
+
+        preds = self.model.predict(X_train, batch_size=batch_size)
+
+        list_best5 = []
+        for i, j in enumerate(preds):
+            prob = j
+            prob5 = sorted(prob, reverse=True)[:5]
+            best5 = []
+            for k in prob5:
+                best5.append([k, np.where(j == k)])
+
+            list_best5.append(best5)
+            
+        low = []
+        mid = []
+        high = []
+        for i, j in enumerate(list_best5):
+            best5 = j
+            print best5
+            if best5[0][0] < 0.30:
+                t = plist[best5[0][1][0]]
+                print 'First prediction:', t
+                print 'due to low confidence, this image has not been attended to'
+                low.append(t)
+            if best5[0][0] > 0.30 and best5[0][0] < 0.70:
+                t = plist[j[0][1][0]]
+                print 'First prediction:', t
+                print 'due to medium confidence, I would like you to check this image'
+                mid.append(t)
+            if best5[0][0] > 0.70:
+                t = plist[j[0][1][0]]
+                print 'First prediction:', t
+                print 'I have confidence on my prediction !'
+                high.append(t)
+
+        return low, mid, high
+
+    def get_pt_mat(self, layer_dict):
         print "Extracting pretrained data"
         start = time.time()
         cnn = scipy.io.loadmat('extras/vgg-face.mat')
@@ -55,11 +121,10 @@ class VGG():
 
         print "self.model extracted in ..", time.time() - start
 
-
-    def evaluate(plist, batch_size=4):
+    def evaluate(self, plist, batch_size=4):
         print 'Evaluating, predicting and saving weights ..'
 
-        chunks = pd.read_csv('traintest/class_20.txt',
+        chunks = pd.read_csv('traintest/demo.txt',
                              names=['person', 'class', 'image'], chunksize=256,
                              sep='\t', engine='python')
         # plist = pre_process()
@@ -109,8 +174,7 @@ class VGG():
 
         print 'Evaluated, predicted and saved weights !'
 
-
-    def epsw(batch_size=16):
+    def epsw(self, batch_size=16):
         print 'Evaluating, predicting and saving weights ..'
 
         chunks = pd.read_csv('traintest/class20_test.txt',
@@ -141,8 +205,7 @@ class VGG():
         # self.model.save_weights("extras/cnn_weights_class.h5", overwrite=True)
         print 'Evaluated, predicted and saved weights !'
 
-
-    def train(batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
+    def train(self, batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
         print "Training on batch..."
 
         for epoch in xrange(169, epochs):
@@ -169,65 +232,64 @@ class VGG():
 
                 if batch > 0:
                     self.model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
-                              verbose=1, shuffle=True)
+                                   verbose=1, shuffle=True)
 
                     self.model.save_weights(PRETRAINED, overwrite=True)
 
             print "Total training time ..", time.time() - start
             epsw(self.model, batch_size=4)
 
-
-    def VGGNet(plist, nb_epoch=1, batch_size=4):
+    def VGGNet(self, plist, nb_epoch=1, batch_size=4):
 
         print "Initialising self.model..."
         start = time.time()
         self.model = Sequential()
         self.model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
-                                activation='relu', trainable=False, name='conv1_1', border_mode='same'))
+                                     activation='relu', trainable=False, name='conv1_1', border_mode='same'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(64, 3, 3, activation='relu',
-                                trainable=False, name='conv1_2'))
+                                     trainable=False, name='conv1_2'))
         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(128, 3, 3, activation='relu',
-                                trainable=False, name='conv2_1'))
+                                     trainable=False, name='conv2_1'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(128, 3, 3, activation='relu',
-                                trainable=False, name='conv2_2'))
+                                     trainable=False, name='conv2_2'))
         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-                                trainable=False, name='conv3_1'))
+                                     trainable=False, name='conv3_1'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-                                trainable=False, name='conv3_2'))
+                                     trainable=False, name='conv3_2'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-                                trainable=False, name='conv3_3'))
+                                     trainable=False, name='conv3_3'))
         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv4_1'))
+                                     trainable=False, name='conv4_1'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv4_2'))
+                                     trainable=False, name='conv4_2'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv4_3'))
+                                     trainable=False, name='conv4_3'))
         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv5_1'))
+                                     trainable=False, name='conv5_1'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv5_2'))
+                                     trainable=False, name='conv5_2'))
         self.model.add(ZeroPadding2D((1, 1)))
         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-                                trainable=False, name='conv5_3'))
+                                     trainable=False, name='conv5_3'))
         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
         layer_dict = dict([(layer.name, layer) for layer in self.model.layers])
@@ -237,11 +299,12 @@ class VGG():
         start = time.time()
         self.model.add(Flatten())
         self.model.add(Dense(output_dim=4096, activation='relu',
-                        trainable=False, init="uniform"))
+                             trainable=False, init="uniform"))
         self.model.add(Dense(output_dim=4096, init="uniform",
-                        activation='relu'))
+                             activation='relu'))
         self.model.add(Dropout(0.5))
-        self.model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
+        self.model.add(Dense(output_dim=NB_CLASS,
+                             init="uniform", activation='softmax'))
         print 'FC layers added ! Time taken :', time.time() - start
 
         print 'Loading weights ...'
@@ -257,7 +320,7 @@ class VGG():
         print "Compiling self.model..."
         start = time.time()
         self.model.compile(loss='categorical_crossentropy',
-                      optimizer=sgd, metrics=['accuracy'])
+                           optimizer=sgd, metrics=['accuracy'])
         print "self.Model compiled in ..", time.time() - start
 
         # print 'Evaluating ..'
@@ -266,9 +329,6 @@ class VGG():
 
         # self.train(self.model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
 
-
     # images trained on: 241
     # number of testing images: 63
     # validationi images: 13
-
-    

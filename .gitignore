@@ -10,3 +10,5 @@ cnn_weights.h5
 .idea
 cnn_weight*.h5
 haar*.xml
+images
+migrations

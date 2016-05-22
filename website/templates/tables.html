@@ -108,23 +108,7 @@
         <ul class="breadcrumb" id="breadcrumb">
           <li class="title">Tables</li>
         </ul>
-        <div id="toolbar">
-          <div class="btn-group">
-            <a data-original-title="Building" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-building"></i>
-            </a>
-            <a data-original-title="Laptop" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-laptop"></i>
-            </a>
-            <a data-original-title="Calendar" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-calendar"></i>
-              <span class="badge">3</span>
-            </a>
-            <a data-original-title="Lemon" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-lemon"></i>
-            </a>
-          </div>
-        </div>
+        
       </section>
       <!-- Content -->
       <div id="content">
@@ -133,222 +117,42 @@
             <i class="icon-table icon-large"></i>
             Logger
             <div class="panel-tools">
-              <!-- <div class="btn-group">
-                <a class="btn" href="#">
-                  <i class="icon-wrench"></i>
-                  Settings
-                </a>
-                <a class="btn" href="#">
-                  <i class="icon-filter"></i>
-                  Filters
-                </a>
-                <a data-original-title="Reload" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-                  <i class="icon-refresh"></i>
-                </a>
-              </div>
-              <div class="badge">3 record</div>
-            </div> -->
           </div>
-          <!-- <div class="panel-body filters">
-            <div class="row">
-              <div class="col-md-9">
-                Add your custom filters here...
-              </div>
-              <div class="col-md-3">
-                <div class="input-group">
-                  <input class="form-control" placeholder="Quick search..." type="text">
-                  <span class="input-group-btn">
-                    <button class="btn" type="button">
-                      <i class="icon-search"></i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-           --><table class="table">
+           <table class="table">
             <thead>
               <tr>
                 <th>TimeStamp</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Roll Number</th>
+                <th>Name</th>
+                <th>Lab Name</th>
                 <th class="actions">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr class="success">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Abdul</td>
-                <td>Karim</td>
-                <td>12CSS-01</td>
+            {% for person in attendance %}
+              {% if person.confidence == 0 %}
+                <tr class="danger">
+              {% elif person.confidence == 1 %}
+                <tr class="warning">
+              {% elif person.confidence == 2 %}
+                <tr class="active">
+              {% endif %}
+                <td>{{ person.timestamp }}</td>
+                <td>{{ person.student }}</td>
+                <td>{{ person.subject }}</td>
                 <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
+                  <form action="{% url 'tables' %}" method="post">
+                    {% csrf_token %}
+                          <button class="btn btn-danger" type='submit'>
+                              <i class="icon-trash"></i>
+                            </button>
+                      <!-- </fieldset> -->
+                    </form>
+                  
                 </td>
               </tr>
-              <tr class="danger">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Aditya</td>
-                <td>Kumar</td>
-                <td>12CSS-05</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="warning">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Sachin</td>
-                <td>Sharma</td>
-                <td>12CSS-49</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="active">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Ashar</td>
-                <td>Javed</td>
-                <td>12CSS-71</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Saif</td>
-                <td>Khan</td>
-                <td>12CSS-51</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Bushra</td>
-                <td>Khan</td>
-                <td>12CSS-18</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Ameen</td>
-                <td>Khan</td>
-                <td>12CSS-11</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Aditya</td>
-                <td>Kumar</td>
-                <td>12CSS-05</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Antriksh</td>
-                <td>Agarwal</td>
-                <td>12CSS-12</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>2016-05-02 00:35:57.52</td>
-                <td>Chaitanya</td>
-                <td>Gupta</td>
-                <td>12CSS-19</td>
-                <td class="action">
-                  <a data-original-title="Zoom" class="btn btn-success" data-toggle="tooltip" href="#" title="">
-                    <i class="icon-zoom-in"></i>
-                  </a>
-                  <a class="btn btn-info" href="#">
-                    <i class="icon-edit"></i>
-                  </a>
-                  <a class="btn btn-danger" href="#">
-                    <i class="icon-trash"></i>
-                  </a>
-                </td>
-              </tr>
+            {% endfor %}
             </tbody>
           </table>
           

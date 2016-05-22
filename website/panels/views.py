@@ -4,24 +4,25 @@ from django.utils.html import escape
 from panels.camera.streamer import Camera
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from models import Student
-
+from models import Student, Studies, Subject
+from datetime import datetime
 import cv2
-# from recognise.class_net import *
+from recognise.class_net import *
 
 # # Create your views here.
 
-# recognition = VGG()
-# camera = Camera()
-
 people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 'aditya', 'ahsan',
- 'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra', 
- 'chaitanya', 'dhawal', 'farhan', 'farheen', 'ghalib', 'habib', 'harsh', 'irfan_ansari', 
- 'jeevan', 'manaff', 'manish', 'maria', 'mehrab', 'mohib', 'naeem', 'nikhil_mittal', 'nikhil_raman',
- 'prerit', 'raghib_ahsan', 'rahul', 'ravi', 'rehan', 'rezwan', 'rubab', 'sachin', 'sahil', 'saif',
- 'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya', 
- 'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 
- 'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
+          'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra',
+          'chaitanya', 'dhawal', 'farhan', 'farheen', 'ghalib', 'habib', 'harsh', 'irfan_ansari',
+          'jeevan', 'manaff', 'manish', 'maria', 'mehrab', 'mohib', 'naeem', 'nikhil_mittal', 'nikhil_raman',
+          'prerit', 'raghib_ahsan', 'rahul', 'ravi', 'rehan', 'rezwan', 'rubab', 'sachin', 'sahil', 'saif',
+          'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya',
+          'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana',
+          'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
+
+recognition = VGG()
+# camera = Camera()
+recognition.VGGNet(people)
 
 
 def index(request):
@@ -44,13 +45,22 @@ def index(request):
                 return render(request, 'index.html', {'error': 1})
     return render(request, 'index.html')
 
+
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+
+    attendance = Studies.objects.all()
+    total = float(float(len([i for i in attendance]))/float(3)) * 100
+    print total*100
+    lab = Subject.objects.filter(name='Major Project')
+
+    return render(request, 'dashboard.html', {'total':total, 'lab':lab})
+
 
 @login_required
 def forms(request):
     return render(request, 'forms.html')
+
 
 @login_required
 def add_student(request):
@@ -69,10 +79,14 @@ def add_student(request):
         image2 = request.FILES.get('image2')
         image3 = request.FILES.get('image3')
         image4 = request.FILES.get('image4')
-        image1.name = '{}{}'.format(rno+'_1', image1.name[image1.name.rfind('.'):])
-        image2.name = '{}{}'.format(rno+'_2', image2.name[image2.name.rfind('.'):])
-        image3.name = '{}{}'.format(rno+'_3', image3.name[image3.name.rfind('.'):])
-        image4.name = '{}{}'.format(rno+'_4', image4.name[image4.name.rfind('.'):])
+        image1.name = '{}{}'.format(
+            rno + '_1', image1.name[image1.name.rfind('.'):])
+        image2.name = '{}{}'.format(
+            rno + '_2', image2.name[image2.name.rfind('.'):])
+        image3.name = '{}{}'.format(
+            rno + '_3', image3.name[image3.name.rfind('.'):])
+        image4.name = '{}{}'.format(
+            rno + '_4', image4.name[image4.name.rfind('.'):])
         student = Student(name=name, username=username, password=password, rollno=rno, dob=dob,
                           course=course, year=year, semester=semester, image1=image1, image2=image2,
                           image3=image3, image4=image4)
@@ -82,19 +96,78 @@ def add_student(request):
 
     return HttpResponseRedirect('/forms')
 
+
 @login_required
-def tables(request):
+def tables(request, low=None, mid=None, high=None):
 
-    # while 1:
-    # frame = camera.read_cam()
-    # attendance = recognition.demo(frame, people, batch_size=4)
-    # print attendance
+    images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
+    # images = ['DSC_1663.JPG','DSC_1666.JPG']
+    for img in images:
+        # frame = camera.read_cam()
+        low, mid, high = recognition.run(people, frame, batch_size=4)
+        # high = ['ashar','shafiya','sapna']
+        # low = ['nikhil_mittal']
+        if high!=None:
+            for i in high:
+                # print i
+                st = Student.objects.get(username=i)
+                lab = Subject.objects.get(name='lab')
+                h = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                m = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                l = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                if not h:
+                    attendance = Studies(student=st, subject=lab, confidence=2)
+                    attendance.save()
+                if m:
+                    print i
+                    attendance = Studies.objects.filter(student__name=i,\
+                     subject__name='lab',date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                if l:
+                    print i
+                    attendance = Studies.objects.filter(student__name=i,\
+                     subject__name='lab',date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+        if mid!=None:
+            for i in mid:
+                st = Student.objects.get(username=i)
+                lab = Subject.objects.get(name='lab')
+                h = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                m = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                l = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                if not (h or m):
+                    attendance = Studies(student=st, subject=lab, confidence=1)
+                    attendance.save()
+                if l:
+                    attendance = Studies.objects.filter(student__name=i,\
+                     subject__name='lab',date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+        if low!=None:
+            for i in low:
+                st = Student.objects.get(username=i)
+                lab = Subject.objects.get(name='lab')
+                h = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                m = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                l = Studies.objects.filter(student__username=i, subject__name='lab',\
+                    date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+            
+                if not (h or m or l):
+                    
+                    attendance = Studies(student=st, subject=lab, confidence=0)
+                    attendance.save()
 
-    return render(request, 'tables.html')
+    attendance = Studies.objects.all()
+    return render(request, 'tables.html', {'attendance':attendance})
 
 
 def forgot_password(request):
     return render(request, 'forgot_password.html')
+
 
 @login_required
 def surveillance():
@@ -102,6 +175,7 @@ def surveillance():
     camera = Camera()
     camera.surveillance()
     # return render(request, 'index.html')
+
 
 @login_required
 def user_logout(request):

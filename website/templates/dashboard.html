@@ -108,29 +108,6 @@
         <ul class="breadcrumb" id="breadcrumb">
           <li class="title">Dashboard</li>
         </ul>
-        <div id="toolbar">
-          <div class="btn-group">
-            <a data-original-title="Building" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-building"></i>
-            </a>
-            <a data-original-title="Laptop" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-laptop"></i>
-            </a>
-            <a data-original-title="Calendar" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-calendar"></i>
-              <span class="badge">3</span>
-            </a>
-            <a data-original-title="Time-Table" class="btn" data-toggle="toolbar-tooltip" href="#" title="">
-              <i class="icon-lemon"></i>
-            </a>
-          </div>
-          <div class="label label-danger">
-            Danger
-          </div>
-          <div class="label label-info">
-            Info
-          </div>
-        </div>
       </section>
       <!-- Content -->
       <div id="content">
@@ -151,20 +128,23 @@
             </div>
           </div>
           <div class="panel-body">
+          {% for l in lab %}
             <div class="page-header">
-              <h4>System usage</h4>
+              <h4>Attendance total</h4>
             </div>
             <div class="progress">
-              <div class="progress-bar progress-bar-success" style="width: 35%"></div>
-              <div class="progress-bar progress-bar-warning" style="width: 20%"></div>
-              <div class="progress-bar progress-bar-danger" style="width: 10%"></div>
+              <div class="progress-bar progress-bar-success" style="width: {{ total }}%"></div>
+              <!-- <div class="progress-bar progress-bar-warning" style="width: 20%"></div>
+              <div class="progress-bar progress-bar-danger" style="width: 10%"></div> -->
             </div>
+          {% endfor %}
             <div class="page-header">
               <h4>User statics</h4>
             </div>
             <div class="row text-center">
               <div class="col-md-3">
-                <div style="display:inline;width:140px;height:140px;"><canvas width="140" height="140px"></canvas><input style="width: 74px; height: 46px; position: absolute; vertical-align: middle; margin-top: 46px; margin-left: -107px; border: 0px none; background: transparent none repeat scroll 0% 0%; font: bold 28px Arial; text-align: center; color: rgb(51, 51, 51); padding: 0px;" class="knob second" data-bgcolor="#d4ecfd" data-fgcolor="#30a1ec" data-height="140" data-inputcolor="#333" data-thickness=".3" data-width="140" value="50" type="text"></div>
+              :
+                <div style="display:inline;width:140px;height:140px;"><canvas width="140" height="140px"></canvas><input style="width: 74px; height: 46px; position: absolute; vertical-align: middle; margin-top: 46px; margin-left: -107px; border: 0px none; background: transparent none repeat scroll 0% 0%; font: bold 28px Arial; text-align: center; color: rgb(51, 51, 51); padding: 0px;" class="knob second" data-bgcolor="#d4ecfd" data-fgcolor="#30a1ec" data-height="140" data-inputcolor="#333" data-thickness=".3" data-width="140" value="{{ total }}" type="text"></div>
               </div>
               <div class="col-md-3">
                 <div style="display:inline;width:140px;height:140px;"><canvas width="140" height="140px"></canvas><input style="width: 74px; height: 46px; position: absolute; vertical-align: middle; margin-top: 46px; margin-left: -107px; border: 0px none; background: transparent none repeat scroll 0% 0%; font: bold 28px Arial; text-align: center; color: rgb(51, 51, 51); padding: 0px;" class="knob second" data-bgcolor="#c4e9aa" data-fgcolor="#8ac368" data-height="140" data-inputcolor="#333" data-thickness=".3" data-width="140" value="75" type="text"></div>
