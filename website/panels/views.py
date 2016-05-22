@@ -14,6 +14,15 @@ import cv2
 # recognition = VGG()
 # camera = Camera()
 
+people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 'aditya', 'ahsan',
+ 'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra', 
+ 'chaitanya', 'dhawal', 'farhan', 'farheen', 'ghalib', 'habib', 'harsh', 'irfan_ansari', 
+ 'jeevan', 'manaff', 'manish', 'maria', 'mehrab', 'mohib', 'naeem', 'nikhil_mittal', 'nikhil_raman',
+ 'prerit', 'raghib_ahsan', 'rahul', 'ravi', 'rehan', 'rezwan', 'rubab', 'sachin', 'sahil', 'saif',
+ 'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya', 
+ 'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 
+ 'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
+
 
 def index(request):
     if request.user.is_authenticated():
@@ -73,9 +82,13 @@ def add_student(request):
 
     return HttpResponseRedirect('/forms')
 
+@login_required
 def tables(request):
 
-    
+    # while 1:
+    frame = camera.read_cam()
+    # attendance = recognition.demo(frame, people, batch_size=4)
+    # print attendance
 
     return render(request, 'tables.html')
 
@@ -84,11 +97,11 @@ def forgot_password(request):
     return render(request, 'forgot_password.html')
 
 
-def surveillance(request):
+def surveillance():
 
     camera = Camera()
     camera.surveillance()
-    return render(request, 'index.html')
+    # return render(request, 'index.html')
 
 def user_logout(request):
     logout(request)
