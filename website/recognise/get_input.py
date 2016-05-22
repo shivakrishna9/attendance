@@ -20,7 +20,7 @@ def detect_haar(image):
     for (x, y, w, h) in rects:
         faces += [image[y:y + h, x:x + w]]
 
-    return preprocess(np.array(faces), NB_CLASS=67)
+    return preprocess(np.array(faces))
 
 
 def detect(image, dets):
