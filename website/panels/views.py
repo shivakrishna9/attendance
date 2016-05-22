@@ -96,13 +96,14 @@ def tables(request):
 def forgot_password(request):
     return render(request, 'forgot_password.html')
 
-
+@login_required
 def surveillance():
 
     camera = Camera()
     camera.surveillance()
     # return render(request, 'index.html')
 
+@login_required
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
