@@ -69,10 +69,10 @@ def add_student(request):
         image2 = request.FILES.get('image2')
         image3 = request.FILES.get('image3')
         image4 = request.FILES.get('image4')
-        image1.name = '{}{}'.format(uuid4().hex, image1.name[image1.name.rfind('.'):])
-        image2.name = '{}{}'.format(uuid4().hex, image2.name[image2.name.rfind('.'):])
-        image3.name = '{}{}'.format(uuid4().hex, image3.name[image3.name.rfind('.'):])
-        image4.name = '{}{}'.format(uuid4().hex, image4.name[image4.name.rfind('.'):])
+        image1.name = '{}{}'.format(rno+'_1', image1.name[image1.name.rfind('.'):])
+        image2.name = '{}{}'.format(rno+'_2', image2.name[image2.name.rfind('.'):])
+        image3.name = '{}{}'.format(rno+'_3', image3.name[image3.name.rfind('.'):])
+        image4.name = '{}{}'.format(rno+'_4', image4.name[image4.name.rfind('.'):])
         student = Student(name=name, username=username, password=password, rollno=rno, dob=dob,
                           course=course, year=year, semester=semester, image1=image1, image2=image2,
                           image3=image3, image4=image4)
@@ -86,7 +86,7 @@ def add_student(request):
 def tables(request):
 
     # while 1:
-    frame = camera.read_cam()
+    # frame = camera.read_cam()
     # attendance = recognition.demo(frame, people, batch_size=4)
     # print attendance
 
