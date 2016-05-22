@@ -161,7 +161,7 @@ def tables(request, low=None, mid=None, high=None):
                     attendance = Studies(student=st, subject=lab, confidence=0)
                     attendance.save()
 
-    attendance = Studies.objects.all()
+    attendance = Studies.objects.fetch(date=time.strftime('%Y-%m-%d'))
     return render(request, 'tables.html', {'attendance':attendance})
 
 
