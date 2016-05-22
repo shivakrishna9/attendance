@@ -6,9 +6,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from models import Student
 
-# import cv2
+import cv2
+# from recognise.class_net import *
 
-# Create your views here.
+# # Create your views here.
+
+# recognition = VGG()
+# camera = Camera()
 
 
 def index(request):
@@ -70,6 +74,9 @@ def add_student(request):
     return HttpResponseRedirect('/forms')
 
 def tables(request):
+
+    
+
     return render(request, 'tables.html')
 
 

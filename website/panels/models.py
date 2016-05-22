@@ -8,7 +8,7 @@ from datetime import datetime
 class Student(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
     course = models.CharField(
-        max_length=20, default="BTECH (Computer Engineering)")
+        max_length=30, default="BTECH (Computer Engineering)")
     year = models.PositiveSmallIntegerField(default=2016)
     semester = models.SmallIntegerField(default=1)
     rollno = models.CharField(max_length=10, blank=True, null=True)
