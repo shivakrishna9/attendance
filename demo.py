@@ -13,8 +13,11 @@ people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 
  'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya', 
  'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 
  'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
-
-
+# class_net.VGG(plist)
+images = ['DSC_1663.JPG','DSC_1666.JPG']
 rec = VGG()
 rec.VGGNet(people)
-rec.evaluate(people)
+
+for img in images:
+	X_train, imgs = detect_haar('demo/'+img)
+	rec.demo(people,imgs,X_train=X_train)

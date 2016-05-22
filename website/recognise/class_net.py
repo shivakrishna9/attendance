@@ -17,7 +17,7 @@ import os
 NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
 
-class VGG(oject):
+class VGG():
 
     def demo(frame, plist, batch_size=16):
         X_train = detect_haar(frame)
@@ -56,7 +56,7 @@ class VGG(oject):
         print "self.model extracted in ..", time.time() - start
 
 
-    def evaluate(plist, batch_size=16):
+    def evaluate(plist, batch_size=4):
         print 'Evaluating, predicting and saving weights ..'
 
         chunks = pd.read_csv('traintest/class_20.txt',

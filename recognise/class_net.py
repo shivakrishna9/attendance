@@ -17,79 +17,49 @@ import os
 NB_CLASS = 67
 PRETRAINED = "extras/cnn_weights_class66.h5"
 
-# def network():
-#         input1 = Input(shape=(3, 227, 227))
 
-#         self.model = Sequential()
-#         self.model.add(Convolution2D(64, 3, 3, input_shape=(3, 227, 227),
-#                             activation='relu', trainable=False, name='conv1_1', border_mode='same'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(64, 3, 3, activation='relu',
-#                                 trainable=False, name='conv1_2'))
-#         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+class VGG(object):
 
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(128, 3, 3, activation='relu',
-#                                 trainable=False, name='conv2_1'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(128, 3, 3, activation='relu',
-#                                 trainable=False, name='conv2_2'))
-#         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-#                                 trainable=False, name='conv3_1'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-#                                 trainable=False, name='conv3_2'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(256, 3, 3, activation='relu',
-#                                 trainable=False, name='conv3_3'))
-#         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv4_1'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv4_2'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv4_3'))
-#         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv5_1'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv5_2'))
-#         self.model.add(ZeroPadding2D((1, 1)))
-#         self.model.add(Convolution2D(512, 3, 3, activation='relu',
-#                                 trainable=False, name='conv5_3'))
-#         self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-#         self.model.add(Flatten())
-#         self.model.add(Dense(output_dim=4096, activation='relu',
-#                         trainable=False, init="uniform"))
-#         self.model.add(Dense(output_dim=4096, init="uniform",
-#                         activation='relu'))
-#         self.model.add(Dropout(0.5))
-
-#         to_out = self.model(input1)
-
-#         face_not = Dense(output_dim=2, init="uniform", activation='softmax')(to_out)
-#         output = Dense(output_dim=NB_CLASS, init="uniform", activation='softmax')(to_out)
-
-#         graph = self.Model(input=input1, output=[face_out,output])
-
-
-
-
-class VGG(oject):
-
-    def demo(plist, batch_size=16):
+    def demo(self,plist,imgs,X_train=None,batch_size=16):
 
         preds = self.model.predict(X_train, batch_size=batch_size)
+
+        list_best5 = []
+        for i, j in enumerate(preds):
+            prob = j
+            prob5 = sorted(prob, reverse=True)[:5]
+            best5 = []
+            for k in prob5:
+                best5.append([k, np.where(j == k)])
+
+            list_best5.append(best5)
+
+        # evl = self.model.evaluate(X_train, y_train, batch_size=4)
+        # print evl
+        for i, j in enumerate(list_best5):
+            best5 = j
+            print best5
+            for k in best5:
+                print plist[k[1][0]], k[0]
+
+            if best5[0][0]<0.30:
+                t = (plist[best5[0][1][0]])
+                print 'First prediction:', t
+                print 'due to low confidence, this image has not been attended to'
+            if best5[0][0]>0.30 and best5[0][0]<0.70 :
+                t = (plist[j[0][1][0]])
+                print 'First prediction:', t
+                print 'due to medium confidence, I would like you to check this image'
+                cv2.imshow(str(t), input_image(imgs[i]))
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+            if best5[0][0]>0.70:
+                t = (plist[j[0][1][0]])
+                print 'First prediction:', t
+                print 'I have confidence on my prediction !'
+                cv2.imshow(str(t), input_image(imgs[i]))
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
 
         people = []
         for pred in preds:
@@ -102,7 +72,7 @@ class VGG(oject):
 
 
 
-    def get_pt_mat(layer_dict):
+    def get_pt_mat(self,layer_dict):
         print "Extracting pretrained data"
         start = time.time()
         cnn = scipy.io.loadmat('extras/vgg-face.mat')
@@ -123,10 +93,10 @@ class VGG(oject):
         print "self.model extracted in ..", time.time() - start
 
 
-    def evaluate(plist, batch_size=16):
+    def evaluate(self,plist, batch_size=4):
         print 'Evaluating, predicting and saving weights ..'
 
-        chunks = pd.read_csv('traintest/class_20.txt',
+        chunks = pd.read_csv('traintest/demo.txt',
                              names=['person', 'class', 'image'], chunksize=256,
                              sep='\t', engine='python')
         # plist = pre_process()
@@ -177,7 +147,7 @@ class VGG(oject):
         print 'Evaluated, predicted and saved weights !'
 
 
-    def epsw(batch_size=16):
+    def epsw(self,batch_size=16):
         print 'Evaluating, predicting and saving weights ..'
 
         chunks = pd.read_csv('traintest/class20_test.txt',
@@ -209,7 +179,7 @@ class VGG(oject):
         print 'Evaluated, predicted and saved weights !'
 
 
-    def train(batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
+    def train(self,batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
         print "Training on batch..."
 
         for epoch in xrange(169, epochs):
@@ -244,7 +214,7 @@ class VGG(oject):
             epsw(self.model, batch_size=4)
 
 
-    def VGGNet(plist, nb_epoch=1, batch_size=4):
+    def VGGNet(self,plist, nb_epoch=1, batch_size=4):
 
         print "Initialising self.model..."
         start = time.time()
