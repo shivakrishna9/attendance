@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+import time
 
 # Create your models here.
 
@@ -50,9 +51,11 @@ class Studies(models.Model):
     subject = models.ForeignKey(Subject)
     attendance = models.IntegerField(default=0)
     timestamp = models.DateTimeField(default=datetime.now)
+    confidence = models.IntegerField(default=0)
+    date = models.DateField(default=time.strftime('%Y-%m-%d'))
 
     def __str__(self):
-        return self.subject_name + " <-> " + self.student_name
+        return str(self.subject) + " <-> " + str(self.student)
 
 
 class Logs(models.Model):
