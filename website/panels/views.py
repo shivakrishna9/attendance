@@ -25,6 +25,7 @@ recognition = VGG()
 recognition.VGGNet(people)
 
 
+
 def index(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/dashboard')
@@ -100,11 +101,13 @@ def add_student(request):
 @login_required
 def tables(request, low=None, mid=None, high=None):
 
-    images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
+    # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
+    images = ['demo/DSC_1663.JPG']
     # images = ['DSC_1663.JPG','DSC_1666.JPG']
+    # images = []
     for img in images:
         # frame = camera.read_cam()
-        low, mid, high = recognition.run(people, frame, batch_size=4)
+        low, mid, high = recognition.run(people, img, batch_size=4)
         # high = ['ashar','shafiya','sapna']
         # low = ['nikhil_mittal']
         if high!=None:
@@ -161,7 +164,8 @@ def tables(request, low=None, mid=None, high=None):
                     attendance = Studies(student=st, subject=lab, confidence=0)
                     attendance.save()
 
-    attendance = Studies.objects.fetch(date=time.strftime('%Y-%m-%d'))
+    attendance = Studies.objects.filter(date=time.strftime('%Y-%m-%d'))
+    # attendance = Studies.objects.all()
     return render(request, 'tables.html', {'attendance':attendance})
 
 
