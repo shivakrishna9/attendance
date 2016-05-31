@@ -13,6 +13,6 @@ Train VGGNet on a very low learning rate ! --running
 
     *   implement region proposal networks
 
-2. Take someone with you now
+2. Take someone with you now ?
 
-3. Implement it in yours house ??
+3. Implement it in your house ??
