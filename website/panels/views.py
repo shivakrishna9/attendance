@@ -20,9 +20,9 @@ people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 
           'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana',
           'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
 
-recognition = VGG()
+# recognition = VGG()
 # camera = Camera()
-recognition.VGGNet(people)
+# recognition.VGGNet(people)
 
 
 
@@ -102,14 +102,15 @@ def add_student(request):
 def tables(request, low=None, mid=None, high=None):
 
     # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
-    images = ['demo/DSC_1663.JPG']
+    # images = ['demo/DSC_1663.JPG']
     # images = ['DSC_1663.JPG','DSC_1666.JPG']
-    # images = []
+    images = ['']
     for img in images:
         # frame = camera.read_cam()
-        low, mid, high = recognition.run(people, img, batch_size=4)
-        # high = ['ashar','shafiya','sapna']
-        # low = ['nikhil_mittal']
+        # low, mid, high = recognition.run(people, img, batch_size=4)
+        high = ['ashar','shafiya','sapna']
+        mid = []
+        low = ['nikhil_mittal']
         if high!=None:
             for i in high:
                 # print i
