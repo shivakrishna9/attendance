@@ -10,4 +10,7 @@ urlpatterns = patterns('',
     url(r'^surveillance[/]?$', views.surveillance, name='surveillance'),
     url(r'^logout[/]?$', views.user_logout, name='logout'),
     url(r'^add_student[/]?$', views.add_student, name='add_student'),
+    url(r'^add_teacher[/]?$', views.add_teacher, name='add_teacher'),
+    url(r'^admin_login[/]?$', views.admin_login, name='admin_login'),
+    url(r'^student_login[/]?$', views.student_login, name='student_login'),
 )

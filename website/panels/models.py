@@ -13,10 +13,10 @@ class Student(models.Model):
     year = models.PositiveSmallIntegerField(default=2016)
     semester = models.SmallIntegerField(default=1)
     rollno = models.CharField(max_length=10, blank=True, null=True)
+    enrollno = models.CharField(max_length=10, blank=False, null=True)
     dob = models.DateField(default=datetime(1993, 01, 02))
 
     username = models.CharField(max_length=20, blank=True, null=True)
-    password = models.CharField(max_length=20, blank=True, null=True)
 
     image1 = models.ImageField(upload_to='images', default='no-image.png')
     image2 = models.ImageField(upload_to='images', default='no-image.png')
@@ -31,6 +31,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, blank=True, null=True)
+    password = models.CharField(max_length=20, blank=True, null=True)
     added_on = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
@@ -62,8 +63,8 @@ class Logs(models.Model):
     subject = models.ForeignKey(Subject)
     student = models.ForeignKey(Student)
     timestamp = models.DateTimeField(default=datetime.now)
-    # true for coming in. false for going out
-    entry_in_out = models.BooleanField(default=False)
+    # False for coming in. True for going out
+    entry_in_out = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.id) + ": " + str(self.timestamp)
