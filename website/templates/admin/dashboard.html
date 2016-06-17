@@ -1,114 +1,6 @@
-{% extends 'layout.html' %}
+{% extends 'admin/layout.html' %}
 {% block content %}
-  <body class="main page">
-    <!-- Navbar -->
-    <div class="navbar navbar-default" id="navbar">
-      <a class="navbar-brand" href="#">
-        <i class="icon-beer"></i>
-        Attendance Monitor
-      </a>
-      <ul class="nav navbar-nav pull-right">
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="icon-envelope"></i>
-            Messages
-            <span class="badge">5</span>
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a href="#">New message</a>
-            </li>
-            <li>
-              <a href="#">Inbox</a>
-            </li>
-            <li>
-              <a href="#">Out box</a>
-            </li>
-            <li>
-              <a href="#">Trash</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#">
-            <i class="icon-cog"></i>
-            Settings
-          </a>
-        </li>
-        <li class="dropdown user">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="icon-user"></i>
-            <strong>John DOE</strong>
-            <img class="img-rounded" src="http://placehold.it/20x20/ccc/777">
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a href="#">Edit Profile</a>
-            </li>
-            <li class="divider"></li>
-            <li>
-              <a href="{% url 'logout' %}">Sign out</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div id="wrapper">
-      <!-- Sidebar -->
-      <section id="sidebar">
-        <i class="icon-align-justify icon-large" id="toggle"></i>
-        <ul id="dock">
-          <li class="active launcher">
-            <i class="icon-dashboard"></i>
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-          </li>
-          <li class="launcher">
-            <i class="icon-file-text-alt"></i>
-            <a href="{% url 'forms' %}">Forms</a>
-          </li>
-          <li class="launcher">
-            <i class="icon-table"></i>
-            <a href="{% url 'tables' %}">Tables</a>
-          </li>
-          <li class="launcher dropdown hover">
-            <i class="icon-flag"></i>
-            <a href="#">Reports</a>
-            <ul style="display: none;" class="dropdown-menu">
-              <li class="dropdown-header">Launcher description</li>
-              <li>
-                <a href="#">Action</a>
-              </li>
-              <li>
-                <a href="#">Another action</a>
-              </li>
-              <li>
-                <a href="#">Something else here</a>
-              </li>
-            </ul>
-          </li>
-          <li class="launcher">
-            <i class="icon-bookmark"></i>
-            <a href="#">Bookmarks</a>
-          </li>
-          <li class="launcher">
-            <i class="icon-cloud"></i>
-            <a href="#">Backup</a>
-          </li>
-          <li class="launcher">
-            <i class="icon-bug"></i>
-            <a href="#">Feedback</a>
-          </li>
-        </ul>
-        <div data-original-title="Made by lab2023" data-toggle="tooltip" id="beaker" title=""></div>
-      </section>
-      <!-- Tools -->
-      <section id="tools">
-        <ul class="breadcrumb" id="breadcrumb">
-          <li class="title">Dashboard</li>
-        </ul>
-      </section>
+
       <!-- Content -->
       <div id="content">
         <div class="panel panel-default">
@@ -160,4 +52,6 @@
         </div>
       </div>
     </div>
+
+
    {% endblock %}

@@ -8,6 +8,32 @@ from collections import Counter
 import random
 
 
+def detect_haar(image):
+    img = cv2.imread(image)
+
+    FACE_DETECTOR_PATH = "../extras/haarcascade_frontalface_default.xml"
+
+    detector = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
+    rects = detector.detectMultiScale(img, scaleFactor=1.03, minNeighbors=5,
+                                      minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+
+    faces = []
+    images = []
+    for (x, y, w, h) in rects:
+        image = img[y:y + h, x:x + w]
+        images.append(image)
+        image = input_image(image)
+        image = np.rollaxis(image, 2, start=0)
+        # print image.shape
+        faces.append(image)
+    
+    return faces
+
+    # print faces
+    # print np.array(faces).shape
+
+    # return preprocess(np.array(faces), NB_CLASS=67), images
+
 def rmfaces():
     for i in glob.glob('../extras/download/*/face/*.jpg'):
         print i
@@ -180,46 +206,47 @@ def video():
     faceCascade = cv2.CascadeClassifier(FACE_DETECTOR_PATH)
 
     video_capture = cv2.VideoCapture(
-        'rtsp://admin:admin12345@192.168.1.64:554/Output.h264')
+        '../extras/vlc-record-2016-05-27-09h23m40s-rtsp___192.168.1.64_-.mp4')
 
-    i = 601
+    i = 0
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
 
         image = frame
 
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # faces = faceCascade.detectMultiScale(
-        #     gray,
-        #     scaleFactor=1.1,
-        #     minNeighbors=1,
-        #     minSize=(30, 30),
-        #     flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-        # )
+        faces = faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=1,
+            minSize=(30, 30),
+            flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+        )
 
         # Draw a rectangle around the faces
-        # start = time.time()
+        start = time.time()
 
-        # for (x, y, w, h) in faces:
-        #     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        #     img = image[y:y + h, x:x + w]
+        # cv2.imwrite('../extras/new/%s.jpg' % i , image[70:, 200:])
+        # i+=1
+
+        image = image[70:, 200:]
+
+        # j = 0
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (200, 70), (960,1280), (0, 255, 0), 2)
+            img = image[y:y + h, x:x + w]
+            cv2.imwrite('../extras/new/%s.jpg' % i , img)
+            i+=1
 
         # if time.time()-start >= 20:
         # print "Taken image", i
-        # cv2.imwrite('newtest/%s.jpg' % i , img)
-
-        # if i%20==0 and i!=0:
-        #     # i=0
-        #     # i+=1
-        #     time.sleep(10)
-        #     start = time.time()
-        #     # break
-        # i+=1
-        # time.sleep(20)
+        
         # Display the resulting frame
         cv2.imshow('Video', frame)
+
+        # cv2.imwrite()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -230,6 +257,6 @@ def video():
 
 
 if __name__ == '__main__':
-    image()
+    # image()
     # image_set()
-    # video()
+    video()

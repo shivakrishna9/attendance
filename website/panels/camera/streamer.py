@@ -14,7 +14,7 @@ class Camera(object):
         self.request = request
         self.req = 'rtsp://' + self.user + ':' + \
             self.password + '@' + self.ip + self.request
-        self.cam = cv2.VideoCapture('small.mp4')
+        self.cam = cv2.VideoCapture(self.req)
 
     def read_cam(self):
         ret, frame = self.cam.read()
@@ -41,6 +41,9 @@ class Camera(object):
         self.cam.release()
         cv2.destroyAllWindows()
         print time.time() - start
+
+    # def save_frame(self):
+
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ import time
 
 
 class Student(models.Model):
-    name = models.CharField(max_length=20, blank=True, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
     course = models.CharField(
         max_length=30, default="BTECH (Computer Engineering)")
     year = models.PositiveSmallIntegerField(default=2016)
@@ -19,9 +19,9 @@ class Student(models.Model):
     username = models.CharField(max_length=20, blank=True, null=True)
 
     image1 = models.ImageField(upload_to='images', default='no-image.png')
-    image2 = models.ImageField(upload_to='images', default='no-image.png')
-    image3 = models.ImageField(upload_to='images', default='no-image.png')
-    image4 = models.ImageField(upload_to='images', default='no-image.png')
+    # image2 = models.ImageField(upload_to='images', default='no-image.png')
+    # image3 = models.ImageField(upload_to='images', default='no-image.png')
+    # image4 = models.ImageField(upload_to='images', default='no-image.png')
 
     added_on = models.DateTimeField(default=datetime.now)
 
@@ -30,8 +30,9 @@ class Student(models.Model):
 
 
 class Teacher(models.Model):
+
     user = models.OneToOneField(User, blank=True, null=True)
-    password = models.CharField(max_length=20, blank=True, null=True)
+    # password = models.CharField(max_length=20)
     added_on = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
