@@ -32,7 +32,7 @@
                 <td>{{ person.student }}</td>
                 <td>{{ person.subject }}</td>
                 <td class="action">
-                  <form action="{% url 'tables' %}" method="post">
+                  <form action="{% url 'admin_tables' %}" method="post">
                     {% csrf_token %}
                           <button class="btn btn-danger" type='submit'>
                               <i class="icon-trash"></i>

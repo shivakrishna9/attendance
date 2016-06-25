@@ -5,7 +5,7 @@
         <div class="panel panel-default grid">
           <div class="panel-heading">
             <i class="icon-table icon-large"></i>
-            Logger
+            All Attendance
             <div class="panel-tools">
           </div>
            <table class="table">
@@ -32,7 +32,7 @@
                 <td>{{ person.student }}</td>
                 <td>{{ person.subject }}</td>
                 <td class="action">
-                  <form action="{% url 'tables' %}" method="post">
+                  <form action="{% url 'student_tables' %}" method="post">
                     {% csrf_token %}
                           <button class="btn btn-danger" type='submit'>
                               <i class="icon-trash"></i>

@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.html import escape
-from panels.camera.streamer import Camera
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from models import Student, Studies, Subject, Teacher
 from django.contrib.auth.models import User
+
+from panels.models import Student, Studies, Subject, Teacher
 from datetime import datetime
+
+from panels.camera.streamer import Camera
 import cv2
 from recognise.class_net import *
 
@@ -51,26 +53,6 @@ def admin_login(request):
     return render(request, 'admin/login.html', {'error': 0})
 
 
-def student_login(request):
-    # if request.user.is_authenticated():
-    #     return HttpResponseRedirect('/dashboard')
-
-    if request.method == 'POST':
-        enrollno = escape(request.POST.get('enrollno', None).strip())
-        dob = escape(request.POST.get('dob', None).strip())
-
-        h = Student.objects.filter(dob=dob, enrollno=enrollno).exists()
-
-        if h:
-            # login(request, user)
-            student = Student.objects.get(dob=dob, enrollno=enrollno)
-            return render(request, 'student/dashboard.html', {'student': student})
-        else:
-            return render(request, 'student/login.html', {'error': 1})
-
-    return render(request, 'student/login.html', {'error': 0})
-
-
 @login_required
 def teacher(request):
 
@@ -85,27 +67,13 @@ def teacher(request):
 
     # return render(request, 'dashboard.html', {})
 
-@login_required
-def student(request):
-
-    attendance = Studies.objects.all()
-    total = float(float(len([i for i in attendance])) / float(3)) * 100
-    print total * 100
-    lab = Subject.objects.filter(name='Major Project')
-
-    student = Student.objects.get(username=request.user.username)
-
-    return render(request, 'student/dashboard.html', {'student': student, 'total': total, 'lab': lab})
-    # return render(request, 'student_dashboard.html')
-
-
 
 @login_required
 def forms(request):
 
     admin = Teacher.objects.get(user=request.user)
 
-    return render(request, 'admin/forms.html', {'admin':admin})
+    return render(request, 'admin/forms.html', {'admin': admin})
 
 
 @login_required
@@ -114,7 +82,7 @@ def add_student(request):
 
     if request.method == 'POST':
         name = escape(request.POST.get('name', None).strip())
-        username = escape(request.POST.get('username', None).strip())
+        user = escape(request.POST.get('user', None).strip())
         # password = escape(request.POST.get('password', None).strip())
         rno = escape(request.POST.get('rno', None).strip())
         enrollno = escape(request.POST.get('enrollno', None).strip())
@@ -134,7 +102,7 @@ def add_student(request):
         #     rno + '_3', image3.name[image3.name.rfind('.'):])
         # image4.name = '{}{}'.format(
         #     rno + '_4', image4.name[image4.name.rfind('.'):])
-        student = Student(name=name, username=username, password=password, rollno=rno, dob=dob,
+        student = Student(name=name, user=user, password=password, rollno=rno, dob=dob,
                           course=course, year=year, semester=semester, image1=image1, image2=image2,
                           image3=image3, image4=image4)
         student.save()
@@ -173,13 +141,13 @@ def admin_tables(request, low=None, mid=None, high=None):
         if high != None:
             for i in high:
                 # print i
-                st = Student.objects.get(username=i)
+                st = Student.objects.get(user=i)
                 lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__username=i, subject__name='lab',
+                h = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__username=i, subject__name='lab',
+                m = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__username=i, subject__name='lab',
+                l = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=0).exists()
                 if not h:
                     attendance = Studies(student=st, subject=lab, confidence=2)
@@ -197,13 +165,13 @@ def admin_tables(request, low=None, mid=None, high=None):
                                                         subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
         if mid != None:
             for i in mid:
-                st = Student.objects.get(username=i)
+                st = Student.objects.get(user=i)
                 lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__username=i, subject__name='lab',
+                h = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__username=i, subject__name='lab',
+                m = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__username=i, subject__name='lab',
+                l = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=0).exists()
                 if not (h or m):
                     attendance = Studies(student=st, subject=lab, confidence=1)
@@ -213,13 +181,13 @@ def admin_tables(request, low=None, mid=None, high=None):
                                                         subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
         if low != None:
             for i in low:
-                st = Student.objects.get(username=i)
+                st = Student.objects.get(user=i)
                 lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__username=i, subject__name='lab',
+                h = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__username=i, subject__name='lab',
+                m = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__username=i, subject__name='lab',
+                l = Studies.objects.filter(student__user=i, subject__name='lab',
                                            date=time.strftime('%Y-%m-%d'), confidence=0).exists()
 
                 if not (h or m or l):
@@ -229,15 +197,8 @@ def admin_tables(request, low=None, mid=None, high=None):
 
     attendance = Studies.objects.filter(date=time.strftime('%Y-%m-%d'))
     # attendance = Studies.objects.all()
-    return render(request, 'tables.html', {'attendance': attendance})
-
-@login_required
-def student_tables(request, low=None, mid=None, high=None):
-
-    attendance = Studies.objects.filter(date=time.strftime('%Y-%m-%d'))
-    # attendance = Studies.objects.all()
-    return render(request, 'tables.html', {'attendance': attendance})
-
+    admin = Teacher.objects.get(user=request.user)
+    return render(request, 'admin/tables.html', {'admin': admin, 'attendance': attendance})
 
 
 def forgot_password(request):

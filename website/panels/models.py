@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractBaseUser
 from datetime import datetime
 import time
 
@@ -16,7 +16,9 @@ class Student(models.Model):
     enrollno = models.CharField(max_length=10, blank=False, null=True)
     dob = models.DateField(default=datetime(1993, 01, 02))
 
-    username = models.CharField(max_length=20, blank=True, null=True)
+    user = models.CharField(max_length=20, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    last_login = models.DateTimeField(default=datetime.now)
 
     image1 = models.ImageField(upload_to='images', default='no-image.png')
     # image2 = models.ImageField(upload_to='images', default='no-image.png')
@@ -24,6 +26,9 @@ class Student(models.Model):
     # image4 = models.ImageField(upload_to='images', default='no-image.png')
 
     added_on = models.DateTimeField(default=datetime.now)
+
+    def is_authenticated(self):
+        return True
 
     def __str__(self):
         return self.name
