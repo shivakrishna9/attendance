@@ -61,9 +61,9 @@ def teacher(request):
     print total * 100
     lab = Subject.objects.filter(name='Major Project')
 
-    admin = Teacher.objects.get(user=request.user)
+    # admin = Teacher.objects.get(user=request.user)
 
-    return render(request, 'admin/dashboard.html', {'admin': admin, 'total': total, 'lab': lab})
+    return render(request, 'admin/dashboard.html', {'total': total, 'lab': lab})
 
     # return render(request, 'dashboard.html', {})
 
@@ -71,9 +71,9 @@ def teacher(request):
 @login_required
 def forms(request):
 
-    admin = Teacher.objects.get(user=request.user)
+    # admin = Teacher.objects.get(user=request.user)
 
-    return render(request, 'admin/forms.html', {'admin': admin})
+    return render(request, 'admin/forms.html')
 
 
 @login_required
@@ -128,77 +128,82 @@ def add_teacher(request):
 @login_required
 def admin_tables(request, low=None, mid=None, high=None):
 
-    # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
-    # images = ['demo/DSC_1663.JPG']
-    # images = ['DSC_1663.JPG','DSC_1666.JPG']
-    images = ['']
-    for img in images:
-        # frame = camera.read_cam()
-        # low, mid, high = recognition.run(people, img, batch_size=4)
-        high = ['ashar', 'shafiya', 'sapna']
-        mid = []
-        low = ['nikhil_mittal']
-        if high != None:
-            for i in high:
-                # print i
-                st = Student.objects.get(user=i)
-                lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=0).exists()
-                if not h:
-                    attendance = Studies(student=st, subject=lab, confidence=2)
-                    attendance.save()
-                # if h:
-                #     log
+    if request.method == 'POST':
+        person = escape(request.POST.get('del_person', None).strip())
+        person.delete()
 
-                if m:
-                    print i
-                    attendance = Studies.objects.filter(student__name=i,
-                                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
-                if l:
-                    print i
-                    attendance = Studies.objects.filter(student__name=i,
-                                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
-        if mid != None:
-            for i in mid:
-                st = Student.objects.get(user=i)
-                lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=0).exists()
-                if not (h or m):
-                    attendance = Studies(student=st, subject=lab, confidence=1)
-                    attendance.save()
-                if l:
-                    attendance = Studies.objects.filter(student__name=i,
-                                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
-        if low != None:
-            for i in low:
-                st = Student.objects.get(user=i)
-                lab = Subject.objects.get(name='lab')
-                h = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-                m = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-                l = Studies.objects.filter(student__user=i, subject__name='lab',
-                                           date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+    else:
+        # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
+        # images = ['demo/DSC_1663.JPG']
+        # images = ['DSC_1663.JPG','DSC_1666.JPG']
+        images = ['']
+        for img in images:
+            # frame = camera.read_cam()
+            # low, mid, high = recognition.run(people, img, batch_size=4)
+            high = ['ashar', 'shafiya', 'sapna']
+            mid = []
+            low = ['nikhil_mittal']
+            if high != None:
+                for i in high:
+                    # print i
+                    st = Student.objects.get(user=i)
+                    lab = Subject.objects.get(name='lab')
+                    h = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                    m = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                    l = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                    if not h:
+                        attendance = Studies(student=st, subject=lab, confidence=2)
+                        attendance.save()
+                    # if h:
+                    #     log
 
-                if not (h or m or l):
+                    if m:
+                        print i
+                        attendance = Studies.objects.filter(student__name=i,
+                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                    if l:
+                        print i
+                        attendance = Studies.objects.filter(student__name=i,
+                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+            if mid != None:
+                for i in mid:
+                    st = Student.objects.get(user=i)
+                    lab = Subject.objects.get(name='lab')
+                    h = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                    m = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                    l = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                    if not (h or m):
+                        attendance = Studies(student=st, subject=lab, confidence=1)
+                        attendance.save()
+                    if l:
+                        attendance = Studies.objects.filter(student__name=i,
+                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+            if low != None:
+                for i in low:
+                    st = Student.objects.get(user=i)
+                    lab = Subject.objects.get(name='lab')
+                    h = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                    m = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                    l = Studies.objects.filter(student__user=i, subject__name='lab',
+                                               date=time.strftime('%Y-%m-%d'), confidence=0).exists()
 
-                    attendance = Studies(student=st, subject=lab, confidence=0)
-                    attendance.save()
+                    if not (h or m or l):
+
+                        attendance = Studies(student=st, subject=lab, confidence=0)
+                        attendance.save()
 
     attendance = Studies.objects.filter(date=time.strftime('%Y-%m-%d'))
     # attendance = Studies.objects.all()
-    admin = Teacher.objects.get(user=request.user)
-    return render(request, 'admin/tables.html', {'admin': admin, 'attendance': attendance})
+    # admin = Teacher.objects.get(user=request.user)
+    return render(request, 'admin/tables.html', {'attendance': attendance})
 
 
 def forgot_password(request):

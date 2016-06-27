@@ -87,16 +87,16 @@
                 <td>{{ person.timestamp }}</td>
                 <td>{{ person.student }}</td>
                 <td>{{ person.subject }}</td>
-                <td class="action">
+                <!-- <td class="action">
                   <form action="{% url 'student_tables' %}" method="post">
                     {% csrf_token %}
-                          <!-- <button class="btn btn-danger" type='submit'>
+                          <button class="btn btn-danger" type='submit'>
                               <i class="icon-trash"></i>
-                            </button> -->
-                      <!-- </fieldset> -->
+                            </button>
+                       </fieldset>
                     </form>
                   
-                </td>
+                </td> --> 
               </tr>
             {% endfor %}
             </tbody>

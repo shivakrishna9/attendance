@@ -110,9 +110,9 @@ def student(request):
     print total * 100
     lab = Subject.objects.filter(name='Major Project')
 
-    student = Student.objects.get(username=request.user.username)
+    # student = Student.objects.get(username=request.user.username)
 
-    return render(request, 'student/dashboard.html', {'student': student, 'total': total, 'lab': lab})
+    return render(request, 'student/dashboard.html', {'total': total, 'lab': lab})
     # return render(request, 'student_dashboard.html')
 
 
@@ -122,4 +122,4 @@ def student_tables(request):
     student = Student.objects.get(enrollno=request.user.enrollno, dob=request.user.dob)
     attendance = Studies.objects.filter(student=student)
     # attendance = Studies.objects.all()
-    return render(request, 'student/tables.html', {'student': student, 'attendance': attendance})
+    return render(request, 'student/tables.html', {'attendance': attendance})
