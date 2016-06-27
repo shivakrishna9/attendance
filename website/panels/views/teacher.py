@@ -103,8 +103,7 @@ def add_student(request):
         # image4.name = '{}{}'.format(
         #     rno + '_4', image4.name[image4.name.rfind('.'):])
         student = Student(name=name, user=user, password=password, rollno=rno, dob=dob,
-                          course=course, year=year, semester=semester, image1=image1, image2=image2,
-                          image3=image3, image4=image4)
+                          course=course, year=year, semester=semester, image1=image1)
         student.save()
 
         return HttpResponseRedirect('/dashboard')
@@ -116,13 +115,15 @@ def add_student(request):
 def add_teacher(request):
     # from uuid import uuid4
 
-    # if request.method == 'POST':
-    #     user = escape(request.POST.get('username', None).strip())
-    #     password = escape(request.POST.get('password', None).strip())
-    #     teacher = User(user=username, password=password)
-    #     teacher.save()
+    if request.method == 'POST':
+        user = escape(request.POST.get('username', None).strip())
+        password = escape(request.POST.get('password', None).strip())
+        teacher = User(user=username, password=password)
+        teacher.save()
 
-    return
+        return HttpResponseRedirect('/dashboard')
+
+    return HttpResponseRedirect('/forms')
 
 
 @login_required
@@ -140,9 +141,9 @@ def admin_tables(request, low=None, mid=None, high=None):
         for img in images:
             # frame = camera.read_cam()
             # low, mid, high = recognition.run(people, img, batch_size=4)
-            high = ['ashar', 'shafiya', 'sapna']
-            mid = []
-            low = ['nikhil_mittal']
+            high = ['ashar']
+            mid = ['ashar']
+            low = ['ashar']
             if high != None:
                 for i in high:
                     # print i
@@ -155,10 +156,9 @@ def admin_tables(request, low=None, mid=None, high=None):
                     l = Studies.objects.filter(student__user=i, subject__name='lab',
                                                date=time.strftime('%Y-%m-%d'), confidence=0).exists()
                     if not h:
-                        attendance = Studies(student=st, subject=lab, confidence=2)
+                        attendance = Studies(
+                            student=st, subject=lab, confidence=2)
                         attendance.save()
-                    # if h:
-                    #     log
 
                     if m:
                         print i
@@ -179,11 +179,13 @@ def admin_tables(request, low=None, mid=None, high=None):
                     l = Studies.objects.filter(student__user=i, subject__name='lab',
                                                date=time.strftime('%Y-%m-%d'), confidence=0).exists()
                     if not (h or m):
-                        attendance = Studies(student=st, subject=lab, confidence=1)
+                        attendance = Studies(
+                            student=st, subject=lab, confidence=1)
                         attendance.save()
                     if l:
                         attendance = Studies.objects.filter(student__name=i,
                                                             subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+
             if low != None:
                 for i in low:
                     st = Student.objects.get(user=i)
@@ -197,7 +199,8 @@ def admin_tables(request, low=None, mid=None, high=None):
 
                     if not (h or m or l):
 
-                        attendance = Studies(student=st, subject=lab, confidence=0)
+                        attendance = Studies(
+                            student=st, subject=lab, confidence=0)
                         attendance.save()
 
     attendance = Studies.objects.filter(date=time.strftime('%Y-%m-%d'))
