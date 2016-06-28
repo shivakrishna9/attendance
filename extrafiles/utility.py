@@ -69,14 +69,11 @@ def get_images():
 
 def image_ext():
     i = []
-    for image in glob.glob("../extras/2nd_sem/*/face/*.jpg"):
-        person = image.split('/')[3]
+    for image in glob.glob("../extras/newtest/myclass/*/*.jpg"):
         image = re.sub('\.\./', '', image)
+        person = image.split('/')[3]        
         img = image
-        if 'not' in person:
-            i.append((person, 'none', img))
-        else:
-            i.append(('face', person, img))
+        i.append(('face', person, img))
 
     m = []
     # for image in glob.glob("../newtest/*/*.jpg"):
@@ -97,7 +94,7 @@ def image_ext():
     # i.append(m)
     random.shuffle(i)
 
-    with open("../traintest/jamia_train.txt", 'w') as f:
+    with open("../traintest/class66_train.txt", 'w') as f:
         for k in i:
             if k[1] != 'none':
                 # pass
