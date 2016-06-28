@@ -136,7 +136,6 @@ def admin_tables(request, low=None, mid=None, high=None):
         #     print i.student, i.subject
         #     i.delete()
 
-
     else:
         # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
         # images = ['demo/DSC_1663.JPG']
@@ -166,12 +165,12 @@ def admin_tables(request, low=None, mid=None, high=None):
 
                     if m:
                         print i
-                        attendance = Studies.objects.filter(student__name=i,
-                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                        Studies.objects.filter(student__name=i,
+                                               subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
                     if l:
                         print i
-                        attendance = Studies.objects.filter(student__name=i,
-                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                        Studies.objects.filter(student__name=i,
+                                               subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
             if mid != None:
                 for i in mid:
                     st = Student.objects.get(user=i)
@@ -187,8 +186,8 @@ def admin_tables(request, low=None, mid=None, high=None):
                             student=st, subject=lab, confidence=1)
                         attendance.save()
                     if l:
-                        attendance = Studies.objects.filter(student__name=i,
-                                                            subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                        Studies.objects.filter(student__name=i,
+                                               subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
 
             if low != None:
                 for i in low:
