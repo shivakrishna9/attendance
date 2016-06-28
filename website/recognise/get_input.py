@@ -7,8 +7,9 @@ from keras.utils import np_utils
 im_size = 227
 
 
-def detect_haar(image):
-    img = cv2.imread(image)
+def detect_haar(image, NB_CLASS=67):
+    # img = cv2.imread(image)
+    img = image
 
     FACE_DETECTOR_PATH = "extras/haarcascade_frontalface_default.xml"
 
@@ -29,7 +30,7 @@ def detect_haar(image):
     # print faces
     print np.array(faces).shape
 
-    return preprocess(np.array(faces), NB_CLASS=67), images
+    return preprocess(np.array(faces), NB_CLASS=NB_CLASS), images
 
 
 def detect(image, dets):

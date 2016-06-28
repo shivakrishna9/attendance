@@ -11,6 +11,7 @@ from datetime import datetime
 from panels.camera.streamer import Camera
 import cv2
 from recognise.class_net import *
+from recognise.get_input import *
 
 # # Create your views here.
 
@@ -23,9 +24,9 @@ people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 
           'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana',
           'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
 
-# recognition = VGG()
-# camera = Camera()
-# recognition.VGGNet(people)
+recognition = VGG()
+camera = Camera()
+recognition.VGGNet(people)
 
 
 def index(request):
@@ -116,9 +117,9 @@ def add_teacher(request):
     # from uuid import uuid4
 
     if request.method == 'POST':
-        user = escape(request.POST.get('username', None).strip())
+        username = escape(request.POST.get('username', None).strip())
         password = escape(request.POST.get('password', None).strip())
-        teacher = User(user=username, password=password)
+        teacher = User(username=username, password=password)
         teacher.save()
 
         return HttpResponseRedirect('/dashboard')
@@ -140,13 +141,16 @@ def admin_tables(request, low=None, mid=None, high=None):
         # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
         # images = ['demo/DSC_1663.JPG']
         # images = ['DSC_1663.JPG','DSC_1666.JPG']
-        images = ['']
-        for img in images:
-            # frame = camera.read_cam()
-            # low, mid, high = recognition.run(people, img, batch_size=4)
-            high = ['ashar']
-            mid = ['ashar', 'sarah_masud']
-            low = ['ashar']
+        
+        # frame = camera.read_cam()
+        # images = detect_haar(, NB_CLASS=len(people))
+        img = cv2.imread('extras/vlcsnap-2016-06-28-12h24m39s18.png')
+        if img:
+            print img.shape
+            low, mid, high = recognition.run(people, img, batch_size=2)
+            # high = ['ashar']
+            # mid = ['ashar', 'sarah_masud']
+            # low = ['ashar']
             if high != None:
                 for i in high:
                     # print i
@@ -228,3 +232,7 @@ def surveillance():
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+def train(request):
+    recognition.train(batch_size=4, epochs=4, lr=1.5e-4, nb_epoch=1)

@@ -20,7 +20,7 @@ PRETRAINED = "extras/cnn_weights_class66.h5"
 
 class VGG(object):
 
-    def demo(self,plist,imgs,X_train=None,batch_size=16):
+    def demo(self,plist,imgs,X_train=None,batch_size=2):
 
         preds = self.model.predict(X_train, batch_size=batch_size)
 

@@ -63,7 +63,8 @@ class VGG(object):
 
     def run(self, plist, frame, batch_size=4):
 
-        X_train, imgs = detect_haar(frame)
+        X_train, imgs = detect_haar(frame, NB_CLASS=len(plist))
+        print X_train.shape
 
         preds = self.model.predict(X_train, batch_size=batch_size)
 
