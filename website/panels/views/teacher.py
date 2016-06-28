@@ -130,8 +130,12 @@ def add_teacher(request):
 def admin_tables(request, low=None, mid=None, high=None):
 
     if request.method == 'POST':
-        person = escape(request.POST.get('del_person', None).strip())
-        person.delete()
+        pk = escape(request.POST.get('attendance', None).strip())
+        Studies.objects.filter(pk=pk).delete()
+        # for i in x:
+        #     print i.student, i.subject
+        #     i.delete()
+
 
     else:
         # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
@@ -142,7 +146,7 @@ def admin_tables(request, low=None, mid=None, high=None):
             # frame = camera.read_cam()
             # low, mid, high = recognition.run(people, img, batch_size=4)
             high = ['ashar']
-            mid = ['ashar']
+            mid = ['ashar', 'sarah_masud']
             low = ['ashar']
             if high != None:
                 for i in high:

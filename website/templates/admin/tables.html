@@ -92,7 +92,8 @@
                   <form action="{% url 'admin_tables' %}" method="post">
                     {% csrf_token %}
                         <fieldset>
-                          <input type="hidden" name="del_person" default="{{ person }}">
+                          <input type="hidden" name="attendance" value="{{ person.pk }}">
+                          <!-- <input type="hidden" name="lab" default="{{ person.subject.pk }}"> -->
                         </fieldset>                          
                           <button class="btn btn-danger" type='submit'>
                               <i class="icon-trash"></i>
