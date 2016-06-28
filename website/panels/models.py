@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User, AbstractBaseUser
 from datetime import datetime
 import time
@@ -19,8 +20,8 @@ class Student(models.Model):
     user = models.CharField(max_length=20, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    # has_module_perms = models.BooleanField(default=False)
-    last_login = models.DateTimeField(default=datetime.now)
+    has_module_perms = models.BooleanField(default=False, null=False)
+    last_login = models.DateTimeField(default=timezone.now, null=False)
 
     image1 = models.ImageField(upload_to='images', default='no-image.png')
     # image2 = models.ImageField(upload_to='images', default='no-image.png')
@@ -29,8 +30,8 @@ class Student(models.Model):
 
     added_on = models.DateTimeField(default=datetime.now)
 
-    def has_module_perms(self, app_label):
-        return False
+    # def has_module_perms(self, app_label):
+    #     return False
 
     def is_authenticated(self):
         return True

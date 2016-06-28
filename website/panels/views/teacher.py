@@ -28,6 +28,19 @@ recognition = VGG()
 camera = Camera()
 recognition.VGGNet(people)
 
+# for st in people:
+#     if not st in ['antriksh', 'ashar','sarah_masud']:
+#         name = st
+#         user = st
+#         rno = '12CSS-X'
+#         enrollno = '12-XXXX'
+#         year = '2016'
+#         semester = 8
+#         image1 = '0.jpg'
+#         student = Student(name=name, user=user, rollno=rno, enrollno=enrollno,
+#             year=year, semester=semester, image1=image1)
+#         student.save()
+
 
 def index(request):
     return render(request, 'index.html')
@@ -142,11 +155,16 @@ def admin_tables(request, low=None, mid=None, high=None):
         # images = ['demo/DSC_1663.JPG']
         # images = ['DSC_1663.JPG','DSC_1666.JPG']
         
-        # frame = camera.read_cam()
-        # images = detect_haar(, NB_CLASS=len(people))
-        img = cv2.imread('extras/vlcsnap-2016-06-28-12h24m39s18.png')
-        if img:
-            print img.shape
+        # images = []
+        # for i in range(1,6):
+        #     images += [camera.read_cam()]
+        # # images = detect_haar(, NB_CLASS=len(people))
+        # images = ['extras/vlcsnap-2016-06-28-12h24m39s18.png', \
+        #             'extras/vlcsnap-2016-06-28-12h24m35s18.png']
+
+        while camera.read_cam().any():
+            img = camera.read_cam()
+            # print img.shape
             low, mid, high = recognition.run(people, img, batch_size=2)
             # high = ['ashar']
             # mid = ['ashar', 'sarah_masud']

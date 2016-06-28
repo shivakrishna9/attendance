@@ -64,41 +64,44 @@ class VGG(object):
     def run(self, plist, frame, batch_size=4):
 
         X_train, imgs = detect_haar(frame, NB_CLASS=len(plist))
-        print X_train.shape
+        # print X_train.shape
 
-        preds = self.model.predict(X_train, batch_size=batch_size)
-
-        list_best5 = []
-        for i, j in enumerate(preds):
-            prob = j
-            prob5 = sorted(prob, reverse=True)[:5]
-            best5 = []
-            for k in prob5:
-                best5.append([k, np.where(j == k)])
-
-            list_best5.append(best5)
-            
         low = []
         mid = []
         high = []
-        for i, j in enumerate(list_best5):
-            best5 = j
-            print best5
-            if best5[0][0] < 0.30:
-                t = plist[best5[0][1][0]]
-                print 'First prediction:', t
-                print 'due to low confidence, this image has not been attended to'
-                low.append(t)
-            if best5[0][0] > 0.30 and best5[0][0] < 0.70:
-                t = plist[j[0][1][0]]
-                print 'First prediction:', t
-                print 'due to medium confidence, I would like you to check this image'
-                mid.append(t)
-            if best5[0][0] > 0.70:
-                t = plist[j[0][1][0]]
-                print 'First prediction:', t
-                print 'I have confidence on my prediction !'
-                high.append(t)
+
+        if X_train.any():
+
+            preds = self.model.predict(X_train, batch_size=batch_size)
+
+            list_best5 = []
+            for i, j in enumerate(preds):
+                prob = j
+                prob5 = sorted(prob, reverse=True)[:5]
+                best5 = []
+                for k in prob5:
+                    best5.append([k, np.where(j == k)])
+
+                list_best5.append(best5)
+                
+            for i, j in enumerate(list_best5):
+                best5 = j
+                print best5
+                if best5[0][0] < 0.30:
+                    t = plist[best5[0][1][0]]
+                    print 'First prediction:', t
+                    print 'due to low confidence, this image has not been attended to'
+                    low.append(t)
+                if best5[0][0] > 0.30 and best5[0][0] < 0.70:
+                    t = plist[j[0][1][0]]
+                    print 'First prediction:', t
+                    print 'due to medium confidence, I would like you to check this image'
+                    mid.append(t)
+                if best5[0][0] > 0.70:
+                    t = plist[j[0][1][0]]
+                    print 'First prediction:', t
+                    print 'I have confidence on my prediction !'
+                    high.append(t)
 
         return low, mid, high
 

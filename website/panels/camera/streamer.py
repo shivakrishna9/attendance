@@ -6,6 +6,7 @@ import time
 
 
 class Camera(object):
+    i=0
 
     def __init__(self, ip='192.168.1.64', user='admin', password='admin12345', request='/Output.h264'):
         self.ip = ip
@@ -14,10 +15,12 @@ class Camera(object):
         self.request = request
         self.req = 'rtsp://' + self.user + ':' + \
             self.password + '@' + self.ip + self.request
-        self.cam = cv2.VideoCapture(self.req)
+        self.cam = cv2.VideoCapture('extras/vlc-record-2016-05-27-09h23m40s-rtsp___192.168.1.64_-.mp4')
 
     def read_cam(self):
         ret, frame = self.cam.read()
+        cv2.imwrite('camera/cam/'+str(self.i)+'.jpg', frame)
+        self.i += 1
         return frame
 
     def surveillance(self):
