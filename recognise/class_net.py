@@ -14,13 +14,18 @@ from os.path import exists
 import os
 # from extrafiles import *
 
-NB_CLASS = 67
-PRETRAINED = "extras/cnn_weights_class66.h5"
+# people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 'aditya', 'ahsan', 'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra', 'chaitanya', 'dhawal', 'farhan', 'farheen', 'ghalib', 'habib', 'harsh', 'irfan_ansari', 'jeevan', 'manaff', 'manish', 'maria', 'mehrab', 'mohib', 'naeem', 'nikhil_mittal', 'nikhil_raman', 'not_face', 'prerit', 'raghib_ahsan', 'rahul', 'ravi', 'rehan', 'rezwan', 'rubab', 'sachin', 'sahil', 'saif', 'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya', 'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
+
+# NB_CLASS = len(people)
+
 
 
 class VGG(object):
+    NB_CLASS = 0
+    people = []
+    PRETRAINED = "extras/cnn_weights_class66.h5"
 
-    def demo(self,plist,imgs,X_train=None,batch_size=2):
+    def demo(self,imgs,X_train=None,batch_size=2):
 
         preds = self.model.predict(X_train, batch_size=batch_size)
 
@@ -40,21 +45,21 @@ class VGG(object):
             best5 = j
             print best5
             for k in best5:
-                print plist[k[1][0]], k[0]
+                print self.people[k[1][0]], k[0]
 
             if best5[0][0]<0.30:
-                t = (plist[best5[0][1][0]])
+                t = (self.people[best5[0][1][0]])
                 print 'First prediction:', t
                 print 'due to low confidence, this image has not been attended to'
             if best5[0][0]>0.30 and best5[0][0]<0.70 :
-                t = (plist[j[0][1][0]])
+                t = (self.people[j[0][1][0]])
                 print 'First prediction:', t
                 print 'due to medium confidence, I would like you to check this image'
                 cv2.imshow(str(t), input_image(imgs[i]))
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
             if best5[0][0]>0.70:
-                t = (plist[j[0][1][0]])
+                t = (self.people[j[0][1][0]])
                 print 'First prediction:', t
                 print 'I have confidence on my prediction !'
                 cv2.imshow(str(t), input_image(imgs[i]))
@@ -64,16 +69,60 @@ class VGG(object):
         people = []
         for pred in preds:
             if np.max(pred)>0.30:
-                people.append(plist[np.argmax(pred)])
+                people.append(self.people[np.argmax(pred)])
 
         print people
 
         return people
 
 
+    def run(self, frame, batch_size=4):
+
+        X_train, imgs = detect_haar(frame, NB_CLASS=len(self.people))
+        # print X_train.shape
+
+        low = []
+        mid = []
+        high = []
+
+        if X_train.any():
+
+            preds = self.model.predict(X_train, batch_size=batch_size)
+
+            list_best5 = []
+            for i, j in enumerate(preds):
+                prob = j
+                prob5 = sorted(prob, reverse=True)[:5]
+                best5 = []
+                for k in prob5:
+                    best5.append([k, np.where(j == k)])
+
+                list_best5.append(best5)
+                
+            for i, j in enumerate(list_best5):
+                best5 = j
+                print best5
+                if best5[0][0] < 0.30:
+                    t = self.people[best5[0][1][0]]
+                    print 'First prediction:', t
+                    print 'due to low confidence, this image has not been attended to'
+                    low.append(t)
+                if best5[0][0] > 0.30 and best5[0][0] < 0.70:
+                    t = self.people[j[0][1][0]]
+                    print 'First prediction:', t
+                    print 'due to medium confidence, I would like you to check this image'
+                    mid.append(t)
+                if best5[0][0] > 0.70:
+                    t = self.people[j[0][1][0]]
+                    print 'First prediction:', t
+                    print 'I have confidence on my prediction !'
+                    high.append(t)
+
+        return low, mid, high
+
 
     def get_pt_mat(self,layer_dict):
-        print "Extracting pretrained data"
+        print "Extracting self.pretrained data"
         start = time.time()
         cnn = scipy.io.loadmat('extras/vgg-face.mat')
 
@@ -93,13 +142,13 @@ class VGG(object):
         print "self.model extracted in ..", time.time() - start
 
 
-    def evaluate(self,plist, batch_size=4):
+    def evaluate(self, batch_size=4):
         print 'Evaluating, predicting and saving weights ..'
 
         chunks = pd.read_csv('traintest/demo.txt',
                              names=['person', 'class', 'image'], chunksize=256,
                              sep='\t', engine='python')
-        # plist = pre_process()
+        # self.people = pre_process()
         count = 0
         x = 0
         for data in chunks:
@@ -133,9 +182,9 @@ class VGG(object):
                 best5 = j
                 for k in best5:
                     # print k[1][0], k[0]
-                    print plist[k[1][0]], k[0]
+                    print self.people[k[1][0]], k[0]
 
-                t = (plist[j[0][1][0]], plist[np.argmax(y_train[i])])
+                t = (self.people[j[0][1][0]], self.people[np.argmax(y_train[i])])
                 print 'First prediction:', t
 
                 # cv2.imwrite('outputs/classification/'+str(t)+'.jpg', cv2.imread(imgs[i]))
@@ -179,10 +228,10 @@ class VGG(object):
         print 'Evaluated, predicted and saved weights !'
 
 
-    def train(self,batch_size=16, epochs=400, lr=1e-4, nb_epoch=1):
+    def train(self, batch_size=2, epochs=400, lr=2.5e-4, nb_epoch=1):
         print "Training on batch..."
 
-        for epoch in xrange(169, epochs):
+        for epoch in xrange(0, epochs):
             start = time.time()
             chunks = pd.read_csv('traintest/class66_train.txt',
                                  names=['person', 'class', 'image'], chunksize=256,
@@ -208,13 +257,16 @@ class VGG(object):
                     self.model.fit(X_train, y_train, nb_epoch=nb_epoch, batch_size=batch_size,
                               verbose=1, shuffle=True)
 
-                    self.model.save_weights(PRETRAINED, overwrite=True)
+                    self.model.save_weights(self.PRETRAINED, overwrite=True)
 
             print "Total training time ..", time.time() - start
             epsw(self.model, batch_size=4)
 
 
-    def VGGNet(self,plist, nb_epoch=1, batch_size=4):
+    def VGGNet(self,plist,NB_CLASS=NB_CLASS, nb_epoch=1, batch_size=4):
+        self.people=plist
+        self.NB_CLASS = NB_CLASS
+        self.PRETRAINED = 'extras/cnn_weights_class'+(NB_CLASS-2)+'.h5'
 
         print "Initialising self.model..."
         start = time.time()
@@ -270,24 +322,40 @@ class VGG(object):
         layer_dict = dict([(layer.name, layer) for layer in self.model.layers])
         print "self.model init in ..", time.time() - start
 
-        print "Adding fully connected layers ..."
-        start = time.time()
-        self.model.add(Flatten())
-        self.model.add(Dense(output_dim=4096, activation='relu',
-                        trainable=False, init="uniform"))
-        self.model.add(Dense(output_dim=4096, init="uniform",
-                        activation='relu'))
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(output_dim=NB_CLASS, init="uniform", activation='softmax'))
-        print 'FC layers added ! Time taken :', time.time() - start
+        if self.PRETRAINED:
 
-        print 'Loading weights ...'
-        start = time.time()
-        # get_pt_mat(self.model, layer_dict)
-        self.model.load_weights(PRETRAINED)
-        print 'self.Model loaded in ..', time.time() - start
+            print "Adding fully connected layers ..."
+            start = time.time()
+            self.model.add(Flatten())
+            self.model.add(Dense(output_dim=4096, activation='relu',
+                            trainable=False, init="uniform"))
+            self.model.add(Dense(output_dim=4096, init="uniform",
+                            activation='relu'))
+            self.model.add(Dropout(0.5))
+            self.model.add(Dense(output_dim=self.NB_CLASS, init="uniform", activation='softmax'))
+            print 'FC layers added ! Time taken :', time.time() - start
 
-        # self.model.save_weights(PRETRAINED,overwrite=True)
+            print 'Loading weights ...'
+            start = time.time()
+            # get_pt_mat(self.model, layer_dict)
+            self.model.load_weights(self.PRETRAINED)
+            print 'self.Model loaded in ..', time.time() - start
+
+        else:
+            get_pt_mat(self.model, layer_dict)
+
+            print "Adding fully connected layers ..."
+            start = time.time()
+            self.model.add(Flatten())
+            self.model.add(Dense(output_dim=4096, activation='relu',
+                            trainable=False, init="uniform"))
+            self.model.add(Dense(output_dim=4096, init="uniform",
+                            activation='relu'))
+            self.model.add(Dropout(0.5))
+            self.model.add(Dense(output_dim=self.NB_CLASS, init="uniform", activation='softmax'))
+            print 'FC layers added ! Time taken :', time.time() - start
+
+        # self.model.save_weights(self.PRETRAINED,overwrite=True)
         lr = 1.5e-4
         sgd = SGD(lr=lr, decay=5e-4, momentum=0.9, nesterov=True)
 
@@ -298,7 +366,7 @@ class VGG(object):
         print "self.Model compiled in ..", time.time() - start
 
         # print 'Evaluating ..'
-        # self.evaluate(self.model, plist, batch_size=4)
+        # self.evaluate(self.model,  batch_size=4)
         # print 'Checkout the results in class_eval.txt file !'
 
         # self.train(self.model, batch_size=4, epochs=400, lr=lr, nb_epoch=1)
