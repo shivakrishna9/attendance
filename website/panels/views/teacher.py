@@ -162,7 +162,7 @@ def admin_tables(request, low=None, mid=None, high=None):
         # images = ['extras/vlcsnap-2016-06-28-12h24m39s18.png', \
         #             'extras/vlcsnap-2016-06-28-12h24m35s18.png']
 
-        while camera.read_cam().any():
+        while camera.read_cam() != None:
             img = camera.read_cam()
             # print img.shape
             low, mid, high = recognition.run(people, img, batch_size=2)
