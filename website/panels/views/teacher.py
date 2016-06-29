@@ -133,6 +133,7 @@ def admin_tables(request, low=None, mid=None, high=None):
     if request.method == 'POST':
         pk = escape(request.POST.get('attendance', None).strip())
         Studies.objects.filter(pk=pk).delete()
+# <<<<<<< HEAD
 
     else:
 
