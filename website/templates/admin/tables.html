@@ -70,6 +70,7 @@
               <tr>
                 <th>TimeStamp</th>
                 <th>Name</th>
+                <th>Roll Number</th>
                 <th>Lab Name</th>
                 <th class="actions">
                   Actions
@@ -87,6 +88,7 @@
               {% endif %}
                 <td>{{ person.timestamp }}</td>
                 <td>{{ person.student }}</td>
+                <td>{{ person.rollno }}</td>
                 <td>{{ person.subject }}</td>
                 <td class="action">
                   <form action="{% url 'admin_tables' %}" method="post">

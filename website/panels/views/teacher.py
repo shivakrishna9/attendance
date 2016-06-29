@@ -12,27 +12,28 @@ from panels.camera.streamer import Camera
 import cv2
 from recognise.class_net import *
 from recognise.get_input import *
+from collections import Counter
+import time
+import pandas as pd
 
 # # Create your views here.
 
-people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 'aditya', 'ahsan', 'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra', 'chaitanya', 'dhawal', 'farhan', 'farheen', 'ghalib', 'habib', 'harsh', 'irfan_ansari', 'jeevan', 'manaff', 'manish', 'maria', 'mehrab', 'mohib', 'naeem', 'nikhil_mittal', 'nikhil_raman', 'not_face', 'prerit', 'raghib_ahsan', 'rahul', 'ravi', 'rehan', 'rezwan', 'rubab', 'sachin', 'sahil', 'saif', 'saifur', 'sajjad', 'sana', 'sapna', 'sarah_khan', 'sarah_masud', 'sarthak', 'shadab', 'shafiya', 'shahbaz', 'shahjahan', 'sharan', 'shivam', 'shoaib', 'shoib', 'shruti', 'suhani', 'sultana', 'sunny', 'sushmita', 'tushar', 'umar', 'zeya', 'zishan']
+i=[]
+for image in glob.glob("media/images/*/*.*"):
+        person = image.split('/')[2]
+        i.append(person)
+
+x = Counter(i)
+people = list(set(i))
+people = sorted(people)
+
+print "People: ", people
 
 recognition = VGG()
 camera = Camera()
-recognition.VGGNet(people)
+recognition.VGGNet(people, len(people))
 
-# for st in people:
-#     if not st in ['antriksh', 'ashar','sarah_masud']:
-#         name = st
-#         user = st
-#         rno = '12CSS-X'
-#         enrollno = '12-XXXX'
-#         year = '2016'
-#         semester = 8
-#         image1 = '0.jpg'
-#         student = Student(name=name, user=user, rollno=rno, enrollno=enrollno,
-#             year=year, semester=semester, image1=image1)
-#         student.save()
+recognition.train(batch_size=4, epochs=4, lr=1.5e-4, nb_epoch=1)
 
 
 def index(request):
@@ -98,17 +99,10 @@ def add_student(request):
         year = escape(request.POST.get('year', None).strip())
         semester = escape(request.POST.get('semester', None).strip())
         image1 = request.FILES.get('image1')
-        # image2 = request.FILES.get('image2')
-        # image3 = request.FILES.get('image3')
-        # image4 = request.FILES.get('image4')
+        if not os.path.exists('media/images/'+rno+'/'):
+            os.mkdir('media/images/'+rno+'/')
         image1.name = '{}{}'.format(
             rno + '_1', image1.name[image1.name.rfind('.'):])
-        # image2.name = '{}{}'.format(
-        #     rno + '_2', image2.name[image2.name.rfind('.'):])
-        # image3.name = '{}{}'.format(
-        #     rno + '_3', image3.name[image3.name.rfind('.'):])
-        # image4.name = '{}{}'.format(
-        #     rno + '_4', image4.name[image4.name.rfind('.'):])
         student = Student(name=name, user=user, password=password, rollno=rno, dob=dob,
                           course=course, year=year, semester=semester, image1=image1)
         student.save()
@@ -139,87 +133,76 @@ def admin_tables(request, low=None, mid=None, high=None):
     if request.method == 'POST':
         pk = escape(request.POST.get('attendance', None).strip())
         Studies.objects.filter(pk=pk).delete()
-        # for i in x:
-        #     print i.student, i.subject
-        #     i.delete()
 
-    # else:
-        # images = ['demo/DSC_1666.JPG','demo/DSC_1663.JPG']
-        # images = ['demo/DSC_1663.JPG']
-        # images = ['DSC_1663.JPG','DSC_1666.JPG']
-        
-        # images = []
-        # for i in range(1,6):
-        #     images += [camera.read_cam()]
-        # # images = detect_haar(, NB_CLASS=len(people))
-        # images = ['extras/vlcsnap-2016-06-28-12h24m39s18.png', \
-        #             'extras/vlcsnap-2016-06-28-12h24m35s18.png']
+    else:
 
-        # while camera.read_cam().any():
-        #     img = camera.read_cam()
-        #     # print img.shape
-        #     low, mid, high = recognition.run(people, img, batch_size=2)
-        #     # high = ['ashar']
-        #     # mid = ['ashar', 'sarah_masud']
-        #     # low = ['ashar']
-        #     if high != None:
-        #         for i in high:
-        #             # print i
-        #             st = Student.objects.get(user=i)
-        #             lab = Subject.objects.get(name='lab')
-        #             h = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-        #             m = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-        #             l = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=0).exists()
-        #             if not h:
-        #                 attendance = Studies(
-        #                     student=st, subject=lab, confidence=2)
-        #                 attendance.save()
+        start = time.time()
+        while camera.read_cam() != None :
+            img = camera.read_cam()
+            low, mid, high = recognition.run(img, batch_size=2)
+            if high != None:
+                for i in high:
+                    # print i
+                    if i != 'not_face':
+                        st = Student.objects.get(rollno=i)
+                        lab = Subject.objects.get(name='lab')
+                        h = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                        m = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                        l = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                        if not h:
+                            attendance = Studies(
+                                student=st, subject=lab, confidence=2)
+                            attendance.save()
 
-        #             if m:
-        #                 print i
-        #                 Studies.objects.filter(student__name=i,
-        #                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
-        #             if l:
-        #                 print i
-        #                 Studies.objects.filter(student__name=i,
-        #                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
-        #     if mid != None:
-        #         for i in mid:
-        #             st = Student.objects.get(user=i)
-        #             lab = Subject.objects.get(name='lab')
-        #             h = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-        #             m = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-        #             l = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=0).exists()
-        #             if not (h or m):
-        #                 attendance = Studies(
-        #                     student=st, subject=lab, confidence=1)
-        #                 attendance.save()
-        #             if l:
-        #                 Studies.objects.filter(student__name=i,
-        #                                        subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                        if m:
+                            print i
+                            Studies.objects.filter(student__rollno=i,
+                                                   subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+                        if l:
+                            print i
+                            Studies.objects.filter(student__rollno=i,
+                                                   subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
+            if mid != None:
+                for i in mid:
+                    if i != 'not_face':
+                        st = Student.objects.get(rollno=i)
+                        lab = Subject.objects.get(name='lab')
+                        h = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                        m = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                        l = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+                        if not (h or m):
+                            attendance = Studies(
+                                student=st, subject=lab, confidence=1)
+                            attendance.save()
+                        if l:
+                            Studies.objects.filter(student__rollno=i,
+                                                   subject__name='lab', date=time.strftime('%Y-%m-%d'), confidence=1).delete()
 
-        #     if low != None:
-        #         for i in low:
-        #             st = Student.objects.get(user=i)
-        #             lab = Subject.objects.get(name='lab')
-        #             h = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=2).exists()
-        #             m = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=1).exists()
-        #             l = Studies.objects.filter(student__user=i, subject__name='lab',
-        #                                        date=time.strftime('%Y-%m-%d'), confidence=0).exists()
+            if low != None:
+                for i in low:
+                    if i != 'not_face':
+                        st = Student.objects.get(rollno=i)
+                        lab = Subject.objects.get(name='lab')
+                        h = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=2).exists()
+                        m = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=1).exists()
+                        l = Studies.objects.filter(student__rollno=i, subject__name='lab',
+                                                   date=time.strftime('%Y-%m-%d'), confidence=0).exists()
 
-        #             if not (h or m or l):
+                        if not (h or m or l):
 
-        #                 attendance = Studies(
-        #                     student=st, subject=lab, confidence=0)
-        #                 attendance.save()
+                            attendance = Studies(
+                                student=st, subject=lab, confidence=0)
+                            attendance.save()
+
+        print 'Time for total:', time.time() - start
 
     attendance = Studies.objects.filter(subject__name='lab', date=time.strftime('%Y-%m-%d'))
     # attendance = Studies.objects.all()

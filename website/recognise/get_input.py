@@ -76,7 +76,7 @@ def class_db_read1(chunk):
     return imgs, preprocess(np.array(images), np.array(image_classes), NB_CLASS=67)
 
 
-def class_db_read(chunk):
+def class_db_read(chunk, NB_CLASS):
 
     images = []
     image_classes = []
@@ -92,7 +92,7 @@ def class_db_read(chunk):
         images.append(image)
         image_classes.append(image_class)
 
-    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=67)
+    return preprocess(np.array(images), np.array(image_classes), NB_CLASS=NB_CLASS)
 
 
 def input_image(image):

@@ -6,13 +6,13 @@ import sys
 sys.setrecursionlimit(100000)
 
 i=[]
-for image in glob.glob("extras/newtest/myclass/*/*.jpg"):
-        person = image.split('/')[3]
+for image in glob.glob("extras/cs2017batch/*/*.*"):
+        person = image.split('/')[2]
         i.append(person)
 
 x = Counter(i)
-up = list(set(i))
-people = sorted(up)
+people = list(set(i))
+people = sorted(people)
 
 # people = ['abdul_karim', 'abdul_wajid', 'abhishek_bhatnagar', 'abhishek_joshi', 'aditya', 'ahsan',
 #  'akshat', 'aly', 'aman', 'ameen', 'antriksh', 'anzal', 'ashar', 'asif', 'avishkar', 'bushra', 

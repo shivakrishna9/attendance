@@ -69,9 +69,9 @@ def get_images():
 
 def image_ext():
     i = []
-    for image in glob.glob("../extras/newtest/myclass/*/*.jpg"):
+    for image in glob.glob("../extras/cs2017batch/*/*.*"):
         image = re.sub('\.\./', '', image)
-        person = image.split('/')[3]        
+        person = image.split('/')[2]        
         img = image
         i.append(('face', person, img))
 
@@ -92,24 +92,13 @@ def image_ext():
     up = list(set(up))
     up = sorted(up)
     # i.append(m)
-    random.shuffle(i)
+    # random.shuffle(i)
 
-    with open("../traintest/class66_train.txt", 'w') as f:
+    with open("../traintest/cs2017_train.txt", 'w') as f:
         for k in i:
-            if k[1] != 'none':
-                # pass
-                print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
-                f.write(k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2] + '\n')
-            # else:
-            #     print k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]
-            #     f.write(k[0]+'\t'+k[1]+'\t'+'none'+'\t'+k[2]+'\n')
+            print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
+            f.write(k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2] + '\n')
 
-        # for k in m:
-        #     if k[1] != 'none':
-        #         # pass
-        #         print k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2]
-        #         f.write(k[1] + '\t' + str(up.index(k[1])) + '\t' + k[2] + '\n')
-            
     print up
     print len(upx)
     print x

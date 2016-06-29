@@ -228,12 +228,12 @@ class VGG(object):
         print 'Evaluated, predicted and saved weights !'
 
 
-    def train(self, batch_size=2, epochs=400, lr=2.5e-4, nb_epoch=1):
+    def train(self, batch_size=2, epochs=400, lr=1e-4, nb_epoch=1):
         print "Training on batch..."
 
         for epoch in xrange(0, epochs):
             start = time.time()
-            chunks = pd.read_csv('traintest/class66_train.txt',
+            chunks = pd.read_csv('traintest/cs2017_train.txt',
                                  names=['person', 'class', 'image'], chunksize=256,
                                  sep='\t', engine='python')
             count = 0
@@ -245,7 +245,7 @@ class VGG(object):
 
             for data in chunks:
 
-                X_train, y_train = class_db_read(data)
+                X_train, y_train = class_db_read(data, self.NB_CLASS)
                 print X_train.shape, y_train.shape
                 batch = X_train.shape[0]
                 count += batch
@@ -260,13 +260,13 @@ class VGG(object):
                     self.model.save_weights(self.PRETRAINED, overwrite=True)
 
             print "Total training time ..", time.time() - start
-            epsw(self.model, batch_size=4)
+            # epsw(self.model, batch_size=4)
 
 
     def VGGNet(self,plist,NB_CLASS=NB_CLASS, nb_epoch=1, batch_size=4):
         self.people=plist
         self.NB_CLASS = NB_CLASS
-        self.PRETRAINED = 'extras/cnn_weights_class'+(NB_CLASS-2)+'.h5'
+        self.PRETRAINED = 'extras/cnn_weights_class'+str(NB_CLASS-2)+'.h5'
 
         print "Initialising self.model..."
         start = time.time()
@@ -322,7 +322,7 @@ class VGG(object):
         layer_dict = dict([(layer.name, layer) for layer in self.model.layers])
         print "self.model init in ..", time.time() - start
 
-        if self.PRETRAINED:
+        if os.path.exists(self.PRETRAINED):
 
             print "Adding fully connected layers ..."
             start = time.time()
@@ -342,7 +342,7 @@ class VGG(object):
             print 'self.Model loaded in ..', time.time() - start
 
         else:
-            get_pt_mat(self.model, layer_dict)
+            self.model.load_weights('extras/default.h5')
 
             print "Adding fully connected layers ..."
             start = time.time()

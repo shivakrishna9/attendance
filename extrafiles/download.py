@@ -18,7 +18,7 @@ if not exists(RESULT_ROOT):
 #     for image in glob(RESULT_ROOT+'*/*.jpg'):
 
 
-def download((names, urls, fnames)):
+def download((names, urls, fnames):
     """
         download from urls into folder names using wget
     """
