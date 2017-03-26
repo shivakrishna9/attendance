@@ -1,7 +1,7 @@
 # attendance
 Automatic attendance monitoring system - CS Lab Jamia MIllia Islamia
 
-#What You See:
+# What You See:
 
 So, this was the final year project for the completion of my Bachelor's Degree in Jamia Millia Islamia, Delhi, India.
 
@@ -9,7 +9,7 @@ This project has a few parts. The *recognise* folder contains the files which ru
 
 The *website* folder contains the website that was developed to showcase this. The website has been developed using Django and uses an html template from some website online.
 
-#How it works:
+# How it works:
 
 There are a few things that do work, some do not. In any case, if someone does try to improve over this, you would require, some specific libraries like Keras, Numpy, Pandas, Django. These have been used extensively. Keras was used with Tensorflow as well as Theano which again will be required.
 
@@ -21,11 +21,11 @@ Usually everything starts running by running the **demo.py** file which runs on 
 
 The whole project now seems a waste of time since I spent a whole Spring (2016) learning and implementing everything possible by an undergrad only to find that I did not have ample resources to complete it and the project did not run real-time. To make it real-time, other methods, detectors and recognisers, which take much less time need to be implemented.
 
-#DONE
+# DONE
 
 Train VGGNet on a very low learning rate ! --running
 
-#TODO
+# TODO
 
 Unfortunately, I do not have enough know-how to further improve the project and hence I have taken a step forward to complete Masters Degree in Computer Science and then (probably and possibly) Ph.D. from a renowned university in The United States of America. Till then, I would leave this as it is.
 
