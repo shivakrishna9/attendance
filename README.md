@@ -38,3 +38,6 @@ Unfortunately, I do not have enough know-how to further improve the project and 
 2. Take someone with you now ?
 
 3. Implement it in your house ??
+
+
+#Everyone is encouraged to contribute.
